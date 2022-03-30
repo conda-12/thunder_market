@@ -18,9 +18,9 @@ public class Member {
     private String name;
     private String gender;
     private String birth;
-    private String address;
+    private String address; // API 필요
     private String email;
-    private String phoneNumber;
+    private String phoneNumber; // API 필요
     private Date regDate;
     private Date updateDate;
 
