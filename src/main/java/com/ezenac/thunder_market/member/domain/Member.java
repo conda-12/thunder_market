@@ -1,5 +1,6 @@
-package com.ezenac.thunder_market.domain;
+package com.ezenac.thunder_market.member.domain;
 
+import com.ezenac.thunder_market.goods.domain.Goods;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -21,7 +22,7 @@ public class Member {
     private String email;
     private String phoneNumber;
     private Date regDate;
-    private Date UpdateDate;
+    private Date updateDate;
 
     // 연관관계
     private List<Transaction> transactionList;
