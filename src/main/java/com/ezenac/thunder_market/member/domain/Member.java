@@ -26,7 +26,7 @@ public class Member {
 
     // 연관관계
     private List<Transaction> transactionList;
-    private List<Cart> cartList;
+    private List<Favorite> favoriteList;
     private List<Product> productList;
 
 }

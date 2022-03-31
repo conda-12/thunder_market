@@ -1,11 +1,17 @@
 package com.ezenac.thunder_market.product.domain;
 
-import com.ezenac.thunder_market.member.domain.Member;
+import com.ezenac.thunder_market.member.domain.*;
+import lombok.*;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.List;
 
 public class Product {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
 
     private String productName;
@@ -14,19 +20,19 @@ public class Product {
 
     private int productPrice;
 
-    private int productStock;
-
     private String productContent;
 
     private int productHit;
 
-    private int productLike;
+    private List<Favorite> favorites;
 
-    private String productBg;
+    private BigGroup bigGroup;
 
-    private String productSg;
+    private SmallGroup smallGroup;
 
     private Member member;
+
+    private Transaction transaction;
 
     private Boolean del;
 }
