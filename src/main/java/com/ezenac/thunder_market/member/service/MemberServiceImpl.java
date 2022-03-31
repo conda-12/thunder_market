@@ -1,6 +1,6 @@
 package com.ezenac.thunder_market.member.service;
 
-import com.ezenac.thunder_market.goods.domain.Goods;
+import com.ezenac.thunder_market.product.domain.Product;
 import com.ezenac.thunder_market.member.domain.Member;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +36,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<Goods> getMemberGoodsList(Member member) throws Exception {
+    public List<Product> getMemberGoodsList(Member member) throws Exception {
         return null;
     }
 

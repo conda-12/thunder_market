@@ -1,6 +1,6 @@
 package com.ezenac.thunder_market.member.domain;
 
-import com.ezenac.thunder_market.goods.domain.Goods;
+import com.ezenac.thunder_market.product.domain.Product;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -27,6 +27,6 @@ public class Member {
     // 연관관계
     private List<Transaction> transactionList;
     private List<Cart> cartList;
-    private List<Goods> goodsList;
+    private List<Product> productList;
 
 }

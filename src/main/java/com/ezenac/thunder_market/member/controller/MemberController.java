@@ -1,6 +1,6 @@
 package com.ezenac.thunder_market.member.controller;
 
-import com.ezenac.thunder_market.goods.domain.Goods;
+import com.ezenac.thunder_market.product.domain.Product;
 import com.ezenac.thunder_market.member.domain.Member;
 import com.ezenac.thunder_market.member.service.MemberService;
 import org.slf4j.Logger;
@@ -82,7 +82,7 @@ public class MemberController {
 
         Member member = (Member) session.getAttribute("member");
 
-        List<Goods> memberBoardList = service.getMemberGoodsList(member);
+        List<Product> memberBoardList = service.getMemberGoodsList(member);
 
         model.addAttribute("memberBoardList", memberBoardList);
 

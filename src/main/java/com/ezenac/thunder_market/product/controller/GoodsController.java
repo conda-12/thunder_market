@@ -1,4 +1,4 @@
-package com.ezenac.thunder_market.goods.controller;
+package com.ezenac.thunder_market.product.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
