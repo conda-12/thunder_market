@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Product {
@@ -16,7 +17,7 @@ public class Product {
 
     private String productName;
 
-    private String productFiles;
+    private String productImages;
 
     private int productPrice;
 
@@ -24,15 +25,19 @@ public class Product {
 
     private int productHit;
 
-    private List<Favorite> favorites;
-
     private BigGroup bigGroup;
 
     private SmallGroup smallGroup;
 
     private Member member;
 
+    private List<Favorite> favorites;
+
     private Transaction transaction;
+
+    private LocalDateTime regDate;
+
+    private LocalDateTime modDate;
 
     private Boolean del;
 }
