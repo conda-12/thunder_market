@@ -1,6 +1,7 @@
 package com.ezenac.thunder_market.member.service;
 
 
+import com.ezenac.thunder_market.member.domain.Token;
 import com.ezenac.thunder_market.product.domain.Product;
 import com.ezenac.thunder_market.member.domain.Member;
 
@@ -22,4 +23,8 @@ public interface MemberService {
     public List<Product> getMemberGoodsList(Member member) throws Exception;
 
     public int findMemberId(Member member) throws Exception;
+
+    public void saveToken(Token token) throws Exception;
+
+    public int validateToken(String phoneNum, String validationNum) throws Exception;
 }
