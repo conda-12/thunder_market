@@ -136,11 +136,10 @@
                             type:"POST",
                             url:"/member/auth/validation",
                             contentType: "application/json; charset=UTF-8",
-                            dataType:"json",
                             data:param,
-                            async: false,
+                            async:false,
                             success: function (data) {
-                                alert(data+ "로 인증번호 문자가 발송되었습니다.")
+                                alert(data + " 로 인증번호 문자가 발송되었습니다.")
                             },
                             error: function (data) {
                                 alert(data + "로 인증번호 문자 발송에 실패했습니다.")
@@ -202,16 +201,12 @@
 
                     let ready = true;
 
-                    let memberId = {"memberId":id};
-
                     $.ajax({
                         type:"GET",
-                        url: "/member/auth/member-id-validation",
+                        url: "/member/auth/validation/" + id,
                         contentType: "application/json; charset=utf-8",
-                        dataType: "json",
-                        data: memberId,
-                        success: function (result) {
-                            if (result === 0) {
+                        success: function (data) {
+                            if (data === 0) {
                                 $("#valid-Id")
                                     .html('멋진 아이디입니다!')
                                     .css({'color':"#198754", 'font-size':".875em"});
@@ -222,7 +217,7 @@
                                 ready = false;
                             }
                         },
-                        error() {
+                        error: function () {
                             ready =  false;
                         }
                     });
@@ -347,26 +342,22 @@
 
                 function checkValidationNumber(phoneNum, validationNum) {
 
-                    let token = {"phoneNum":phoneNum, "validationNum":validationNum};
-
                     let ready = true;
 
                     $.ajax({
                         type:"GET",
-                        url:"/member/auth/validation",
+                        url:"/member/auth/validation/" + phoneNum + "/" + validationNum,
                         contentType: "application/json; charset=utf-8",
-                        dataType: "json",
-                        data: token,
                         async: false,
-                        success: function (result) {
-                            if (result === 0) {
+                        success: function (data) {
+                            if (data === 0) {
                                 $("#valid-phone-number")
                                     .html('인증번호가 일치하지 않습니다.')
                                     .css({'color':"#dc3545", 'font-size':".875em"});
                                 ready = false;
                             }
                         },
-                        error() {
+                        error: function () {
                             ready =  false;
                         }
                     });
