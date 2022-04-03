@@ -5,7 +5,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
-public class Transaction {
+public class Transaction extends BaseTime {
 
     private Long transactionId;
 
@@ -14,8 +14,5 @@ public class Transaction {
     private Member member;
 
     private Boolean del;
-
-    @CreatedDate
-    private LocalDateTime transactionDateTime;
 
 }

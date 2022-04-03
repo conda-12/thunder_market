@@ -3,21 +3,22 @@ package com.ezenac.thunder_market.product.domain;
 import com.ezenac.thunder_market.member.domain.*;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Product {
+@Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@ToString(exclude = {"smallGroup","member"})
+public class Product extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
 
     private String productName;
-
-    private String productImages;
 
     private int productPrice;
 
@@ -25,19 +26,11 @@ public class Product {
 
     private int productHit;
 
-    private BigGroup bigGroup;
-
+    @ManyToOne(fetch = FetchType.LAZY)
     private SmallGroup smallGroup;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
-
-    private List<Favorite> favorites;
-
-    private Transaction transaction;
-
-    private LocalDateTime regDate;
-
-    private LocalDateTime modDate;
 
     private Boolean del;
 }
