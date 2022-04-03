@@ -69,6 +69,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public int validateToken(String phoneNum, String validationNum) throws Exception {
+
         Optional<Token> token = tokenRedisRepository.findById(phoneNum);
 
         if (token.isPresent()) {

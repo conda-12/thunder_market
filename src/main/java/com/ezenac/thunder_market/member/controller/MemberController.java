@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -52,42 +53,39 @@ public class MemberController {
 
     @RequestMapping(value = "/auth/validation", method = RequestMethod.POST)
     @ResponseBody
-    public String setValidationToken(@RequestBody Map<String, Object> phoneNum) throws Exception {
+    public String setValidationToken(@RequestBody Map<String, Object> param) throws Exception {
         GenerateRandomNumber ranNumGenerator = new GenerateRandomNumber();
 
-        String phoneNumber = (String) phoneNum.get("phoneNum");
+        String phoneNumber = (String) param.get("phoneNum");
 
         System.out.println("post 값= "+ phoneNumber);
 
+        // 랜덤 번호 생성
         String ranNum = ranNumGenerator.excuteGeneration();
+        // 메세지 생성
         Message message = new Message();
         message.setFrom("01027294072");
         message.setTo(phoneNumber);
         message.setText("천둥마켓 본인확인 인증번호(" + ranNum + ")입력시 정상 처리 됩니다.");
-
+        // 메세지 발송
         messageService.sendOne(new SingleMessageSendingRequest(message));
-
+        // 토큰생성
         Token token = new Token(phoneNumber, ranNum);
         service.saveToken(token);
 
         return phoneNumber;
     }
 
-    @RequestMapping(value = "/auth/validation", method = RequestMethod.GET)
+    @RequestMapping(value = "/auth/validation/{phoneNum}/{validationNum}", method = RequestMethod.GET)
     @ResponseBody
-    public int validateTokenNum(@RequestParam Map<String, Object> param) throws Exception {
-
-        String phoneNum = (String) param.get("phoneNum");
-        String validationNum = (String) param.get("validationNum");
+    public int validateTokenNum(@PathVariable String phoneNum, @PathVariable String validationNum) throws Exception {
 
         if (phoneNum == null) {
             return 0;
         } else if (validationNum == null) {
             return 0;
         } else {
-            int num = service.validateToken(phoneNum, validationNum);
-            System.out.println("토큰검색 결과=" + num);
-            return num;
+            return service.validateToken(phoneNum, validationNum);
         }
     }
 
@@ -121,12 +119,12 @@ public class MemberController {
         return "redirect:/board/boardlist";
     }
 
-    @RequestMapping(value = "/auth/member-id-validation", method = RequestMethod.GET)
+    @RequestMapping(value = "/auth/validation/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public int memberIdValidate(@RequestParam Map<String, Object> param) throws Exception {
+    public int memberIdValidate(@PathVariable String id) throws Exception {
 
         Member member = new Member();
-        member.setMemberId((String) param.get("memberId"));
+        member.setMemberId(id);
 
         return service.findMemberId(member);
     }
