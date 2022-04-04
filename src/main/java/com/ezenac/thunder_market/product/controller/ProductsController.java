@@ -6,12 +6,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/goods")
-public class GoodsController {
+@RequestMapping("/products")
+public class ProductsController {
 
-    @GetMapping("/{gno}")
-    public String goods(@PathVariable("gno") Long gno){
+    @GetMapping("/{productId}")
+    public String goods(@PathVariable("productId") Long productId){
 
-        return "/goods/goods";
+        return "products";
     }
 }
