@@ -9,7 +9,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-@RestController
+
 public class HomeController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -22,7 +22,7 @@ public class HomeController {
 
         model.addAttribute("serverTime", formattedDate );
 
-        return "hello";
+        return "index";
     }
 
 }
