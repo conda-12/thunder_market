@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,6 +18,10 @@ public class Product extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "product" , cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<ProductImage> images = new ArrayList<>();
 
     private String productName;
 
@@ -33,4 +38,9 @@ public class Product extends BaseTime {
     private Member member;
 
     private Boolean del;
+
+    public void setImage(ProductImage productImage) {
+
+        this.images.add(productImage);
+    }
 }
