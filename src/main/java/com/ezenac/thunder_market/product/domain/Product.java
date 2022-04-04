@@ -2,6 +2,7 @@ package com.ezenac.thunder_market.product.domain;
 
 import com.ezenac.thunder_market.member.domain.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -37,7 +38,9 @@ public class Product extends BaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    private Boolean del;
+    @Setter
+    @Enumerated(EnumType.STRING)
+    private ProductState productState;
 
     public void setImage(ProductImage productImage) {
 

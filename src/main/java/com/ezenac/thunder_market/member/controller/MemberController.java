@@ -1,13 +1,12 @@
 package com.ezenac.thunder_market.member.controller;
 
-import com.ezenac.thunder_market.member.domain.Token;
-import com.ezenac.thunder_market.member.utils.GenerateRandomNumber;
 import com.ezenac.thunder_market.member.domain.Member;
+import com.ezenac.thunder_market.member.domain.Token;
 import com.ezenac.thunder_market.member.service.MemberService;
+import com.ezenac.thunder_market.member.utils.GenerateRandomNumber;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
-import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.Map;
 
 @Controller
