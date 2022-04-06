@@ -5,7 +5,7 @@
         <section class="py-5 border">
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 justify-content-center">
-                    <div class="col-lg-8">
+                    <div class="col-lg-10">
                         <form>
                             <div class="row mt-3 ">
                                 <h3>기본정보</h3><small style="color: red">*필수항목</small>
@@ -121,10 +121,17 @@
             })
             const fileArr = [];
 
+            // 파일 선택 함수
             function addFile(event) {
+                if (fileArr.length >= 4) {
+                    alert("상품 이미지는 최대 4개입니다.");
+                    return;
+                }
+
                 const fileList = event.target.files;
                 const file = fileList[0];
                 const fileName = file.name;
+                // 이미지 파일 검사
                 if (!checkExtension(fileName, file.size)) {
                     return;
                 }
@@ -132,9 +139,9 @@
                 fileArr.push(file);
                 // 미리보기 처리
                 setThumbnail(file, fileName);
-
             }
 
+            // 미리보기 함수
             function setThumbnail(file, fileName) {
                 const ulNode = $("#img-container ul");
                 let reader = new FileReader();
@@ -142,8 +149,8 @@
                 reader.onload = function (file) {
 
                     ulNode.append("<li class='list-group-item'>" +
-                        "<img class='thumbnail' data-name='" + fileName + "' src='" + file.target.result + "'>" +
-                        "<button type='button' class='btn btn-outline-silver'>X</button>" +
+                        "<img style='height: 150px' src='" + file.target.result + "'><br>" +
+                        "<button type='button' data-name='" + fileName + "' class='btn btn-close'></button>" +
                         " </li> ");
                 };
                 reader.readAsDataURL(file);
@@ -163,6 +170,19 @@
                 }
                 return true;
             }
+
+            // 이미지 삭제 함수
+            $(".list-group").on("click", ".btn-close", function () {
+                let fileName = $(this).data("name");
+
+                for (let i = 0; i < fileArr.length; i++) {
+                    if (fileArr[i].name === fileName) {
+                        fileArr.splice(i, 1)
+                    }
+                }
+                $(this).closest("li").remove();
+            })
+
 
             // 주소 검색 함수
             function searchAddress() {
