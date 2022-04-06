@@ -5,10 +5,7 @@ import com.ezenac.thunder_market.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -32,6 +29,7 @@ public class ProductsController {
         return "/products/new";
     }
 
+    @ResponseBody
     @PostMapping("/new")
     public String register(RegisterDTO registerDTO){
         log.info("register => "+ registerDTO);
@@ -39,7 +37,8 @@ public class ProductsController {
         registerDTO.setMemberId("kyoulho");
 
         productService.register(registerDTO);
-        return "redirect:/"; //내상점으로 리다이렉트
+
+        return "success";
     }
 
 }

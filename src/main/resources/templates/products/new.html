@@ -204,6 +204,7 @@
 
             // 유효성 검사
             function validation() {
+                let inputFile = $("input[type='file']");
                 let title = $("input[name='title']").val();
                 let bg = $("#bg-select").val();
                 let sg = $("#sg-select").val();
@@ -230,19 +231,33 @@
                     alert("상품 설명을 입력해주세요");
                 } else {
                     let formData = new FormData();
-                    for(file of fileArr) {
-                        formData.append("files",file);
+                    for (file of fileArr) {
+                        formData.append("files", file);
                     }
                     formData.append("title", title);
                     formData.append("bgNum", bg);
                     formData.append("sgNum", sg)
-                    formData.append("address",address)
-                    formData.append("price",price)
-                    formData.append("contetn",content)
+                    formData.append("address", address)
+                    formData.append("price", price)
+                    formData.append("content", content)
 
-                    let request = new XMLHttpRequest();
-                    request.open("post", "/products/new");
-                    request.send(formData);
+                    $.ajax({
+                        url: '/products/new',
+                        processData: false, // query String을 하지 않는다.
+                        contentType: false, // multipart/form-data로 전송되게 하는 설정
+                        data: formData,
+                        type: 'post',
+                        dataType: 'text',
+                        success: function (result) {
+                            if (result === "success") {
+                                // Todo 내 상점으로 이동하게 만들기
+                                location.href = "/"
+                            }
+                        }, error: function (jqXHR, textStatus, errorThrown) {
+                            console.log(textStatus);
+                        }
+                    });
+
                 }
 
 

@@ -47,7 +47,7 @@ public class ProductServiceImpl implements ProductService {
             // uuid 생성
             String uuid = UUID.randomUUID().toString();
             // 전체 경로
-            String saveName = uploadPath + File.separator + folderPath + uuid + fileName;
+            String saveName = uploadPath + File.separator + folderPath +File.separator+ uuid + fileName;
 
             try {
                 // 파일 저장
