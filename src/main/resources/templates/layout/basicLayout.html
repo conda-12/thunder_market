@@ -39,98 +39,37 @@
                 <div class="col text-center">
                     <div class="row align-item-center">
                         <div class="col text-center">
-                            <button class="btn" id="sellBtn"><img th:src="@{/images/sell.png}" alt="판매이미지">판매하기</button>
+                            <button class="btn" onclick="sellBtn()"><img th:src="@{/images/sell.png}" alt="판매이미지">판매하기</button>
                         </div>
                         <div class="col text-center">
-                            <button class="btn" id="storeBtn"><img th:src="@{/images/store.png}" alt="상점이미지">내상점</button>
+                            <button class="btn"><img th:src="@{/images/store.png}" alt="상점이미지">내상점</button>
                         </div>
                         <div class="col text-center">
-                            <button class="btn" id="chatBtn"><img th:src="@{/images/chat.png}" alt="채팅이미지">천둥톡</button>
+                            <button class="btn"><img th:src="@{/images/chat.png}" alt="채팅이미지">천둥톡</button>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="row">
-                <div class="col">
-                    <ul class="big-group">
-                        <li>
-                            <a href="#">카테고리</a>
-                            <ul>
-                                <li><a href="#">대분류</a>
-                                    <ul>
-                                        <li><a href="#">소분류</a></li>
-                                        <li><a href="#">소분류</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-                <div class="col"></div>
-                <div class="col "></div>
-                <div class="col"></div>
-                <div class="col"></div>
-            </div>
         </div>
-
     </header>
-    <!--
-    <div class="container px-4 px-lg-5 my-2 ">
-        <div class="row align-items-center">
-            <div class="col border-end ">
-                <div class="text-center">최근 본 상품</div>
-                <div>
-                    <ul class="list-group list-group-horizontal">
-                        <li class="list-group-item"><a href="#"><img src="" alt="상품이미지>"> </a></li>
-                        <li class="list-group-item"><a href="#"><img src="" alt="상품이미지>"> </a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col">
-                <div class="text-center">찜한 상품</div>
-                <div>
-                    <ul class="list-group list-group-horizontal">
-                        <li class="list-group-item"><a href="#"><img src="" alt="상품이미지>"> </a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-    -->
-
     <!-- Section-->
     <th:block th:replace="${content}">
     </th:block>
+
     <!-- Footer-->
     <footer class="py-3 bg-warning">
         <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Thunder Market 2022</p></div>
     </footer>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <script>
-        //버튼 링크 부여 방법
-        $("#btnN").click(function () {
-            $(location).attr("href", "https://www.naver.com/")
-        });
-
-
-        $(function () {
-            $(".big-group li").hover(function () {
-                $('ul:first', this).show();
-            }, function () {
-                $('ul:first', this).hide();
-            });
-            $(".big-group>li:has(ul)>a").each(function () {
-                $(this).html($(this).html() + ' &or;');
-            });
-            $(".big-group ul li:has(ul)")
-                .find("a:first")
-                .append("<p style='float:right;margin:-3px'>&#9656;</p>");
-        });
-
-
-    </script>
     </body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossOrigin="anonymous"></script>
+    <script>
+        function sellBtn() {
+            // 로그인 검사 후
+
+            location.href = "/products/new";
+        }
+    </script>
+
 </th:block>
 </html>
