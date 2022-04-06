@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/basicLayout :: setContent(~{this :: content})}">
+    <th:block th:fragment="content">
+        <section class="py-5 border">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 justify-content-center">
+                    <div class="col-lg-10">
+                        <form>
+                            <div class="row mt-3 ">
+                                <h3>기본정보</h3><small style="color: red">*필수항목</small>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-6 col-sm-3">상품이미지(0/4)<small style="color: red">*</small></div>
+                                <div class="col" style="height: 320px">
+                                    <div class="h-75" id="img-container">
+                                        <ul class="list-group list-group-horizontal" style="height: 200px">
+                                        </ul>
+                                    </div>
+                                    <input class="form-control" type="file" onchange="addFile(event)">
+                                    <div class="col m-2">
+                                        <small style="color: cornflowerblue;">
+                                            * 상품 이미지는 640x640에 최적화 되어 있습니다.<br>
+                                            최대 지원 사이즈인 640 X 640 으로 리사이즈 해서 올려주세요.(개당 이미지 최대 10M)
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-6 col-sm-3 ">제목<small style="color: red">*</small></div>
+                                <div class="col">
+                                    <input name="title" class="form-control" type="text" placeholder="상품 제목을 입력해주세요">
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-6 col-sm-3 ">카테고리<small style="color: red">*</small></div>
+                                <div class="col">
+                                    <select id="bg-select" name="bgNum" class="form-select" multiple aria-label="multiple select example">
+
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <select id="sg-select" name="sgNum" class="form-select" multiple aria-label="multiple select example">
+                                    </select>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-6 col-sm-3 ">거래지역<small style="color: red">*</small></div>
+                                <div class="col">
+                                    <button id="current-btn" type="button" class="btn btn-outline-secondary" onclick="getPos()">현재 위치</button>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="">최근 지역</button>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="searchAddress()">주소 검색</button>
+                                    <input name="address" class="form-control" type="text" readonly>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-6 col-sm-3 ">가격<small style="color: red">*</small></div>
+                                <div class="col">
+                                    <input name="price" class="form-control" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" placeholder="숫자만 입력해주세요">
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-6 col-sm-3 ">설명<small style="color: red">*</small></div>
+                                <div class="col mb-3">
+                                    <textarea name="content" class="form-control" rows="6"></textarea>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <button type="button" class="btn btn-warning float-end" onclick="validation()">상품등록</button>
+
+                        </form>
+                    </div>
+
+                    <div class="tab-pane fade" id="myreview" role="tabpanel"
+                         aria-labelledby="myreview-tab">
+                        상품관리
+                    </div>
+
+                    <div class="tab-pane fade" id="wishlist" role="tabpanel"
+                         aria-labelledby="wishlist-tab">
+                        구매/판매 내역
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+        <script>
+            // 대분류 불러오는 함수
+            $(function () {
+                let selectNode = $("#bg-select");
+
+                $.getJSON('/group/bg/all', function (arr) {
+                    for (let i in arr) {
+                        selectNode.append(" <option value='" + arr[i].bgNum + "'>" + arr[i].bgCate + "</option>");
+                    }
+                });
+            });
+
+            // 소분류 불러오는 함수
+            $("#bg-select").on("click", "option", function () {
+                let selectNode = $("#sg-select");
+                //소분류 리스트 삭제
+                selectNode.children().remove();
+                let bgNum = $(this).val();
+
+                $.getJSON('/group/sg/' + bgNum, function (arr) {
+                    for (let i in arr) {
+                        selectNode.append(" <option value='" + arr[i].sgNum + "'>" + arr[i].sgCate + "</option>");
+                    }
+                });
+            })
+            const fileArr = [];
+
+            // 파일 선택 함수
+            function addFile(event) {
+                if (fileArr.length >= 4) {
+                    alert("상품 이미지는 최대 4개입니다.");
+                    return;
+                }
+
+                const fileList = event.target.files;
+                const file = fileList[0];
+                const fileName = file.name;
+                // 이미지 파일 검사
+                if (!checkExtension(fileName, file.size)) {
+                    return;
+                }
+                // 배열의 파일 저장
+                fileArr.push(file);
+                // 미리보기 처리
+                setThumbnail(file, fileName);
+            }
+
+            // 미리보기 함수
+            function setThumbnail(file, fileName) {
+                const ulNode = $("#img-container ul");
+                let reader = new FileReader();
+
+                reader.onload = function (file) {
+
+                    ulNode.append("<li class='list-group-item'>" +
+                        "<img style='height: 150px' src='" + file.target.result + "'><br>" +
+                        "<button type='button' data-name='" + fileName + "' class='btn btn-close'></button>" +
+                        " </li> ");
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // 이미지 파일 검사
+            function checkExtension(fileName, fileSize) {
+                const regex = new RegExp("(.*?)\.(exe|sh|zip|alz|tiff)$");
+                const maxSize = 10485760; //10MB
+                if (fileSize >= maxSize) {
+                    alert("파일 사이즈 초과");
+                    return false;
+                }
+                if (regex.test(fileName)) {
+                    alert("해당 종류의 파일은 업로드할 수 없습니다.")
+                    return false;
+                }
+                return true;
+            }
+
+            // 이미지 삭제 함수
+            $(".list-group").on("click", ".btn-close", function () {
+                let fileName = $(this).data("name");
+
+                for (let i = 0; i < fileArr.length; i++) {
+                    if (fileArr[i].name === fileName) {
+                        fileArr.splice(i, 1)
+                    }
+                }
+                $(this).closest("li").remove();
+            })
+
+
+            // 주소 검색 함수
+            function searchAddress() {
+                //카카오 지도 발생
+                new daum.Postcode({
+                    oncomplete: function (data) { //선택시 입력값 세팅
+                        let address = data.jibunAddress.replace(/[0-9]/g, "").replace(" -", "");
+                        address = address.trim();
+
+                        $("input[name='address']").val(address);
+                    }
+                }).open();
+            }
+
+            // 현재 주소 검색 함수
+            function getPos() {
+                const currentBtn = $("#current-btn");
+                currentBtn.text("로딩 중...").prop("disabled", true);
+
+                // 현재 좌표 구하기
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    // 카카오에 주소 검색하기
+                    $.ajax({
+                        url: 'https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=' + lon + '&y=' + lat + '&input_coord=WGS84',
+                        headers: {'Authorization': 'KakaoAK bc804fee1d835076d928997820230f28'},
+                        type: 'get',
+                        success: function (data) {
+                            let address = data.documents[1].address_name;
+                            $("input[name='address']").val(address);
+                        }, error: function () {
+                            alert("위치권한을 확인해주세요")
+                        }
+                    });
+                    currentBtn.text("현재 위치").prop("disabled", false);
+                });
+            }
+
+            // 유효성 검사
+            function validation() {
+                let inputFile = $("input[type='file']");
+                let title = $("input[name='title']").val();
+                let bg = $("#bg-select").val();
+                let sg = $("#sg-select").val();
+                let address = $("input[name='address']").val();
+                let price = $("input[name='price']").val();
+                let content = $("textarea[name='content']").val();
+
+                if (fileArr.length < 1) {
+                    alert("상품 이미지를 등록해주세요.");
+                } else if (!title.trim()) {
+                    alert("제목을 입력해주세요.");
+                } else if (!bg.length) {
+                    alert("카테고리를 선택해주세요.");
+                } else if (bg !== "999" && !sg.length) {
+                    alert("카테고리를 선택해주세요.")
+                } else if (bg.length > 1 || sg.length > 1) {
+                    alert("카테고리를 하나만 선택해주세요.");
+                } else if (!address) {
+                    alert("주소를 입력해주세요.");
+                } else if (!price) {
+                    alert("가격을 입력해주세요.")
+                } else if (!content) {
+                    console.log(content);
+                    alert("상품 설명을 입력해주세요");
+                } else {
+                    let formData = new FormData();
+                    for (file of fileArr) {
+                        formData.append("files", file);
+                    }
+                    formData.append("title", title);
+                    formData.append("bgNum", bg);
+                    formData.append("sgNum", sg)
+                    formData.append("address", address)
+                    formData.append("price", price)
+                    formData.append("content", content)
+
+                    $.ajax({
+                        url: '/products/new',
+                        processData: false, // query String을 하지 않는다.
+                        contentType: false, // multipart/form-data로 전송되게 하는 설정
+                        data: formData,
+                        type: 'post',
+                        dataType: 'text',
+                        success: function (result) {
+                            if (result === "success") {
+                                // Todo 내 상점으로 이동하게 만들기
+                                location.href = "/"
+                            }
+                        }, error: function (jqXHR, textStatus, errorThrown) {
+                            console.log(textStatus);
+                        }
+                    });
+
+                }
+
+
+            }
+        </script>
+
+    </th:block>
+</th:block>

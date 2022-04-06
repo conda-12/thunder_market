@@ -1,0 +1,58 @@
+.big-group {
+    margin: 0;
+    padding: 0;
+}
+
+.big-group li {
+    float: right;
+    list-style: none;
+    position: relative;
+}
+
+.big-group li:hover {
+    background: white;
+}
+
+.big-group a {
+    color: black;
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+}
+
+.big-group ul {
+    background: white;
+    border: 1px solid;
+    display: none;
+    padding: 0;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    width: 180px;
+
+}
+
+.big-group ul li {
+    float: none;
+
+}
+
+.big-group ul li:hover {
+    background: aliceblue;
+}
+
+.big-group ul li:hover a {
+    color: black;
+}
+
+.big-group ul a {
+    color: black;
+}
+
+.big-group ul ul {
+    left: 100%;
+    top: 0;
+}
+.thumbnail{
+height: 100%;
+}
