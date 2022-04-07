@@ -47,18 +47,20 @@ public class ProductServiceImpl implements ProductService {
             // uuid 생성
             String uuid = UUID.randomUUID().toString();
             // 전체 경로
-            String saveName = uploadPath + File.separator + folderPath +File.separator+ uuid + fileName;
+            String saveName = uploadPath + File.separator + folderPath + File.separator + uuid + "_" + fileName;
 
             try {
                 // 파일 저장
                 file.transferTo(new File(saveName));
             } catch (IOException e) {
+                log.warn("파일 저장에 실패했습니다. fileName => " + fileName);
                 e.printStackTrace();
             }
             ProductImage image = ProductImage.builder().imagName(fileName).path(folderPath).uuid(uuid).product(product).build();
             product.setImage(image);
         }
         productRepository.save(product);
+        log.info("product => " + product);
         return product.getId();
     }
 
