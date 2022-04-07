@@ -17,7 +17,7 @@ public class ProductDTO {
 
     private Long id;
 
-    private List<String> imagesSrcList;
+    private List<ProductImageDTO> imageDTOList;
 
     private String title;
 

@@ -24,24 +24,25 @@
         <section class="py-5 border">
             <div class="container px-4 px-lg-5 mt-5">
                 <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                    <div class="col mb-5">
+
+                    <div class="col mb-5 template" style="display: none">
                         <a style="text-decoration: none; color: black" href="#">
                             <div class="card h-100">
                                 <!-- Product image-->
-                                <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..."/>
+                                <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="상품이미"/>
                                 <!-- Product details-->
                                 <div class="card-body p-3">
-                                    <div class="text-start">
+                                    <div class="text-start title">
                                         상품 이름
                                     </div>
                                 </div>
                                 <!-- Product actions-->
                                 <div class="card-footer p-3 pt-0 border-top-0 bg-transparent">
                                     <div class="row align-items-center">
-                                        <div class="col text-start">
+                                        <div class="col text-start price">
                                             <b>가격</b>
                                         </div>
-                                        <div class="col text-end">
+                                        <div class="col text-end day">
                                             3일 전
                                         </div>
                                     </div>
@@ -49,6 +50,7 @@
                             </div>
                         </a>
                     </div>
+
                 </div>
             </div>
         </section>
@@ -82,39 +84,62 @@
             });
 
             // 리스트 호출 함수
-            let page = 1;
+            // todo keyword 검색, 카테고리 검색
+            let page = 0;
             let keyword = "";
 
             $(function () {
-                getList(page);
                 page++;
+                getList(page);
             });
-            // 스크롤이 최하단으로 내려가면 리스트를 조회하고 page를 증가시킨다.
+
             $(window).scroll(function () {
-                if ($(window).scrollTop() >= $(document).height() - $(window).height()) {
-                    getList(page);
+                if ($(window).scrollTop() + 100 >= $(document).height() - $(window).height()) {
                     page++;
+                    console.log(page)
+                    getList(page);
                 }
             });
 
-            function getList(){
+            function getList() {
                 $.ajax({
-                    type : 'post',
-                    data : {
+                    type: 'post',
+                    data: {
                         "page": page
                     },
-                    dataType : 'json',
-                    url : '/products/list',
-                    success : function(data) {
-                        alert("무야호");
-                        console.log(data);
-                    },error:function(e){
-
+                    dataType: 'json',
+                    url: '/products/list',
+                    success: function (data) {
+                        console.log(data)
+                        addItem(data);
+                    }, error: function (e) {
+                        alert("리스트를 불러오지 못했습니다.");
                     }
                 });
-
             }
 
+            function addItem(arr) {
+                const template = $(".template");
+
+                for (let item of arr) {
+                    let itemDiv = template.clone();
+                    itemDiv.removeClass("template");
+                    itemDiv.attr("product-id", item.id);
+                    itemDiv.find("img").attr("src", "/products/display/?imageURL=" + item.imageDTOList[0].imageURL);
+                    itemDiv.find("a").attr("href", "/products/" + item.id);
+
+                    let title = item.title;
+                    if (title.length > 21) {
+                        title = title.substring(0, 21) + "...";
+                    }
+                    itemDiv.find(".title").text(title);
+
+                    let price = item.price.toLocaleString('ko-KR')
+                    itemDiv.find(".price").text(price + " 원");
+                    itemDiv.css("display", "inline-block")
+                    template.closest(".row").append(itemDiv);
+                }
+            }
 
 
         </script>

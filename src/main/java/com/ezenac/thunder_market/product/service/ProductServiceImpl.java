@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -79,6 +81,7 @@ public class ProductServiceImpl implements ProductService {
         }
         return memberId;
     }
+
     //todo 검색 기능 구현하기
     @Transactional
     @Override
@@ -88,5 +91,11 @@ public class ProductServiceImpl implements ProductService {
         Page<Object[]> result = productRepository.getListPage(pageable);
 
         return result.stream().map(row -> entityToDTO((Product) row[0], (Long) row[1])).collect(Collectors.toList());
+    }
+
+    @Override
+    public File getImage(String filePath) {
+
+        return new File(uploadPath + File.separator + filePath);
     }
 }

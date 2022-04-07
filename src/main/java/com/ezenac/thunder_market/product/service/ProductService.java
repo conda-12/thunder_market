@@ -2,22 +2,24 @@ package com.ezenac.thunder_market.product.service;
 
 import com.ezenac.thunder_market.member.domain.Member;
 import com.ezenac.thunder_market.product.domain.Product;
-import com.ezenac.thunder_market.product.domain.ProductImage;
 import com.ezenac.thunder_market.product.domain.ProductState;
 import com.ezenac.thunder_market.product.domain.SmallGroup;
 import com.ezenac.thunder_market.product.dto.PageRequestDTO;
 import com.ezenac.thunder_market.product.dto.ProductDTO;
+import com.ezenac.thunder_market.product.dto.ProductImageDTO;
 import com.ezenac.thunder_market.product.dto.RegisterDTO;
-import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
+import java.io.File;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public interface ProductService {
 
     void register(RegisterDTO registerDTO);
 
     List<ProductDTO> list(PageRequestDTO pageRequestDTO);
+
+    File getImage(String filePath);
 
     default Product dtoToEntity(RegisterDTO dto) {
 
@@ -37,15 +39,17 @@ public interface ProductService {
 
     default ProductDTO entityToDTO(Product product, Long favoriteCnt) {
         // 이미지 소스 처리
-        List<String> srcList = new ArrayList<>();
-        product.getImages().forEach(image -> {
-            String src = image.getPath() + "/" + image.getUuid() + "_" + image.getImagName();
-            srcList.add(src);
-        });
+        List<ProductImageDTO> imageDTOList = product.getImages().stream().map(entity -> {
+            return ProductImageDTO.builder()
+                    .path(entity.getPath())
+                    .uuid(entity.getUuid())
+                    .imgName(entity.getImagName())
+                    .build();
+        }).collect(Collectors.toList());
 
         return ProductDTO.builder()
                 .id(product.getId())
-                .imagesSrcList(srcList)
+                .imageDTOList(imageDTOList)
                 .title(product.getTitle())
                 .address(product.getAddress())
                 .price(product.getPrice())
