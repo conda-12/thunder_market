@@ -30,7 +30,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public List<SmallGroupDTO> getSGList(String bgNum) {
         BigGroup bigGroup = BigGroup.builder().bgNum(bgNum).build();
-        List<SmallGroup> list = smallGroupRepository.findAllByBgNum(bigGroup, Sort.by("sgNum"));
+        List<SmallGroup> list = smallGroupRepository.findAllByBigGroup(bigGroup, Sort.by("sgNum"));
         return list.stream().map(this::smallGroupToDTO).collect(Collectors.toList());
     }
 }
