@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface SmallGroupRepository extends JpaRepository<SmallGroup,String> {
 
-    List<SmallGroup> findAllByBgNum(BigGroup BigGroup, Sort sort);
+    List<SmallGroup> findAllByBigGroup(BigGroup BigGroup, Sort sort);
 }

@@ -81,10 +81,43 @@
                 });
             });
 
-        </script>
+            // 리스트 호출 함수
+            let page = 1;
+            let keyword = "";
+
+            $(function () {
+                getList(page);
+                page++;
+            });
+            // 스크롤이 최하단으로 내려가면 리스트를 조회하고 page를 증가시킨다.
+            $(window).scroll(function () {
+                if ($(window).scrollTop() >= $(document).height() - $(window).height()) {
+                    getList(page);
+                    page++;
+                }
+            });
+
+            function getList(){
+                $.ajax({
+                    type : 'post',
+                    data : {
+                        "page": page
+                    },
+                    dataType : 'json',
+                    url : '/products/list',
+                    success : function(data) {
+                        alert("무야호");
+                        console.log(data);
+                    },error:function(e){
+
+                    }
+                });
+
+            }
 
 
 
         </script>
+
     </th:block>
 </th:block>

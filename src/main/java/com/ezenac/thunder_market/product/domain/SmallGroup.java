@@ -9,7 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@ToString(exclude = "bgNum")
+@ToString(exclude = "bigGroup")
 @Table(name = "SMALLGROUP")
 public class SmallGroup {
 
@@ -19,5 +19,5 @@ public class SmallGroup {
     private String sgCate;  //분류종류
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private BigGroup bgNum;
+    private BigGroup bigGroup;
 }

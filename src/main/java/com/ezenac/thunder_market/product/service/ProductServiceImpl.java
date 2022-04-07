@@ -2,18 +2,25 @@ package com.ezenac.thunder_market.product.service;
 
 import com.ezenac.thunder_market.product.domain.Product;
 import com.ezenac.thunder_market.product.domain.ProductImage;
+import com.ezenac.thunder_market.product.dto.PageRequestDTO;
+import com.ezenac.thunder_market.product.dto.ProductDTO;
 import com.ezenac.thunder_market.product.dto.RegisterDTO;
 import com.ezenac.thunder_market.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -26,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public Long register(RegisterDTO registerDTO) {
+    public void register(RegisterDTO registerDTO) {
         Product product = dtoToEntity(registerDTO);
 
         for (MultipartFile file : registerDTO.getFiles()) {
@@ -61,7 +68,7 @@ public class ProductServiceImpl implements ProductService {
         }
         productRepository.save(product);
         log.info("product => " + product);
-        return product.getId();
+
     }
 
     private String makeFolder(String memberId) {
@@ -71,5 +78,15 @@ public class ProductServiceImpl implements ProductService {
             uploadPathFolder.mkdirs();
         }
         return memberId;
+    }
+    //todo 검색 기능 구현하기
+    @Transactional
+    @Override
+    public List<ProductDTO> list(PageRequestDTO pageRequestDTO) {
+        Pageable pageable = pageRequestDTO.getPageable(Sort.by("id").descending());
+
+        Page<Object[]> result = productRepository.getListPage(pageable);
+
+        return result.stream().map(row -> entityToDTO((Product) row[0], (Long) row[1])).collect(Collectors.toList());
     }
 }
