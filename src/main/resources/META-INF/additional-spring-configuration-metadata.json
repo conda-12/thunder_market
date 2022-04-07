@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "coolSMS.apiKey",
+      "type": "java.lang.String",
+      "description": "Description for coolSMS.apiKey."
+    },
+    {
+      "name": "coolSMS.apiSecretKey",
+      "type": "java.lang.String",
+      "description": "Description for coolSMS.apiSecretKey."
+    },
+    {
+      "name": "coolSMS.domain",
+      "type": "java.lang.String",
+      "description": "Description for coolSMS.domain."
+    }
+  ]
+}

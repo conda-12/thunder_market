@@ -1,5 +1,6 @@
 package com.ezenac.thunder_market.member.controller;
 
+import com.ezenac.thunder_market.member.domain.MemberDTO;
 import com.ezenac.thunder_market.member.domain.Token;
 import com.ezenac.thunder_market.member.utils.GenerateRandomNumber;
 import com.ezenac.thunder_market.member.domain.Member;
@@ -7,18 +8,17 @@ import com.ezenac.thunder_market.member.service.MemberService;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
-import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -27,26 +27,28 @@ public class MemberController {
 
     private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
     private final DefaultMessageService messageService;
-    private final MemberService service;
+    private final MemberService memberService;
 
-    public MemberController(MemberService service) {
-        this.messageService = NurigoApp.INSTANCE.initialize("NCSPQQN9QFPX4OSZ", "SNIORBCZZQHHUJGKO5BJ7PWVP6STKA3J", "https://api.coolsms.co.kr");;
-        this.service = service;
+    public MemberController(MemberService memberService, BCryptPasswordEncoder bCryptPasswordEncoder
+            , @Value("${coolSMS.apiKey}") String apiKey, @Value("${coolSMS.apiSecretKey}") String apiSecretKey
+            , @Value("${coolSMS.domain}") String domain) {
+        this.messageService = NurigoApp.INSTANCE.initialize(apiKey, apiSecretKey, domain);
+        this.memberService = memberService;
     }
 
     @RequestMapping(value = "/auth/register", method = RequestMethod.GET)
-    public void registerGet(Member member, Model model) {
-        logger.info("registerGet");
+    public void registerGet() {
+        logger.info("register http method - GET");
     }
 
     @RequestMapping(value = "/auth/register", method = RequestMethod.POST)
-    public String registerPost(@Valid Member member, BindingResult bindingResult) throws Exception {
-        logger.info(member.toString());
+    public String registerPost(@Valid MemberDTO memberDTO, BindingResult bindingResult) throws Exception {
+        logger.info("register http method - POST");
 
         if (bindingResult.hasErrors()) {
             return "member/auth/register";
         } else {
-            service.signup(member);
+            memberService.signup(memberDTO);
             return "redirect:/member/auth/signin";
         }
     }
@@ -58,10 +60,8 @@ public class MemberController {
 
         String phoneNumber = (String) param.get("phoneNum");
 
-        System.out.println("post 값= "+ phoneNumber);
-
         // 랜덤 번호 생성
-        String ranNum = ranNumGenerator.excuteGeneration();
+        String ranNum = ranNumGenerator.executeGeneration();
         // 메세지 생성
         Message message = new Message();
         message.setFrom("01027294072");
@@ -71,7 +71,7 @@ public class MemberController {
         messageService.sendOne(new SingleMessageSendingRequest(message));
         // 토큰생성
         Token token = new Token(phoneNumber, ranNum);
-        service.saveToken(token);
+        memberService.saveToken(token);
 
         return phoneNumber;
     }
@@ -85,7 +85,7 @@ public class MemberController {
         } else if (validationNum == null) {
             return 0;
         } else {
-            return service.validateToken(phoneNum, validationNum);
+            return memberService.validateToken(phoneNum, validationNum);
         }
     }
 
@@ -95,37 +95,20 @@ public class MemberController {
         logger.info("signinGet");
     }
 
-
-    @RequestMapping(value = "/auth/signin", method = RequestMethod.POST)
-    public String signinPost(Member member, HttpSession session) throws Exception {
-
-        Member result = service.signin(member, session);
-
-        if (result == null) {
-            return "member/auth/signin";
-        } else {
-            result.setPassword(null);
-            System.out.println(result);
-            session.setAttribute("member", result);
-            return "redirect:/board/boardlist";
-        }
-    }
-
-    @RequestMapping(value = "/auth/signout")
-    public String signout(HttpSession session) throws Exception {
-
-        service.signout(session);
-
-        return "redirect:/board/boardlist";
-    }
-
     @RequestMapping(value = "/auth/validation/{id}", method = RequestMethod.GET)
     @ResponseBody
     public int memberIdValidate(@PathVariable String id) throws Exception {
 
-        Member member = new Member();
-        member.setMemberId(id);
+        MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setMemberId(id);
 
-        return service.findMemberId(member);
+        return memberService.findMemberId(memberDTO);
+    }
+
+    @GetMapping(value = "/my-page")
+    @ResponseBody
+    public String getMyPage() {
+
+        return "myPage";
     }
 }

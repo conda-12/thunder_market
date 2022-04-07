@@ -1,6 +1,7 @@
 package com.ezenac.thunder_market.member.service;
 
 
+import com.ezenac.thunder_market.member.domain.MemberDTO;
 import com.ezenac.thunder_market.member.domain.Token;
 import com.ezenac.thunder_market.product.domain.Product;
 import com.ezenac.thunder_market.member.domain.Member;
@@ -10,19 +11,19 @@ import java.util.List;
 
 public interface MemberService {
     
-    public void signup(Member member) throws Exception;
+    public void signup(MemberDTO member) throws Exception;
 
-    public Member signin(Member member, HttpSession session) throws Exception;
+    public Member signin(MemberDTO member, HttpSession session) throws Exception;
 
     public void signout(HttpSession session);
 
-    public void updateAccount(Member member) throws Exception;
+    public void updateAccount(MemberDTO member) throws Exception;
 
-    public void deleteAccount(Member member) throws Exception;
+    public void deleteAccount(MemberDTO member) throws Exception;
 
-    public List<Product> getMemberGoodsList(Member member) throws Exception;
+    public List<Product> getMemberGoodsList(MemberDTO member) throws Exception;
 
-    public int findMemberId(Member member) throws Exception;
+    public int findMemberId(MemberDTO member) throws Exception;
 
     public void saveToken(Token token) throws Exception;
 
