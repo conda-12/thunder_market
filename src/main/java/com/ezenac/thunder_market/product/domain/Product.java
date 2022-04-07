@@ -33,6 +33,7 @@ public class Product extends BaseTime {
 
     private int price;
 
+    @Column(columnDefinition = "text")
     private String content;
 
     private int hit;
