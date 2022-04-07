@@ -11,6 +11,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p, COUNT (f)" +
             " FROM Product p" +
             " LEFT JOIN Favorite f ON f.product = p" +
+            " WHERE p.state = 'SELLING'" +
             " GROUP BY p")
     Page<Object[]> getListPage(Pageable pageable);
 }

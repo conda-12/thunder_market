@@ -94,7 +94,7 @@
             });
 
             $(window).scroll(function () {
-                if ($(window).scrollTop() + 100 >= $(document).height() - $(window).height()) {
+                if ($(window).scrollTop() + 150 >= $(document).height() - $(window).height()) {
                     page++;
                     console.log(page)
                     getList(page);
@@ -105,7 +105,9 @@
                 $.ajax({
                     type: 'post',
                     data: {
-                        "page": page
+                        "page": page,
+                        "keyword": keyword,
+                        // "sgNum": sgNum
                     },
                     dataType: 'json',
                     url: '/products/list',
@@ -140,6 +142,13 @@
                     template.closest(".row").append(itemDiv);
                 }
             }
+
+            $(".btn-search").on("click", function (event) {
+                event.preventDefault();
+                keyword = $(this).siblings("input[name='keyword']").val();
+                page = 1;
+                getList(page);
+            });
 
 
         </script>
