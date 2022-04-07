@@ -12,7 +12,7 @@
                             </div>
                             <hr>
                             <div class="row">
-                                <div class="col-6 col-sm-3">상품이미지(0/4)<small style="color: red">*</small></div>
+                                <div id="image-cnt" class="col-6 col-sm-3">상품이미지(0/4)<small style="color: red">*</small></div>
                                 <div class="col" style="height: 320px">
                                     <div class="h-75" id="img-container">
                                         <ul class="list-group list-group-horizontal" style="height: 200px">
@@ -137,8 +137,11 @@
                 }
                 // 배열의 파일 저장
                 fileArr.push(file);
+                // 파일 개수 보여주기
+                $("#image-cnt").text("상품이미지(" + fileArr.length + "/4)");
                 // 미리보기 처리
                 setThumbnail(file, fileName);
+
             }
 
             // 미리보기 함수
@@ -181,6 +184,8 @@
                     }
                 }
                 $(this).closest("li").remove();
+                // 이미지 개수 보여주기
+                $("#image-cnt").text("상품이미지(" + fileArr.length + "/4)");
             })
 
 
