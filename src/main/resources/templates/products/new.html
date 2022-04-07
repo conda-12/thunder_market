@@ -275,11 +275,13 @@
                         dataType: 'text',
                         success: function (result) {
                             if (result === "success") {
+                                alert("상품등록에 성공했습니다.");
+
                                 // Todo 내 상점으로 이동하게 만들기
                                 location.href = "/"
                             }
                         }, error: function (jqXHR, textStatus, errorThrown) {
-                            console.log(textStatus);
+                            alert("상품등록에 실패했습니다\n" + textStatus);
                         }
                     });
 
