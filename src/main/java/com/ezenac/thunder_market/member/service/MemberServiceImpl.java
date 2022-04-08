@@ -1,17 +1,18 @@
 package com.ezenac.thunder_market.member.service;
 
+import com.ezenac.thunder_market.member.domain.MemberDTO;
 import com.ezenac.thunder_market.member.domain.Token;
 import com.ezenac.thunder_market.member.repository.MemberRepository;
 import com.ezenac.thunder_market.member.repository.TokenRedisRepository;
 import com.ezenac.thunder_market.product.domain.Product;
 import com.ezenac.thunder_market.member.domain.Member;
 import lombok.AllArgsConstructor;
-import net.nurigo.sdk.message.service.DefaultMessageService;
+import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -20,13 +21,23 @@ public class MemberServiceImpl implements MemberService {
 
     private final TokenRedisRepository tokenRedisRepository;
     private final MemberRepository memberRepository;
+    private final ModelMapper modelMapper;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     @Override
-    public void signup(Member member) throws Exception {
+    public void signup(MemberDTO memberDTO) throws Exception {
+
+        String rawPassword = memberDTO.getPassword();
+        String encPassword = bCryptPasswordEncoder.encode(rawPassword);
+
+        Member member = modelMapper.map(memberDTO, Member.class);
+        member.setPassword(encPassword);
+        member.setRole("ROLE_MEMBER");
+
         memberRepository.save(member);
     }
 
     @Override
-    public Member signin(Member member, HttpSession session) throws Exception {
+    public Member signin(MemberDTO member, HttpSession session) throws Exception {
         return null;
     }
 
@@ -36,22 +47,22 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void updateAccount(Member member) throws Exception {
+    public void updateAccount(MemberDTO member) throws Exception {
 
     }
 
     @Override
-    public void deleteAccount(Member member) throws Exception {
+    public void deleteAccount(MemberDTO member) throws Exception {
 
     }
 
     @Override
-    public List<Product> getMemberGoodsList(Member member) throws Exception {
+    public List<Product> getMemberGoodsList(MemberDTO member) throws Exception {
         return null;
     }
 
     @Override
-    public int findMemberId(Member member) throws Exception {
+    public int findMemberId(MemberDTO member) throws Exception {
 
         Optional<Member> getMember = memberRepository.findById(member.getMemberId());
 

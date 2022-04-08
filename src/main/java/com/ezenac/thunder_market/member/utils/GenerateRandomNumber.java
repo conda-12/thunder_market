@@ -5,7 +5,7 @@ import java.util.Random;
 public class GenerateRandomNumber {
     private int certNumLength = 6;
 
-    public String excuteGeneration() {
+    public String executeGeneration() {
         Random random = new Random(System.currentTimeMillis());
 
         int range = (int)Math.pow(10,certNumLength);

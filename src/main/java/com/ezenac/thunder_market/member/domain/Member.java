@@ -2,38 +2,45 @@ package com.ezenac.thunder_market.member.domain;
 
 import com.ezenac.thunder_market.product.domain.Product;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.time.LocalDateTime;
-import java.util.Date;
+import javax.persistence.*;
 import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString(exclude = {"favorites", "products"})
 @Entity
 @Builder
-@Table(name = "MEMBERS")
-public class Member extends BaseTime{
+public class Member extends BaseTime {
 
     @Id
     @Column(name = "member_id")
     private String memberId;
+
     @Column(name = "member_pw")
     private String password;
+
     @Column(name = "member_name")
     private String name;
+
     @Column(name = "member_email")
     private String email;
+
     @Column(name = "member_phone_num")
     private String phoneNumber; // API 필요
+
+    @Column(name = "member_role")
+    private String role; // ROLE_MEMBER, ROLE_MANAGER, ROLE_ADMIN
+
+    private String provider;
+
+    private String providerId;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Favorite> favorites;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Product> products;
 
 }

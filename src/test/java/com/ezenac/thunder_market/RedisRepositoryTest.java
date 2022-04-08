@@ -14,13 +14,14 @@ public class RedisRepositoryTest {
     @Autowired
     private TokenRedisRepository tokenRedisRepository;
 
+    // 토큰생성하기
     @Test
     void testSave() {
         Token token = new Token("01027294072", "123456");
 
         tokenRedisRepository.save(token);
     }
-
+    // 토큰확인하기
     @Test
     void testFind() {
         Token token = new Token("01027294072", "123456");

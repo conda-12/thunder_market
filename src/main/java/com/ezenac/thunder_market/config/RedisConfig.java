@@ -1,4 +1,4 @@
-package com.ezenac.thunder_market.member.config;
+package com.ezenac.thunder_market.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
