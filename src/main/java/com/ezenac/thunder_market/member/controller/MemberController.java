@@ -1,6 +1,6 @@
 package com.ezenac.thunder_market.member.controller;
 
-import com.ezenac.thunder_market.member.domain.Member;
+import com.ezenac.thunder_market.member.domain.MemberDTO;
 import com.ezenac.thunder_market.member.domain.Token;
 import com.ezenac.thunder_market.member.service.MemberService;
 import com.ezenac.thunder_market.member.utils.GenerateRandomNumber;
@@ -10,12 +10,12 @@ import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Map;
 
