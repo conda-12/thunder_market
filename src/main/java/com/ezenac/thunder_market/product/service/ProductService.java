@@ -43,7 +43,7 @@ public interface ProductService {
             return ProductImageDTO.builder()
                     .path(entity.getPath())
                     .uuid(entity.getUuid())
-                    .imgName(entity.getImagName())
+                    .imgName(entity.getImageName())
                     .build();
         }).collect(Collectors.toList());
 
