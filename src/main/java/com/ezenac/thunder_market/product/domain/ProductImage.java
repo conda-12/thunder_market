@@ -17,7 +17,7 @@ public class ProductImage {
 
     private String uuid;
 
-    private String imagName;
+    private String imageName;
 
     private String path;
 

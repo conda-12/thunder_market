@@ -65,7 +65,7 @@ public class ProductServiceImpl implements ProductService {
                 log.warn("파일 저장에 실패했습니다. fileName => " + fileName);
                 e.printStackTrace();
             }
-            ProductImage image = ProductImage.builder().imagName(fileName).path(folderPath).uuid(uuid).product(product).build();
+            ProductImage image = ProductImage.builder().imageName(fileName).path(folderPath).uuid(uuid).product(product).build();
             product.setImage(image);
         }
         productRepository.save(product);
