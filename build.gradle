@@ -33,11 +33,25 @@ dependencies {
     implementation 'com.auth0:java-jwt:3.19.0'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.6.5'
     compileOnly 'org.projectlombok:lombok:1.18.22'
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.0.3'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.5'
-    testImplementation 'org.springframework.security:spring-security-test:5.6.2'
+    // testImplementation 'org.springframework.security:spring-security-test'
+
+    // QueryDSL
+
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    annotationProcessor(
+            "javax.persistence:javax.persistence-api",
+            "javax.annotation:javax.annotation-api",
+            "com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
 }
+sourceSets {
+    main {
+        java {
+            srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated"]
+        }
+    }
 
 tasks.withType(JavaCompile){
     options.encoding = 'UTF-8'
