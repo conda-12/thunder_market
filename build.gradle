@@ -51,12 +51,18 @@ dependencies {
             "javax.annotation:javax.annotation-api",
             "com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
 }
+
+def generated='src/main/generated'
 sourceSets {
-    main {
-        java {
-            srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated"]
-        }
-    }
+    main.java.srcDirs += [ generated ]
+}
+
+tasks.withType(JavaCompile) {
+    options.annotationProcessorGeneratedSourcesDirectory = file(generated)
+}
+
+clean.doLast {
+    file(generated).deleteDir()
 }
 
 tasks.withType(JavaCompile){
