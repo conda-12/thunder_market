@@ -31,6 +31,6 @@ public class MemberRepositoryTest {
 
         Optional<Member> getMember = memberRepository.findById(member.getMemberId());
 
-        // System.out.println("동록일= " + getMember.get().getMemberRegdate() + " 수정일= " + getMember.get().getMemberUpdate());
+       // System.out.println("동록일= " + getMember.get().getMemberRegdate() + " 수정일= " + getMember.get().getMemberUpdate());
     }
 }
