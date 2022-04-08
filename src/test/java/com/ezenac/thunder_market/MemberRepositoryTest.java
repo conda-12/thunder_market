@@ -1,4 +1,3 @@
-
 package com.ezenac.thunder_market;
 
 import com.ezenac.thunder_market.member.domain.Member;
