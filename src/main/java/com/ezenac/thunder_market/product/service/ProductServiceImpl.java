@@ -34,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public void register(RegisterDTO registerDTO) {
+    public Long register(RegisterDTO registerDTO) {
         Product product = dtoToEntity(registerDTO);
 
         for (MultipartFile file : registerDTO.getFiles()) {
@@ -69,7 +69,7 @@ public class ProductServiceImpl implements ProductService {
         }
         productRepository.save(product);
         log.info("product => " + product);
-
+        return product.getId();
     }
 
     private String makeFolder(String memberId) {

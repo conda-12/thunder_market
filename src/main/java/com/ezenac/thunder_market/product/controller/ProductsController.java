@@ -45,14 +45,14 @@ public class ProductsController {
     //상품 등록
     @ResponseBody
     @PostMapping("/products/new")
-    public ResponseEntity<String> register(RegisterDTO registerDTO) {
+    public ResponseEntity<Long> register(RegisterDTO registerDTO) {
         log.info("register => " + registerDTO);
         // todo memberId
         registerDTO.setMemberId("kyoulho");
 
-        productService.register(registerDTO);
+         Long id = productService.register(registerDTO);
 
-        return new ResponseEntity<String>("success", HttpStatus.OK);
+        return new ResponseEntity<Long>(id, HttpStatus.OK);
     }
 
     // 인덱스 페이지 상품 리스트

@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public interface ProductService {
 
-    void register(RegisterDTO registerDTO);
+    Long register(RegisterDTO registerDTO);
 
     List<ProductDTO> list(PageRequestDTO pageRequestDTO);
 
