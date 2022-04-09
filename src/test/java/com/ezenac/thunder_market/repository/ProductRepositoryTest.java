@@ -21,7 +21,7 @@ public class ProductRepositoryTest {
     @Test
     public void testList() {
         Pageable pageable = PageRequest.of(0, 8, Sort.by("id").descending());
-        Page<Object[]> result = productRepository.getListPage(pageable);
+        Page<Object[]> result = productRepository.getList(pageable);
         for (Object[] row : result.getContent()){
             System.out.println(Arrays.toString(row));
         }

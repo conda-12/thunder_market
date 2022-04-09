@@ -10,8 +10,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +28,7 @@ public class GroupServiceImpl implements GroupService {
         List<BigGroup> list = bigGroupRepository.findAll(Sort.by("bgNum"));
         return list.stream().map(this::bigGroupToDTO).collect(Collectors.toList());
     }
+
 
     @Override
     public List<SmallGroupDTO> getSGList(String bgNum) {

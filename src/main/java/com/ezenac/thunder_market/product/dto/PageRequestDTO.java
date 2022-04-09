@@ -17,6 +17,8 @@ public class PageRequestDTO {
 
     private int size;
 
+    private String bgNum;
+
     private String sgNum;
 
     private String keyword;
