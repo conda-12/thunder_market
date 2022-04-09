@@ -19,4 +19,5 @@ public class GroupServiceTest {
     public void testSGList(){
         bigGroupService.getSGList("310").forEach(System.out::println);
     }
+
 }

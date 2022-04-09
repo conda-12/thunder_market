@@ -2,6 +2,7 @@ package com.ezenac.thunder_market.product.service;
 
 import com.ezenac.thunder_market.product.domain.Product;
 import com.ezenac.thunder_market.product.domain.ProductImage;
+import com.ezenac.thunder_market.product.domain.SmallGroup;
 import com.ezenac.thunder_market.product.dto.PageRequestDTO;
 import com.ezenac.thunder_market.product.dto.ProductDTO;
 import com.ezenac.thunder_market.product.dto.RegisterDTO;
@@ -18,8 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -82,14 +81,26 @@ public class ProductServiceImpl implements ProductService {
         return memberId;
     }
 
-    //todo 검색 기능 구현하기
     @Transactional
     @Override
     public List<ProductDTO> list(PageRequestDTO pageRequestDTO) {
         Pageable pageable = pageRequestDTO.getPageable(Sort.by("id").descending());
 
-        Page<Object[]> result = productRepository.getListPage(pageable);
+        Page<Object[]> result = productRepository.getList(pageable);
 
+        return result.stream().map(row -> entityToDTO((Product) row[0], (Long) row[1])).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDTO> searchList(PageRequestDTO pageRequestDTO) {
+        Pageable pageable = pageRequestDTO.getPageable(Sort.by("id").descending());
+        String keyword = pageRequestDTO.getKeyword();
+        String sgNum = pageRequestDTO.getSgNum();
+        SmallGroup smallGroup = null;
+        if (!sgNum.equals("")) {
+            smallGroup = SmallGroup.builder().sgNum(sgNum).build();
+        }
+        Page<Object[]> result = productRepository.getSearchList(keyword, smallGroup, pageable);
         return result.stream().map(row -> entityToDTO((Product) row[0], (Long) row[1])).collect(Collectors.toList());
     }
 

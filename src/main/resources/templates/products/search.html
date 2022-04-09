@@ -7,14 +7,14 @@
                 <div class="col-6 col-sm-2" style="margin-left: 100px;">
                     <div class="input-group-prepend">
                         <select class="custom-select" name="bgNum" style="width: 200px">
-                            <option selected>카테고리 대분류</option>
+                            <option th:selected="${bgNum=='' ? true: false}">카테고리 대분류</option>
                         </select>
                     </div>
                 </div>
                 <div class="col-6 col-sm-2">
                     <div class="input-group-prepend">
                         <select class="custom-select" name="sgNum" style="width: 200px;">
-                            <option selected>카테고리 소분류</option>
+                            <option th:selected="${sgNum=='' ? true: false}">카테고리 소분류</option>
                         </select>
                     </div>
                 </div>
@@ -59,35 +59,59 @@
         <script th:inline="javascript">
             const bgSelect = $("select[name='bgNum']");
             const sgSelect = $("select[name='sgNum']");
+            let keyword = [[${keyword}]];
+            let bgNum = [[${bgNum}]];
+            let sgNum = [[${sgNum}]];
+
+            $(getBGList());
+            $(getSGList());
+
+            $(bgSelect).on("change",function (){
+                bgNum = $(this).val();
+                sgSelect.children().remove();
+                sgSelect.append("<option th:selected=\"${sgNum=='' ? true: false}\">카테고리 소분류</option>")
+                getSGList();
+            });
 
             // 대분류 호출 함수
-            $(function () {
+            function getBGList() {
                 $.getJSON('/group/bg/all', function (arr) {
                     for (let i in arr) {
-                        bgSelect.append(" <option value='" + arr[i].bgNum + "'>" + arr[i].bgCate + "</option>");
+                        let optionNode = document.createElement("option");
+                        optionNode.setAttribute("value", arr[i].bgNum);
+                        optionNode.text = arr[i].bgCate;
+                        if (arr[i].bgNum === [[${bgNum}]]) {
+                            optionNode.selected = true;
+                        }
+                        bgSelect.append(optionNode);
+
                     }
                 });
-            });
+            }
 
             // 소분류 호출 함수
-            $(bgSelect).change(function () {
-                //소분류 리스트 삭제
-                sgSelect.children().remove();
-                let bgNum = $(this).val();
-
+            function getSGList() {
                 $.getJSON('/group/sg/' + bgNum, function (arr) {
-                    sgSelect.append("<option selected>카테고리 소분류</option>");
                     for (let i in arr) {
-                        sgSelect.append(" <option value='" + arr[i].sgNum + "'>" + arr[i].sgCate + "</option>");
+                        let optionNode = document.createElement("option");
+                        optionNode.setAttribute("value", arr[i].sgNum);
+                        optionNode.text = arr[i].sgCate;
+                        if (arr[i].sgNum === [[${sgNum}]]) {
+                            optionNode.selected = true;
+                        }
+                        sgSelect.append(optionNode);
                     }
                 });
-            });
+            }
 
             // 리스트 호출 함수
             let page = 0;
 
             $(function () {
                 page++;
+                console.log(keyword);
+                console.log(bgNum);
+                console.log(sgNum);
                 getList(page);
             });
 
@@ -103,10 +127,12 @@
                 $.ajax({
                     type: 'post',
                     data: {
-                        "page": page
+                        "page": page,
+                        "keyword": keyword,
+                        "sgNum": sgNum
                     },
                     dataType: 'json',
-                    url: '/products/list',
+                    url: '/products/searchList',
                     success: function (data) {
                         console.log(data)
                         addItem(data);
