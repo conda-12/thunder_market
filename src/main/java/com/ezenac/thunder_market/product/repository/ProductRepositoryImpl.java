@@ -54,5 +54,4 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport implements 
         return new PageImpl<Object[]>(result.stream().map(Tuple::toArray).collect(Collectors.toList()), pageable, count);
     }
 
-    ;
 }

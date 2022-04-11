@@ -21,6 +21,8 @@ public interface ProductService {
 
     List<ProductDTO> searchList(PageRequestDTO pageRequestDTO);
 
+    ProductDTO read(Long id);
+
     File getImage(String filePath);
 
     default Product dtoToEntity(RegisterDTO dto) {

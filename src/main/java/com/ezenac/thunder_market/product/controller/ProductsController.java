@@ -31,8 +31,10 @@ public class ProductsController {
 
     // todo 상품 상세 조회
     @GetMapping("/products/{productId}")
-    public String read(@PathVariable("productId") Long productId) {
+    public String read(@PathVariable("productId") Long productId, Model model) {
         log.info("read product => " + productId);
+        ProductDTO productDTO = productService.read(productId);
+        model.addAttribute("dto", productDTO);
         return "/products/read";
     }
 
@@ -50,7 +52,7 @@ public class ProductsController {
         // todo memberId
         registerDTO.setMemberId("kyoulho");
 
-         Long id = productService.register(registerDTO);
+        Long id = productService.register(registerDTO);
 
         return new ResponseEntity<Long>(id, HttpStatus.OK);
     }
@@ -87,7 +89,7 @@ public class ProductsController {
     // 카테고리 검색
     @GetMapping("/categories/{sgNum}")
     public String cateList(@PathVariable("sgNum") String sgNum, Model model) {
-        String bgNum = sgNum.substring(0,3);
+        String bgNum = sgNum.substring(0, 3);
         model.addAttribute("bgNum", bgNum);
         return "/products/search";
     }

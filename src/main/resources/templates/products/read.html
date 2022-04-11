@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/basicLayout :: setContent(~{this :: content})}">
+    <th:block th:fragment="content">
+        <div class="container px-4 px-lg-5 my-2 ">
+            <div class="row align-items-center">
+                <div class="col-6 col-sm-2" style="margin-left: 100px;">
+                    <div class="input-group-prepend">
+                        <select class="custom-select" name="bgNum" style="width: 200px">
+                            <option selected>카테고리 대분류</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-2">
+                    <div class="input-group-prepend">
+                        <select class="custom-select" name="sgNum" style="width: 200px;">
+                            <option selected>카테고리 소분류</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="py-5 border">
+            <div class="container px-4 px-lg-5 mt-5">
+                <div class="row gx-4 justify-content-center">
+                    <div class="col-6">
+                        <img>
+
+                    </div>
+                    <div class="col-6">123</div>
+                </div>
+            </div>
+        </section>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossOrigin="anonymous"></script>
+        <script th:inline="javascript">
+            const bgSelect = $("select[name='bgNum']");
+            const sgSelect = $("select[name='sgNum']");
+
+            // 대분류 호출 함수
+            $(function () {
+                $.getJSON('/group/bg/all', function (arr) {
+                    for (let i in arr) {
+                        bgSelect.append(" <option value='" + arr[i].bgNum + "'>" + arr[i].bgCate + "</option>");
+                    }
+                });
+            });
+
+            // 소분류 호출 함수
+            $(bgSelect).change(function () {
+                //소분류 리스트 삭제
+                sgSelect.children().remove();
+                let bgNum = $(this).val();
+
+                $.getJSON('/group/sg/' + bgNum, function (arr) {
+                    sgSelect.append("<option selected>카테고리 소분류</option>");
+                    for (let i in arr) {
+                        sgSelect.append(" <option value='" + arr[i].sgNum + "'>" + arr[i].sgCate + "</option>");
+                    }
+                });
+            });
+
+            // 리스트 호출 함수
+            let page = 0;
+
+            $(function () {
+                page++;
+                getList(page);
+            });
+
+            $(window).scroll(function () {
+                if ($(window).scrollTop() + 100 >= $(document).height() - $(window).height()) {
+                    page++;
+                    console.log(page);
+                    getList(page);
+                }
+            });
+
+            function getList() {
+                $.ajax({
+                    type: 'post',
+                    data: {
+                        "page": page
+                    },
+                    dataType: 'json',
+                    url: '/products/list',
+                    success: function (data) {
+                        console.log(data)
+                        addItem(data);
+                    }, error: function (e) {
+                        alert("리스트를 불러오지 못했습니다.");
+                    }
+                });
+            }
+
+            function addItem(arr) {
+                const template = $(".template");
+
+                for (let item of arr) {
+                    let itemDiv = template.clone();
+                    itemDiv.removeClass("template");
+                    itemDiv.attr("product-id", item.id);
+                    itemDiv.find("img").attr("src", "/products/display/?imageURL=" + item.imageDTOList[0].imageURL);
+                    itemDiv.find("a").attr("href", "/products/" + item.id);
+
+                    let title = item.title;
+                    if (title.length > 21) {
+                        title = title.substring(0, 21) + "...";
+                    }
+                    itemDiv.find(".title").text(title);
+
+                    let price = item.price.toLocaleString('ko-KR')
+                    itemDiv.find(".price").text(price + " 원");
+                    itemDiv.css("display", "inline-block")
+                    template.closest(".row").append(itemDiv);
+                }
+            }
+
+            sgSelect.on("change", function () {
+                let sgNum = $(this).val();
+                location.href = "/categories/" + sgNum;
+            });
+
+        </script>
+
+    </th:block>
+</th:block>

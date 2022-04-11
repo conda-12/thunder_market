@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -56,7 +57,7 @@ public class ProductServiceImpl implements ProductService {
             String uuid = UUID.randomUUID().toString();
             // 전체 경로
             String saveName = uploadPath + File.separator + folderPath + File.separator + uuid + "_" + fileName;
-
+            // todo 파일 사이즈 변환하여 저장하기
             try {
                 // 파일 저장
                 file.transferTo(new File(saveName));
@@ -105,8 +106,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public File getImage(String filePath) {
+    public ProductDTO read(Long id) {
+        Optional<Object> result = productRepository.readWithFavorite(id);
+        if (result.isPresent()) {
+            Object[] arr = (Object[]) result.get();
+            return entityToDTO((Product) arr[0], (Long) arr[1]);
+        }
+        return null;
+    }
 
+    @Override
+    public File getImage(String filePath) {
         return new File(uploadPath + File.separator + filePath);
     }
+
+
 }

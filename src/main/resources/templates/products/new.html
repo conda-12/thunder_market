@@ -170,9 +170,9 @@
             function checkExtension(fileName, fileSize) {
                 const regex = new RegExp("(.*?)\.(exe|sh|zip|alz|tiff)$");
                 const maxSize = 10485760; //10MB
-                console.log("파일 검사 진입 " + fileName + fileSize);
+
                 for (let i = 0; i < fileArr.length; i++) {
-                    console.log("포문 진입 " + fileArr);
+
                     if (fileArr[i].name === fileName) {
                         alert("중복 이미지입니다.");
                         return false;

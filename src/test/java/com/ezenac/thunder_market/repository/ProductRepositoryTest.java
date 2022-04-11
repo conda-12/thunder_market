@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 @SpringBootTest
 public class ProductRepositoryTest {
@@ -25,5 +26,16 @@ public class ProductRepositoryTest {
         for (Object[] row : result.getContent()){
             System.out.println(Arrays.toString(row));
         }
+    }
+
+    @Transactional
+    @Test
+    public void testReadWithFavorite(){
+        Optional<Object> result = productRepository.readWithFavorite(1L);
+        if(result.isPresent()){
+            Object[] arr = (Object[]) result.get();
+        System.out.println(Arrays.toString(arr));
+        }
+
     }
 }
