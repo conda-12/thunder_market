@@ -29,11 +29,11 @@
                         <a style="text-decoration: none; color: black" href="#">
                             <div class="card h-100">
                                 <!-- Product image-->
-                                <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="상품이미"/>
+                                <img style="height:270px; width: 270px " class="card-img-top" src="" alt="상품이미지"/>
                                 <!-- Product details-->
                                 <div class="card-body p-3">
                                     <div class="text-start title">
-                                        상품 이름
+                                       
                                     </div>
                                 </div>
                                 <!-- Product actions-->
@@ -42,8 +42,8 @@
                                         <div class="col text-start price">
                                             <b>가격</b>
                                         </div>
-                                        <div class="col text-end day">
-                                            3일 전
+                                        <div class="col text-end time">
+                                        
                                         </div>
                                     </div>
                                 </div>
@@ -109,33 +109,34 @@
                     url: '/products/list',
                     success: function (data) {
                         console.log(data)
-                        addItem(data);
+                        addProduct(data);
                     }, error: function (e) {
                         alert("리스트를 불러오지 못했습니다.");
                     }
                 });
             }
 
-            function addItem(arr) {
+            function addProduct(arr) {
                 const template = $(".template");
 
-                for (let item of arr) {
-                    let itemDiv = template.clone();
-                    itemDiv.removeClass("template");
-                    itemDiv.attr("product-id", item.id);
-                    itemDiv.find("img").attr("src", "/products/display/?imageURL=" + item.imageDTOList[0].imageURL);
-                    itemDiv.find("a").attr("href", "/products/" + item.id);
+                for (let dto of arr) {
+                    let productDiv = template.clone();
+                    productDiv.removeClass("template");
+                    productDiv.attr("product-id", dto.id);
+                    productDiv.find("img").attr("src", "/products/display/?imageURL=" + dto.imageDTOList[0].imageURL);
+                    productDiv.find("a").attr("href", "/products/" + dto.id);
 
-                    let title = item.title;
+                    let title = dto.title;
                     if (title.length > 21) {
                         title = title.substring(0, 21) + "...";
                     }
-                    itemDiv.find(".title").text(title);
-
-                    let price = item.price.toLocaleString('ko-KR')
-                    itemDiv.find(".price").text(price + " 원");
-                    itemDiv.css("display", "inline-block")
-                    template.closest(".row").append(itemDiv);
+                    productDiv.find(".title").text(title);
+                    let time = timeForToday(dto.regDate);
+                    productDiv.find(".time").text(time);
+                    let price = dto.price.toLocaleString('ko-KR')
+                    productDiv.find(".price").text(price + " 원");
+                    productDiv.css("display", "inline-block")
+                    template.closest(".row").append(productDiv);
                 }
             }
 
@@ -143,6 +144,29 @@
                 let sgNum = $(this).val();
                 location.href = "/categories/" + sgNum;
             });
+            
+            function timeForToday(value) {
+                const today = new Date();
+                const timeValue = new Date(value);
+    
+                const betweenTime = Math.floor((today.getTime() - timeValue.getTime()) / 1000 / 60);
+                if (betweenTime < 1) return '방금전';
+                if (betweenTime < 60) {
+                    return `${betweenTime}분전`;
+                }
+    
+                const betweenTimeHour = Math.floor(betweenTime / 60);
+                if (betweenTimeHour < 24) {
+                    return `${betweenTimeHour}시간전`;
+                }
+    
+                const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
+                if (betweenTimeDay < 365) {
+                    return `${betweenTimeDay}일전`;
+                }
+    
+                return `${Math.floor(betweenTimeDay / 365)}년전`;
+            }
 
         </script>
 

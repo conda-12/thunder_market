@@ -2,6 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <th:block th:replace="~{/layout/basicLayout :: setContent(~{this :: content})}">
     <th:block th:fragment="content">
+        
+        
         <div class="container px-4 px-lg-5 my-2 ">
             <div class="row align-items-center">
                 <div class="col-6 col-sm-2" style="margin-left: 100px;">
@@ -20,109 +22,192 @@
                 </div>
             </div>
         </div>
-
-        <section class="py-5 border">
-            <div class="container px-4 px-lg-5 mt-5">
-                <div class="row gx-4 justify-content-center">
-                    <div class="col-6">
-                        <img>
-
+        <hr>
+        <section class="item-details section">
+            <div class="container">
+                <div class="top-area">
+                    <div class="row my-4">
+                        <div class="col-lg-6 col-md-12 col-12 border-end">
+                            <div class="col text-center m-2">
+                                <img id="main-image"
+                                     th:src="|@{/products/display?imageURL=}${dto.imageDTOList[0].getImageURL}|"
+                                     style="height: 300px; ">
+                            </div>
+                            <div class="col ">
+                                <ul class="list-group list-group-horizontal" style="justify-content: center">
+                                    <li class="list-group-item" th:each="image : ${dto.imageDTOList}">
+                                        <a href="#">
+                                            <img th:src="|@{/products/display?imageURL=}${image.getImageURL()}|"
+                                                 style="height: 90px">
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-12">
+                            <div class="product-info">
+                                <div style="height: 350px; padding: 20px;">
+                                    <div class="row m-2">
+                                        <h2 class="title">[[${dto.title}]]</h2>
+                                    </div>
+                                    <div class="row m-2">
+                                        <h2 th:text="${#numbers.formatInteger(dto.price,3,'COMMA') + '원'}"></h2>
+                                    </div>
+                                    <div class="row m-2">
+                                        <div class="">
+                                            <span class="m-1"> <img th:src="@{/images/people.png}"> </span>
+                                            <span class="m-1"><a href="#">[[${dto.memberId}]]</a></span>
+                                        </div>
+                                        <div class="">
+                                            <span class="m-1"> <img th:src="@{/images/heart.png}"></span>
+                                            <span class="m-1">[[${dto.favoriteCnt}]]</span>
+                                        </div>
+                                        <div class="">
+                                            <span class="m-1"> <img th:src="@{/images/eye.png}"> </span>
+                                            <span class="m-1">[[${dto.hit}]]</span>
+                                        </div>
+                                        <div class="">
+                                            <span class="m-1"> <img th:src="@{/images/clock.png}"> </span>
+                                            <span class="m-1 time"></span>
+                                        </div>
+                                        <div class="">
+                                            <span class="m-1"><img th:src="@{/images/pointer.png}"></span>
+                                            <span class="m-1"> [[${dto.address}]]</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bottom-content">
+                                    <div class="row align-items-center">
+                                        <div class="col text-center m-1">
+                                            <button class="btn btn-outline-warning" style="width: 200px;height: 50px">
+                                                <img th:src="@{/images/favorite.png}"
+                                                     alt="찜하기"> [[${dto.favoriteCnt}]]
+                                            </button>
+                                        </div>
+                                        <div class="col text-center m-1">
+                                            <button class="btn btn-outline-danger" style="width: 200px; height: 50px">
+                                                연락하기
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-6">123</div>
+                </div>
+                <div class="product-details-info border-top p-2">
+                    <div class="single-block">
+                        <div class="row">
+                            <div class=" my-2 text-center">
+                                
+                                <h4>상품 정보</h4>
+                                <p> [[${dto.content}]] </p>
+                            
+                            </div>
+                        </div>
+                    </div>
+                
                 </div>
             </div>
         </section>
+        
+        
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossOrigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                crossOrigin="anonymous"></script>
+        
+        
         <script th:inline="javascript">
             const bgSelect = $("select[name='bgNum']");
             const sgSelect = $("select[name='sgNum']");
-
+            let bgNum = [[${dto.bgNum}]];
+            $(getBGList());
+            $(getSGList());
+            
             // 대분류 호출 함수
-            $(function () {
+            function getBGList() {
                 $.getJSON('/group/bg/all', function (arr) {
                     for (let i in arr) {
-                        bgSelect.append(" <option value='" + arr[i].bgNum + "'>" + arr[i].bgCate + "</option>");
+                        let optionNode = document.createElement("option");
+                        optionNode.setAttribute("value", arr[i].bgNum);
+                        optionNode.text = arr[i].bgCate;
+                        if (arr[i].bgNum === [[${dto.bgNum}]]) {
+                            optionNode.selected = true;
+                        }
+                        bgSelect.append(optionNode);
                     }
                 });
-            });
-
+            }
+            
             // 소분류 호출 함수
-            $(bgSelect).change(function () {
-                //소분류 리스트 삭제
-                sgSelect.children().remove();
-                let bgNum = $(this).val();
-
+            function getSGList() {
                 $.getJSON('/group/sg/' + bgNum, function (arr) {
-                    sgSelect.append("<option selected>카테고리 소분류</option>");
                     for (let i in arr) {
-                        sgSelect.append(" <option value='" + arr[i].sgNum + "'>" + arr[i].sgCate + "</option>");
-                    }
-                });
-            });
-
-            // 리스트 호출 함수
-            let page = 0;
-
-            $(function () {
-                page++;
-                getList(page);
-            });
-
-            $(window).scroll(function () {
-                if ($(window).scrollTop() + 100 >= $(document).height() - $(window).height()) {
-                    page++;
-                    console.log(page);
-                    getList(page);
-                }
-            });
-
-            function getList() {
-                $.ajax({
-                    type: 'post',
-                    data: {
-                        "page": page
-                    },
-                    dataType: 'json',
-                    url: '/products/list',
-                    success: function (data) {
-                        console.log(data)
-                        addItem(data);
-                    }, error: function (e) {
-                        alert("리스트를 불러오지 못했습니다.");
+                        let optionNode = document.createElement("option");
+                        optionNode.setAttribute("value", arr[i].sgNum);
+                        optionNode.text = arr[i].sgCate;
+                        if (arr[i].sgNum === [[${dto.sgNum}]]) {
+                            optionNode.selected = true;
+                        }
+                        sgSelect.append(optionNode);
                     }
                 });
             }
-
-            function addItem(arr) {
-                const template = $(".template");
-
-                for (let item of arr) {
-                    let itemDiv = template.clone();
-                    itemDiv.removeClass("template");
-                    itemDiv.attr("product-id", item.id);
-                    itemDiv.find("img").attr("src", "/products/display/?imageURL=" + item.imageDTOList[0].imageURL);
-                    itemDiv.find("a").attr("href", "/products/" + item.id);
-
-                    let title = item.title;
-                    if (title.length > 21) {
-                        title = title.substring(0, 21) + "...";
-                    }
-                    itemDiv.find(".title").text(title);
-
-                    let price = item.price.toLocaleString('ko-KR')
-                    itemDiv.find(".price").text(price + " 원");
-                    itemDiv.css("display", "inline-block")
-                    template.closest(".row").append(itemDiv);
-                }
-            }
-
+            
+            $(bgSelect).on("change", function () {
+                bgNum = $(this).val();
+                sgSelect.children().remove();
+                sgSelect.append("<option th:selected=\"${sgNum=='' ? true: false}\">카테고리 소분류</option>")
+                getSGList();
+            });
+            
             sgSelect.on("change", function () {
                 let sgNum = $(this).val();
                 location.href = "/categories/" + sgNum;
             });
-
+            
+            $(function () {
+                let ago = timeForToday([[${dto.regDate}]]);
+                $(".time").text(ago);
+            });
+            
+            function timeForToday(value) {
+                const today = new Date();
+                const timeValue = new Date(value);
+                
+                const betweenTime = Math.floor((today.getTime() - timeValue.getTime()) / 1000 / 60);
+                if (betweenTime < 1) return '방금전';
+                if (betweenTime < 60) {
+                    return `${betweenTime}분전`;
+                }
+                
+                const betweenTimeHour = Math.floor(betweenTime / 60);
+                if (betweenTimeHour < 24) {
+                    return `${betweenTimeHour}시간전`;
+                }
+                
+                const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
+                if (betweenTimeDay < 365) {
+                    return `${betweenTimeDay}일전`;
+                }
+                
+                return `${Math.floor(betweenTimeDay / 365)}년전`;
+            }
+            
+            $(".list-group-item").on("click", function (event) {
+                event.preventDefault();
+                let subImg = $(this).find("img");
+                let mainImg = $("#main-image");
+                
+                mainImg.attr("src", subImg.attr("src"));
+                
+            })
+        
+        
         </script>
-
+    
+    
     </th:block>
 </th:block>
