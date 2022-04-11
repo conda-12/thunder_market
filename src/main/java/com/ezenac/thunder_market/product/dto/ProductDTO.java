@@ -34,7 +34,7 @@ public class ProductDTO {
     private String content;
 
     private String memberId;
-    // 상세 페이지에서 카테고리는 ajax로 받고 if 문을 사용하자
+
     private String bgNum;
 
     private String sgNum;

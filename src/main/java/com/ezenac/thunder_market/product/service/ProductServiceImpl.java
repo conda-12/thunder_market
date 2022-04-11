@@ -13,12 +13,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -57,10 +62,9 @@ public class ProductServiceImpl implements ProductService {
             String uuid = UUID.randomUUID().toString();
             // 전체 경로
             String saveName = uploadPath + File.separator + folderPath + File.separator + uuid + "_" + fileName;
-            // todo 파일 사이즈 변환하여 저장하기
+
             try {
-                // 파일 저장
-                file.transferTo(new File(saveName));
+                saveFile(file, saveName);
             } catch (IOException e) {
                 log.warn("파일 저장에 실패했습니다. fileName => " + fileName);
                 e.printStackTrace();
@@ -80,6 +84,29 @@ public class ProductServiceImpl implements ProductService {
             uploadPathFolder.mkdirs();
         }
         return memberId;
+    }
+    // 이미지 리사이즈 후 저
+    private void saveFile(MultipartFile file, String saveName) throws IOException {
+
+        Image image = ImageIO.read(file.getInputStream());
+        // 이미지 가로 세로 측정
+        int originWidth = image.getWidth(null);
+        int originHeight = image.getHeight(null);
+        // 변경할 세로 길이
+        int newHeight = 1100;
+        // 비율 유지하며 가로 길이 설정
+        int newWidth = (originWidth * newHeight) / originHeight;
+
+        Image resizeImage = image.getScaledInstance(newWidth, newHeight, Image.SCALE_DEFAULT);
+
+        BufferedImage newImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+
+        Graphics graphics = newImage.getGraphics();
+        graphics.drawImage(resizeImage, 0, 0, null);
+        graphics.dispose();
+        File newFile = new File(saveName);
+        ImageIO.write(newImage, "png", newFile);
+
     }
 
     @Transactional
@@ -107,12 +134,26 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO read(Long id) {
-        Optional<Object> result = productRepository.readWithFavorite(id);
-        if (result.isPresent()) {
-            Object[] arr = (Object[]) result.get();
+        int i = productRepository.updateHit(id);
+        if (i > 0) {
+            Object result = productRepository.readWithFavorite(id);
+            Object[] arr = (Object[]) result;
             return entityToDTO((Product) arr[0], (Long) arr[1]);
         }
         return null;
+    }
+
+    @Transactional
+    @Override
+    public void modify(Product product) {
+        productRepository.save(product);
+    }
+
+    @Transactional
+    @Override
+    public void remove(Long id) {
+        // todo 찜하기 삭제 후
+        productRepository.deleteById(id);
     }
 
     @Override

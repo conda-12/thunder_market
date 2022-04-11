@@ -23,6 +23,10 @@ public interface ProductService {
 
     ProductDTO read(Long id);
 
+    void modify(Product product);
+
+    void remove(Long id);
+
     File getImage(String filePath);
 
     default Product dtoToEntity(RegisterDTO dto) {

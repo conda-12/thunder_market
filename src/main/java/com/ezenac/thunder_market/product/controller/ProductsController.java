@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class ProductsController {
     private final ProductService productService;
     private final GroupService groupService;
 
-    // todo 상품 상세 조회
+    @Transactional
     @GetMapping("/products/{productId}")
     public String read(@PathVariable("productId") Long productId, Model model) {
         log.info("read product => " + productId);
