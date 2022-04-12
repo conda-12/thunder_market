@@ -1,11 +1,9 @@
 package com.ezenac.thunder_market.product.domain;
 
-import com.ezenac.thunder_market.member.domain.*;
+import com.ezenac.thunder_market.member.entity.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns="http://www.w3.org/1999/html">
 <th:block th:fragment="setContent(content)">
     <head>
         <meta charset="utf-8"/>
@@ -14,15 +14,20 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light ">
         <div class="container px-4 px-lg-5">
             <div class="collapse navbar-collapse justify-content-end">
-                <button class="btn" type="submit" id="login-btn">
-                    로그인/회원가입
-                </button>
-                <button class="btn" type="submit" id="logout-btn">
-                    로그아웃
-                </button>
+                <div sec:authorize="!isAuthenticated()">
+                    <a class="btn" type="button" th:href="@{/member/auth/signin}">로그인/회원가입</a>
+                </div>
+                <div sec:authorize="isAuthenticated()">
+                    <form name="sign-out" th:action="@{/member/auth/signout}" method="post">
+                        <button class="btn" type="submit" id="signout">
+                            로그아웃
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </nav>
+
     <!-- Header-->
     <header class="py-2 border ">
         <div class="container px-4 px-lg-5 my-2">

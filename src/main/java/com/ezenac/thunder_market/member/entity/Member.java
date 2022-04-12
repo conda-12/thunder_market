@@ -1,4 +1,4 @@
-package com.ezenac.thunder_market.member.domain;
+package com.ezenac.thunder_market.member.entity;
 
 import com.ezenac.thunder_market.product.domain.Product;
 import lombok.*;

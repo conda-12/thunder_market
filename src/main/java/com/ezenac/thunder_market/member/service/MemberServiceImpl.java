@@ -1,12 +1,14 @@
 package com.ezenac.thunder_market.member.service;
 
-import com.ezenac.thunder_market.member.domain.MemberDTO;
-import com.ezenac.thunder_market.member.domain.Token;
+import com.ezenac.thunder_market.member.entity.MemberDTO;
+import com.ezenac.thunder_market.member.entity.Token;
 import com.ezenac.thunder_market.member.repository.MemberRepository;
 import com.ezenac.thunder_market.member.repository.TokenRedisRepository;
 import com.ezenac.thunder_market.product.domain.Product;
-import com.ezenac.thunder_market.member.domain.Member;
+import com.ezenac.thunder_market.member.entity.Member;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,7 +18,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@Slf4j
+@RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
     private final TokenRedisRepository tokenRedisRepository;

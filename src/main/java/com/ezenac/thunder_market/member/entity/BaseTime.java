@@ -1,4 +1,4 @@
-package com.ezenac.thunder_market.member.domain;
+package com.ezenac.thunder_market.member.entity;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

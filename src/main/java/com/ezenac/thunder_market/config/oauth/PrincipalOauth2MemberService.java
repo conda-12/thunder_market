@@ -1,11 +1,8 @@
 package com.ezenac.thunder_market.config.oauth;
 
 import com.ezenac.thunder_market.config.auth.PrincipalDetails;
-import com.ezenac.thunder_market.config.oauth.provider.FaceBookUserInfo;
-import com.ezenac.thunder_market.config.oauth.provider.GoogleUserInfo;
-import com.ezenac.thunder_market.config.oauth.provider.NaverUserInfo;
-import com.ezenac.thunder_market.config.oauth.provider.OAuth2UserInfo;
-import com.ezenac.thunder_market.member.domain.Member;
+import com.ezenac.thunder_market.config.oauth.provider.*;
+import com.ezenac.thunder_market.member.entity.Member;
 import com.ezenac.thunder_market.member.repository.MemberRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,7 +12,9 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.util.Map;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -39,24 +38,29 @@ public class PrincipalOauth2MemberService extends DefaultOAuth2UserService {
             oAuth2UserInfo = new FaceBookUserInfo(oAuth2User.getAttributes());
         } else if (userRequest.getClientRegistration().getRegistrationId().equals("naver")){
             System.out.println("네이버 로그인 요청");
-            oAuth2UserInfo = new NaverUserInfo((Map) oAuth2User.getAttributes().get("response"));
+            oAuth2UserInfo = new NaverUserInfo(oAuth2User.getAttributes());
+        } else if (userRequest.getClientRegistration().getRegistrationId().equals("kakao")) {
+            System.out.println("카카오 로그인 요청");
+            oAuth2UserInfo = new KakaoUserInfo(oAuth2User.getAttributes());
         } else {
             System.out.println("지원 하지 않는 소셜입니다.");
         }
 
 
         assert oAuth2UserInfo != null;
-        String provider = oAuth2UserInfo.getProvider(); // Google
-        String providerId = oAuth2UserInfo.getProviderId(); // Google PrimaryKey
+        String provider = oAuth2UserInfo.getProvider(); // ex. Google
+        String providerId = oAuth2UserInfo.getProviderId(); // ex. Google PrimaryKey
         String memberId = provider + "_" + providerId;
         String email = oAuth2UserInfo.getEmail();
         String role = "ROLE_MEMBER";
 
-        Member member = memberRepository.getById(memberId);
+        Optional<Member> member = memberRepository.findById(memberId);
+        Member setMember = null;
+        System.out.println(memberId);
 
-        if (member.getMemberId() == null) {
+        if (member.isEmpty()) {
             System.out.println("처음 만드는 회원가입한 멤버 입니다.");
-            member = Member.builder()
+            setMember = Member.builder()
                     .memberId(memberId)
                     .password(bCryptPasswordEncoder.encode("@SOCIAL_PASSWORD"))
                     .email(email)
@@ -65,11 +69,11 @@ public class PrincipalOauth2MemberService extends DefaultOAuth2UserService {
                     .providerId(providerId)
                     .build();
 
-            memberRepository.save(member);
+            memberRepository.save(setMember);
         } else {
             System.out.println("이미 회원가입한 멤버입니다.");
         }
 
-        return new PrincipalDetails(member, oAuth2User.getAttributes());
+        return new PrincipalDetails(setMember, oAuth2User.getAttributes());
     }
 }

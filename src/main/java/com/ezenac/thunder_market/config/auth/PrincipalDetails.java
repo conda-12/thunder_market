@@ -1,6 +1,6 @@
 package com.ezenac.thunder_market.config.auth;
 
-import com.ezenac.thunder_market.member.domain.Member;
+import com.ezenac.thunder_market.member.entity.Member;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -33,7 +33,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
         return attributes;
     }
 
-    // 해당 Member의 권한을 리턴한다.
+    // return member's role
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();

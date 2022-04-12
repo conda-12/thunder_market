@@ -1,15 +1,13 @@
 package com.ezenac.thunder_market.config;
 
+
+import com.ezenac.thunder_market.config.auth.PrincipalDetailsService;
 import com.ezenac.thunder_market.config.oauth.PrincipalOauth2MemberService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 @RequiredArgsConstructor
@@ -17,8 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PrincipalOauth2MemberService principalOauth2MemberService;
-
-
+    private final PrincipalDetailsService principalDetailsService;
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
@@ -34,14 +31,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/member/auth/signin")
                 .defaultSuccessUrl("/")
                 .and()
+                .rememberMe()
+                .key("@thunder_market_remember-me_cookie")
+                .rememberMeParameter("remember-me")
+                .tokenValiditySeconds(86400 * 14)
+                .userDetailsService(principalDetailsService)
+                .and()
                 .logout()
                 .logoutUrl("/member/auth/signout")
                 .logoutSuccessUrl("/")
                 .invalidateHttpSession(true)
+                .deleteCookies("remember-me", "JSESSIONID")
                 .and()
                 .oauth2Login()
                 .loginPage("/member/auth/signin")
                 .userInfoEndpoint()
-                .userService(principalOauth2MemberService);;
+                .userService(principalOauth2MemberService);
     }
 }
