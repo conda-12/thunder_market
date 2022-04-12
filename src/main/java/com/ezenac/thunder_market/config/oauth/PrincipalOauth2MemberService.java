@@ -38,7 +38,7 @@ public class PrincipalOauth2MemberService extends DefaultOAuth2UserService {
             oAuth2UserInfo = new FaceBookUserInfo(oAuth2User.getAttributes());
         } else if (userRequest.getClientRegistration().getRegistrationId().equals("naver")){
             System.out.println("네이버 로그인 요청");
-            oAuth2UserInfo = new NaverUserInfo(oAuth2User.getAttributes());
+            oAuth2UserInfo = new NaverUserInfo((Map) oAuth2User.getAttributes().get("response"));
         } else if (userRequest.getClientRegistration().getRegistrationId().equals("kakao")) {
             System.out.println("카카오 로그인 요청");
             oAuth2UserInfo = new KakaoUserInfo(oAuth2User.getAttributes());
@@ -56,6 +56,7 @@ public class PrincipalOauth2MemberService extends DefaultOAuth2UserService {
 
         Optional<Member> member = memberRepository.findById(memberId);
         Member setMember = null;
+        System.out.println("providerID= " + providerId);
         System.out.println(memberId);
 
         if (member.isEmpty()) {
@@ -70,10 +71,10 @@ public class PrincipalOauth2MemberService extends DefaultOAuth2UserService {
                     .build();
 
             memberRepository.save(setMember);
+            return new PrincipalDetails(setMember, oAuth2User.getAttributes());
         } else {
             System.out.println("이미 회원가입한 멤버입니다.");
+            return new PrincipalDetails(member.get(), oAuth2User.getAttributes());
         }
-
-        return new PrincipalDetails(setMember, oAuth2User.getAttributes());
     }
 }
