@@ -30,6 +30,7 @@ public class ProductsController {
     private final ProductService productService;
     private final GroupService groupService;
 
+    // 상품 상세 조회
     @Transactional
     @GetMapping("/products/{productId}")
     public String read(@PathVariable("productId") Long productId, Model model) {
@@ -77,7 +78,7 @@ public class ProductsController {
         return "/products/search";
     }
 
-    // 상품 검색 리스트
+    // 상품 검색, 카테고리 리스트
     @ResponseBody
     @PostMapping("/products/searchList")
     public ResponseEntity<List<ProductDTO>> keywordList(@ModelAttribute PageRequestDTO pageRequestDTO) {
@@ -87,7 +88,7 @@ public class ProductsController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    // 카테고리 검색
+    // 카테고리 검색 페이지
     @GetMapping("/categories/{sgNum}")
     public String cateList(@PathVariable("sgNum") String sgNum, Model model) {
         String bgNum = sgNum.substring(0, 3);
@@ -108,6 +109,7 @@ public class ProductsController {
             // 헤더에 파일 속성 명시
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add("Content-Type", Files.probeContentType(file.toPath()));
+            
             //바이트 배열로 전송
             return new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), httpHeaders, HttpStatus.OK);
         } catch (IOException e) {
