@@ -1,9 +1,10 @@
 package com.ezenac.thunder_market.member.controller;
 
-import com.ezenac.thunder_market.member.domain.MemberDTO;
-import com.ezenac.thunder_market.member.domain.Token;
+import com.ezenac.thunder_market.member.entity.MemberDTO;
+import com.ezenac.thunder_market.member.entity.Token;
 import com.ezenac.thunder_market.member.service.MemberService;
 import com.ezenac.thunder_market.member.utils.GenerateRandomNumber;
+import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
@@ -20,10 +21,9 @@ import javax.validation.Valid;
 import java.util.Map;
 
 @Controller
+@Slf4j
 @RequestMapping("/member")
 public class MemberController {
-
-    private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
     private final DefaultMessageService messageService;
     private final MemberService memberService;
 
@@ -34,14 +34,14 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @RequestMapping(value = "/auth/register", method = RequestMethod.GET)
+    @GetMapping(value = "/auth/register")
     public void registerGet() {
-        logger.info("register http method - GET");
+        log.info("register http method - GET");
     }
 
-    @RequestMapping(value = "/auth/register", method = RequestMethod.POST)
+    @PostMapping(value = "/auth/register")
     public String registerPost(@Valid MemberDTO memberDTO, BindingResult bindingResult) throws Exception {
-        logger.info("register http method - POST");
+        log.info("register http method - POST");
 
         if (bindingResult.hasErrors()) {
             return "member/auth/register";
@@ -51,7 +51,7 @@ public class MemberController {
         }
     }
 
-    @RequestMapping(value = "/auth/validation", method = RequestMethod.POST)
+    @PostMapping(value = "/auth/validation")
     @ResponseBody
     public String setValidationToken(@RequestBody Map<String, Object> param) throws Exception {
         GenerateRandomNumber ranNumGenerator = new GenerateRandomNumber();
@@ -74,7 +74,7 @@ public class MemberController {
         return phoneNumber;
     }
 
-    @RequestMapping(value = "/auth/validation/{phoneNum}/{validationNum}", method = RequestMethod.GET)
+    @GetMapping(value = "/auth/validation/{phoneNum}/{validationNum}")
     @ResponseBody
     public int validateTokenNum(@PathVariable String phoneNum, @PathVariable String validationNum) throws Exception {
 
@@ -87,13 +87,13 @@ public class MemberController {
         }
     }
 
-    @RequestMapping(value = "/auth/signin", method = RequestMethod.GET)
+    @GetMapping(value = "/auth/signin")
     public void signinGet() {
 
-        logger.info("signinGet");
+        log.info("signinGet");
     }
 
-    @RequestMapping(value = "/auth/validation/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/auth/validation/{id}")
     @ResponseBody
     public int memberIdValidate(@PathVariable String id) throws Exception {
 

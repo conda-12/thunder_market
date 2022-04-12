@@ -1,6 +1,6 @@
 package com.ezenac.thunder_market.product.repository;
 
-import com.ezenac.thunder_market.member.domain.QFavorite;
+import com.ezenac.thunder_market.member.entity.QFavorite;
 import com.ezenac.thunder_market.product.domain.Product;
 import com.ezenac.thunder_market.product.domain.ProductState;
 import com.ezenac.thunder_market.product.domain.QProduct;

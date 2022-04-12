@@ -1,6 +1,6 @@
 package com.ezenac.thunder_market.config.auth;
 
-import com.ezenac.thunder_market.member.domain.Member;
+import com.ezenac.thunder_market.member.entity.Member;
 import com.ezenac.thunder_market.member.repository.MemberRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
