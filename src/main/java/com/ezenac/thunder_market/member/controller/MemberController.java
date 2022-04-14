@@ -9,8 +9,6 @@ import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.service.DefaultMessageService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -33,12 +31,12 @@ public class MemberController {
         this.messageService = NurigoApp.INSTANCE.initialize(apiKey, apiSecretKey, domain);
         this.memberService = memberService;
     }
-
+    // 회원가입 GET
     @GetMapping(value = "/auth/register")
     public void registerGet() {
         log.info("register http method - GET");
     }
-
+    // 회원가입 POST
     @PostMapping(value = "/auth/register")
     public String registerPost(@Valid MemberDTO memberDTO, BindingResult bindingResult) throws Exception {
         log.info("register http method - POST");
@@ -50,7 +48,7 @@ public class MemberController {
             return "redirect:/member/auth/signin";
         }
     }
-
+    // 전화번호로 인증번호 보내기
     @PostMapping(value = "/auth/validation")
     @ResponseBody
     public String setValidationToken(@RequestBody Map<String, Object> param) throws Exception {
@@ -73,7 +71,7 @@ public class MemberController {
 
         return phoneNumber;
     }
-
+    // 전화번호 인증하기
     @GetMapping(value = "/auth/validation/{phoneNum}/{validationNum}")
     @ResponseBody
     public int validateTokenNum(@PathVariable String phoneNum, @PathVariable String validationNum) throws Exception {
@@ -86,13 +84,13 @@ public class MemberController {
             return memberService.validateToken(phoneNum, validationNum);
         }
     }
-
+    // 로그인
     @GetMapping(value = "/auth/signin")
     public void signinGet() {
 
         log.info("signinGet");
     }
-
+    // 아이디 중복 검증
     @GetMapping(value = "/auth/validation/{id}")
     @ResponseBody
     public int memberIdValidate(@PathVariable String id) throws Exception {
@@ -102,7 +100,7 @@ public class MemberController {
 
         return memberService.findMemberId(memberDTO);
     }
-
+    // 마이 페이지
     @GetMapping(value = "/my-page")
     @ResponseBody
     public String getMyPage() {
