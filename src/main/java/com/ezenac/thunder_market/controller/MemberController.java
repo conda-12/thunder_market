@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Map;
 
@@ -30,11 +31,13 @@ public class MemberController {
         this.messageService = NurigoApp.INSTANCE.initialize(apiKey, apiSecretKey, domain);
         this.memberService = memberService;
     }
+
     // 회원가입 GET
     @GetMapping(value = "/auth/register")
     public void registerGet() {
         log.info("register http method - GET");
     }
+
     // 회원가입 POST
     @PostMapping(value = "/auth/register")
     public String registerPost(@Valid MemberDTO memberDTO, BindingResult bindingResult) throws Exception {
@@ -47,6 +50,7 @@ public class MemberController {
             return "redirect:/member/auth/signin";
         }
     }
+
     // 전화번호로 인증번호 보내기
     @PostMapping(value = "/auth/validation")
     @ResponseBody
@@ -70,6 +74,7 @@ public class MemberController {
 
         return phoneNumber;
     }
+
     // 전화번호 인증하기
     @GetMapping(value = "/auth/validation/{phoneNum}/{validationNum}")
     @ResponseBody
@@ -83,12 +88,17 @@ public class MemberController {
             return memberService.validateToken(phoneNum, validationNum);
         }
     }
+
     // 로그인
     @GetMapping(value = "/auth/signin")
-    public void signinGet() {
+    public void signinGet(HttpServletRequest request) {
+        String referrer = request.getHeader("Referer");
+
+        request.getSession().setAttribute("prevPage", referrer);
 
         log.info("signinGet");
     }
+
     // 아이디 중복 검증
     @GetMapping(value = "/auth/validation/{id}")
     @ResponseBody
@@ -99,6 +109,7 @@ public class MemberController {
 
         return memberService.findMemberId(memberDTO);
     }
+
     // 마이 페이지
     @GetMapping(value = "/my-page")
     @ResponseBody

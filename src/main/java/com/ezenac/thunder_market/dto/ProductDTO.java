@@ -31,6 +31,8 @@ public class ProductDTO {
 
     private Long favoriteCnt;
 
+    private boolean favorite;
+
     private String content;
 
     private String memberId;
