@@ -60,7 +60,7 @@
                                         </div>
                                         <div class="">
                                             <span class="m-1"> <img th:src="@{/images/heart.png}"></span>
-                                            <span class="m-1">[[${dto.favoriteCnt}]]</span>
+                                            <span class="m-1 favorite-cnt">[[${dto.favoriteCnt}]]</span>
                                         </div>
                                         <div class="">
                                             <span class="m-1"> <img th:src="@{/images/eye.png}"> </span>
@@ -79,9 +79,13 @@
                                 <div class="bottom-content">
                                     <div class="row align-items-center">
                                         <div class="col text-center m-1">
-                                            <button class="btn btn-outline-warning" style="width: 200px;height: 50px">
-                                                <img th:src="@{/images/favorite.png}"
-                                                     alt="찜하기"> [[${dto.favoriteCnt}]]
+                                            <button class="btn btn-outline-warning favorite-cnt btn-favorite"
+                                                    style="width: 200px;height: 50px">
+                                                <img th:if="${!dto.isFavorite()}" th:src="@{/images/heart.png}"
+                                                     alt="찜하기">
+                                                <img th:if="${dto.isFavorite()}" th:src="@{/images/favorite.png}"
+                                                     alt="찜하기">
+                                                [[${dto.favoriteCnt}]]
                                             </button>
                                         </div>
                                         <div class="col text-center m-1">
@@ -122,9 +126,13 @@
         <script th:inline="javascript">
             const bgSelect = $("select[name='bgNum']");
             const sgSelect = $("select[name='sgNum']");
+            
             let bgNum = [[${dto.bgNum}]];
+            let isFavorite = [[${dto.favorite}]];
+            
             $(getBGList());
             $(getSGList());
+            
             
             // 대분류 호출 함수
             function getBGList() {
@@ -163,7 +171,7 @@
                 getSGList();
             });
             
-            sgSelect.on("change", function () {
+            $(sgSelect).on("change", function () {
                 let sgNum = $(this).val();
                 location.href = "/categories/" + sgNum;
             });
@@ -196,6 +204,7 @@
                 return `${Math.floor(betweenTimeDay / 365)}년전`;
             }
             
+            // 상품 이미지 변경 함수
             $(".list-group-item").on("click", function (event) {
                 event.preventDefault();
                 let subImg = $(this).find("img");
@@ -203,8 +212,50 @@
                 
                 mainImg.attr("src", subImg.attr("src"));
                 
-            })
-        
+            });
+            
+            $(".btn-favorite").click(function () {
+                    let productId = [[${dto.id}]];
+                    if (isFavorite) {
+                        removeFavorite(productId)
+                    } else {
+                        addFavorite(productId);
+                    }
+                }
+            );
+            
+            function addFavorite(productId) {
+                console.log("addFavorite");
+                $.ajax({
+                    url: '/products/favorite/' + productId,
+                    type: 'post',
+                    success: function (count) {
+                        let favoriteCnt = $(".favorite-cnt");
+                        favoriteCnt.text(count);
+                        isFavorite = true;
+                    },
+                    error: function (error) {
+                        location.href="/member/auth/signin";
+                    }
+                });
+            }
+            
+            function removeFavorite(productId) {
+                console.log("removeFavorite");
+                $.ajax({
+                    url: '/products/favorite/' + productId,
+                    type: 'delete',
+                    success: function (count) {
+                        let favoriteCnt = $(".favorite-cnt");
+                        favoriteCnt.text(count);
+                        favoriteCnt.find("img").attr("src", "/images/heart.png");
+                        isFavorite = false;
+                    },
+                    error: function (error) {
+                        location.href="/member/auth/signin";
+                    }
+                });
+            }
         
         </script>
     

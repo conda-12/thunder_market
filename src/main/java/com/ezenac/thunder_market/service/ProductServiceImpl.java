@@ -1,14 +1,14 @@
 package com.ezenac.thunder_market.service;
 
-import com.ezenac.thunder_market.entity.Product;
-import com.ezenac.thunder_market.entity.ProductImage;
-import com.ezenac.thunder_market.entity.SmallGroup;
 import com.ezenac.thunder_market.dto.PageRequestDTO;
 import com.ezenac.thunder_market.dto.ProductDTO;
 import com.ezenac.thunder_market.dto.ProductRegisterDTO;
+import com.ezenac.thunder_market.entity.Product;
+import com.ezenac.thunder_market.entity.ProductImage;
+import com.ezenac.thunder_market.entity.SmallGroup;
 import com.ezenac.thunder_market.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +27,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@Log4j2
+@Slf4j
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
@@ -82,7 +82,8 @@ public class ProductServiceImpl implements ProductService {
         }
         return memberId;
     }
-    // 이미지 리사이즈 후 저
+
+    // 이미지 리사이즈 후 저장
     private void saveFile(MultipartFile file, String saveName) throws IOException {
 
         Image image = ImageIO.read(file.getInputStream());

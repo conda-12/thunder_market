@@ -4,13 +4,15 @@ import com.ezenac.thunder_market.config.auth.PrincipalDetails;
 import com.ezenac.thunder_market.dto.PageRequestDTO;
 import com.ezenac.thunder_market.dto.ProductDTO;
 import com.ezenac.thunder_market.dto.ProductRegisterDTO;
-import com.ezenac.thunder_market.service.GroupService;
+import com.ezenac.thunder_market.service.FavoriteService;
 import com.ezenac.thunder_market.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,11 +27,11 @@ import java.nio.file.Files;
 import java.util.List;
 
 @Controller
-@Log4j2
+@Slf4j
 @RequiredArgsConstructor
 public class ProductsController {
     private final ProductService productService;
-    private final GroupService groupService;
+    private final FavoriteService favoriteService;
 
     // 상품 상세 조회
     @Transactional
@@ -37,6 +39,14 @@ public class ProductsController {
     public String read(@PathVariable("productId") Long productId, Model model) {
         log.info("read product => " + productId);
         ProductDTO productDTO = productService.read(productId);
+        // 유저가 좋아요를 했는지 체크
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.isAuthenticated()) {
+            String username = authentication.getName();
+            boolean isFavorite = favoriteService.isFavorite(username, productId);
+            productDTO.setFavorite(isFavorite);
+        }
+
         model.addAttribute("dto", productDTO);
         return "/products/read";
     }
@@ -111,13 +121,56 @@ public class ProductsController {
             // 헤더에 파일 속성 명시
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add("Content-Type", Files.probeContentType(file.toPath()));
-            
+
             //바이트 배열로 전송
             return new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), httpHeaders, HttpStatus.OK);
         } catch (IOException e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @Transactional
+    @ResponseBody
+    @PostMapping("/products/favorite/{productId}")
+    public ResponseEntity<Long> addFavorite(@PathVariable Long productId) {
+        Authentication user = SecurityContextHolder.getContext().getAuthentication();
+
+        if(!user.isAuthenticated()){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        String memberId = user.getName();
+        log.info(memberId + " like " + productId);
+
+        boolean result = favoriteService.isFavorite(memberId, productId);
+
+        if (!result) {
+            favoriteService.add(memberId, productId);
+        }
+        Long count = favoriteService.count(productId);
+        return new ResponseEntity<>(count, HttpStatus.OK);
+    }
+
+    @Transactional
+    @ResponseBody
+    @DeleteMapping("/products/favorite/{productId}")
+    public ResponseEntity<Long> removeFavorite(@PathVariable Long productId) {
+        Authentication user = SecurityContextHolder.getContext().getAuthentication();
+
+        if(!user.isAuthenticated()){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        String memberId = user.getName();
+        log.info(memberId + " unlike " + productId);
+
+        boolean result = favoriteService.isFavorite(memberId, productId);
+        if (result) {
+            favoriteService.remove(memberId, productId);
+        }
+
+        Long count = favoriteService.count(productId);
+        return new ResponseEntity<>(count, HttpStatus.OK);
     }
 
 
