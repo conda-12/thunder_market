@@ -1,7 +1,7 @@
 package com.ezenac.thunder_market;
 
-import com.ezenac.thunder_market.member.entity.Token;
-import com.ezenac.thunder_market.member.repository.TokenRedisRepository;
+import com.ezenac.thunder_market.entity.Token;
+import com.ezenac.thunder_market.repository.TokenRedisRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,7 +1,7 @@
 package com.ezenac.thunder_market;
 
-import com.ezenac.thunder_market.member.entity.Member;
-import com.ezenac.thunder_market.member.repository.MemberRepository;
+import com.ezenac.thunder_market.entity.Member;
+import com.ezenac.thunder_market.repository.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

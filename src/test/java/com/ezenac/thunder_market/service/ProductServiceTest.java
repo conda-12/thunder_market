@@ -1,7 +1,6 @@
 package com.ezenac.thunder_market.service;
 
-import com.ezenac.thunder_market.product.dto.ProductDTO;
-import com.ezenac.thunder_market.product.service.ProductService;
+import com.ezenac.thunder_market.dto.ProductDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

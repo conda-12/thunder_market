@@ -2,8 +2,8 @@ package com.ezenac.thunder_market.config.oauth;
 
 import com.ezenac.thunder_market.config.auth.PrincipalDetails;
 import com.ezenac.thunder_market.config.oauth.provider.*;
-import com.ezenac.thunder_market.member.entity.Member;
-import com.ezenac.thunder_market.member.repository.MemberRepository;
+import com.ezenac.thunder_market.entity.Member;
+import com.ezenac.thunder_market.repository.MemberRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -12,7 +12,6 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
 import java.util.Map;
 import java.util.Optional;
 

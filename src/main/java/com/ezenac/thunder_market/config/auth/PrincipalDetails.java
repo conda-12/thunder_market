@@ -1,6 +1,6 @@
 package com.ezenac.thunder_market.config.auth;
 
-import com.ezenac.thunder_market.member.entity.Member;
+import com.ezenac.thunder_market.entity.Member;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,6 +1,6 @@
 package com.ezenac.thunder_market;
 
-import com.ezenac.thunder_market.product.service.GroupService;
+import com.ezenac.thunder_market.service.GroupService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
