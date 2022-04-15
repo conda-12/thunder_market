@@ -3,7 +3,7 @@ package com.ezenac.thunder_market.member.service;
 
 import com.ezenac.thunder_market.member.entity.MemberDTO;
 import com.ezenac.thunder_market.member.entity.Token;
-import com.ezenac.thunder_market.product.domain.Product;
+import com.ezenac.thunder_market.product.entity.Product;
 import com.ezenac.thunder_market.member.entity.Member;
 
 import javax.servlet.http.HttpSession;

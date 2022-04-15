@@ -1,10 +1,10 @@
 package com.ezenac.thunder_market.product.repository;
 
 import com.ezenac.thunder_market.member.entity.QFavorite;
-import com.ezenac.thunder_market.product.domain.Product;
-import com.ezenac.thunder_market.product.domain.ProductState;
-import com.ezenac.thunder_market.product.domain.QProduct;
-import com.ezenac.thunder_market.product.domain.SmallGroup;
+import com.ezenac.thunder_market.product.entity.Product;
+import com.ezenac.thunder_market.product.entity.ProductState;
+import com.ezenac.thunder_market.product.entity.QProduct;
+import com.ezenac.thunder_market.product.entity.SmallGroup;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;

@@ -1,9 +1,9 @@
 package com.ezenac.thunder_market.product.service;
 
 import com.ezenac.thunder_market.member.entity.Member;
-import com.ezenac.thunder_market.product.domain.Product;
-import com.ezenac.thunder_market.product.domain.ProductState;
-import com.ezenac.thunder_market.product.domain.SmallGroup;
+import com.ezenac.thunder_market.product.entity.Product;
+import com.ezenac.thunder_market.product.entity.ProductState;
+import com.ezenac.thunder_market.product.entity.SmallGroup;
 import com.ezenac.thunder_market.product.dto.PageRequestDTO;
 import com.ezenac.thunder_market.product.dto.ProductDTO;
 import com.ezenac.thunder_market.product.dto.ProductImageDTO;

@@ -13,7 +13,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegisterDTO {
-
+    // todo productDTO registerDTO 통합하기
+    // 지네릭을 T로 바꾸고 리스트 이름을 바꾸고 뷰에서 인풋 이름을 바꾼다.
+    // 꼭 테스트 할 것
     private List<MultipartFile> files;
 
     private String title;

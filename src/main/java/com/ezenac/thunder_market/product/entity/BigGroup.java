@@ -1,8 +1,7 @@
-package com.ezenac.thunder_market.product.domain;
+package com.ezenac.thunder_market.product.entity;
 
 
 import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 

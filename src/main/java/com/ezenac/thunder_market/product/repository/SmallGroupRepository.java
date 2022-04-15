@@ -1,7 +1,7 @@
 package com.ezenac.thunder_market.product.repository;
 
-import com.ezenac.thunder_market.product.domain.BigGroup;
-import com.ezenac.thunder_market.product.domain.SmallGroup;
+import com.ezenac.thunder_market.product.entity.BigGroup;
+import com.ezenac.thunder_market.product.entity.SmallGroup;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 

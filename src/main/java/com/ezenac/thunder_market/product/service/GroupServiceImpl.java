@@ -1,7 +1,7 @@
 package com.ezenac.thunder_market.product.service;
 
-import com.ezenac.thunder_market.product.domain.BigGroup;
-import com.ezenac.thunder_market.product.domain.SmallGroup;
+import com.ezenac.thunder_market.product.entity.BigGroup;
+import com.ezenac.thunder_market.product.entity.SmallGroup;
 import com.ezenac.thunder_market.product.dto.BigGroupDTO;
 import com.ezenac.thunder_market.product.dto.SmallGroupDTO;
 import com.ezenac.thunder_market.product.repository.BigGroupRepository;

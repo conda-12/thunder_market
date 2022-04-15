@@ -1,6 +1,6 @@
 package com.ezenac.thunder_market.product.dto;
 
-import com.ezenac.thunder_market.product.domain.ProductState;
+import com.ezenac.thunder_market.product.entity.ProductState;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

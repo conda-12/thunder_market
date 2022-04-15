@@ -1,6 +1,6 @@
 package com.ezenac.thunder_market.member.entity;
 
-import com.ezenac.thunder_market.product.domain.Product;
+import com.ezenac.thunder_market.product.entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,5 +1,6 @@
 package com.ezenac.thunder_market.product.controller;
 
+import com.ezenac.thunder_market.config.auth.PrincipalDetails;
 import com.ezenac.thunder_market.product.dto.BigGroupDTO;
 import com.ezenac.thunder_market.product.dto.PageRequestDTO;
 import com.ezenac.thunder_market.product.dto.ProductDTO;
@@ -11,6 +12,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -51,8 +54,9 @@ public class ProductsController {
     @PostMapping("/products/new")
     public ResponseEntity<Long> register(RegisterDTO registerDTO) {
         log.info("register => " + registerDTO);
-        // todo memberId
-        registerDTO.setMemberId("kyoulho");
+
+        PrincipalDetails user = (PrincipalDetails) SecurityContextHolder.getContext().getAuthentication();
+        registerDTO.setMemberId(user.getUsername());
 
         Long id = productService.register(registerDTO);
 
