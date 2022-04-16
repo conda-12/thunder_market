@@ -17,6 +17,5 @@ public abstract class BaseTime {
     private LocalDateTime regDate;
 
     @LastModifiedDate
-    @Column(updatable = false)
     private LocalDateTime modDate;
 }
