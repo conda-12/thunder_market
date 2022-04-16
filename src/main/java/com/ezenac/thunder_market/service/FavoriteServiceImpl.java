@@ -1,8 +1,9 @@
-package com.ezenac.thunder_market.repository;
+package com.ezenac.thunder_market.service;
 
 import com.ezenac.thunder_market.entity.Favorite;
 import com.ezenac.thunder_market.entity.Member;
 import com.ezenac.thunder_market.entity.Product;
+import com.ezenac.thunder_market.repository.FavoriteRepository;
 import com.ezenac.thunder_market.service.FavoriteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
