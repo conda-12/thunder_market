@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -130,6 +131,7 @@ public class ProductServiceImpl implements ProductService {
         return result.stream().map(row -> entityToDTO((Product) row[0], (Long) row[1])).collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public ProductDTO read(Long id) {
         int i = productRepository.updateHit(id);
@@ -141,7 +143,7 @@ public class ProductServiceImpl implements ProductService {
         return null;
     }
 
-    @Transactional
+    @Modifying
     @Override
     public void modify(Product product) {
         productRepository.save(product);

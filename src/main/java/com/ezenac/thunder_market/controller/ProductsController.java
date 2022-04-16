@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +35,6 @@ public class ProductsController {
     private final FavoriteService favoriteService;
 
     // 상품 상세 조회
-    @Transactional
     @GetMapping("/products/{productId}")
     public String read(@PathVariable("productId") Long productId, Model model) {
         log.info("read product => " + productId);
@@ -130,18 +130,20 @@ public class ProductsController {
         }
     }
 
-    @Transactional
+    // 찜하기
     @ResponseBody
     @PostMapping("/products/favorite/{productId}")
     public ResponseEntity<Long> addFavorite(@PathVariable Long productId) {
         Authentication user = SecurityContextHolder.getContext().getAuthentication();
 
-        if(!user.isAuthenticated()){
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        for (GrantedAuthority i : user.getAuthorities()) {
+            if (i.toString().equals("ROLE_ANONYMOUS")) {
+               return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
         }
+
         String memberId = user.getName();
         log.info(memberId + " like " + productId);
-
         boolean result = favoriteService.isFavorite(memberId, productId);
 
         if (!result) {
@@ -151,14 +153,16 @@ public class ProductsController {
         return new ResponseEntity<>(count, HttpStatus.OK);
     }
 
-    @Transactional
+    // 찜하기 취소
     @ResponseBody
     @DeleteMapping("/products/favorite/{productId}")
     public ResponseEntity<Long> removeFavorite(@PathVariable Long productId) {
         Authentication user = SecurityContextHolder.getContext().getAuthentication();
 
-        if(!user.isAuthenticated()){
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        for (GrantedAuthority i : user.getAuthorities()) {
+            if (i.toString().equals("ROLE_ANONYMOUS")) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
         }
 
         String memberId = user.getName();
@@ -171,6 +175,17 @@ public class ProductsController {
 
         Long count = favoriteService.count(productId);
         return new ResponseEntity<>(count, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_MEMBER')")
+    @GetMapping("/products/modify/{productId}")
+    public String modifyGet(@PathVariable Long productId, Model model) {
+        log.info("modify product => " + productId);
+
+        ProductDTO productDTO = productService.read(productId);
+
+        model.addAttribute("dto", productDTO);
+        return "/products/modify";
     }
 
 
