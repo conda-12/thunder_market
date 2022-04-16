@@ -75,23 +75,23 @@
                                 </div>
                             </div>
                             <hr>
-
+                            
                             <button type="button" class="btn btn-warning float-end" onclick="validation()">상품등록</button>
-
+                        
                         </form>
                     </div>
-
+                    
                     <div class="tab-pane fade" id="myreview" role="tabpanel"
                          aria-labelledby="myreview-tab">
                         상품관리
                     </div>
-
+                    
                     <div class="tab-pane fade" id="wishlist" role="tabpanel"
                          aria-labelledby="wishlist-tab">
                         구매/판매 내역
                     </div>
                 </div>
-
+            
             </div>
         </section>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -100,44 +100,44 @@
         <script th:inline="javascript">
             // 파일 배열
             const fileArr = [];
-
+            
             // 대분류 불러오는 함수
             $(function () {
                 let selectNode = $("#bg-select");
-
+                
                 $.getJSON('/group/bg/all', function (arr) {
                     for (let i in arr) {
                         selectNode.append(" <option value='" + arr[i].bgNum + "'>" + arr[i].bgCate + "</option>");
                     }
                 });
             });
-
+            
             // 소분류 불러오는 함수
             $("#bg-select").on("change", function () {
                 let selectNode = $("#sg-select");
                 //소분류 리스트 삭제
                 selectNode.children().remove();
                 let bgNum = $(this).val();
-
+                
                 $.getJSON('/group/sg/' + bgNum, function (arr) {
                     for (let i in arr) {
                         selectNode.append(" <option value='" + arr[i].sgNum + "'>" + arr[i].sgCate + "</option>");
                     }
                 });
             })
-
-
+            
+            
             // 이미지 등록 함수
             function addFile(event) {
                 if (fileArr.length >= 5) {
                     alert("상품 이미지는 최대 5개입니다.");
                     return;
                 }
-
+                
                 const fileList = event.target.files;
                 const file = fileList[0];
                 const fileName = file.name;
-
+                
                 // 이미지 파일 검사
                 if (!checkExtension(fileName, file.size)) {
                     return;
@@ -148,16 +148,16 @@
                 $("#image-cnt").text("상품이미지(" + fileArr.length + "/5)");
                 // 미리보기 처리
                 setThumbnail(file, fileName);
-
+                
             }
-
+            
             // 미리보기 함수
             function setThumbnail(file, fileName) {
                 const ulNode = $("#img-container ul");
                 let reader = new FileReader();
-
+                
                 reader.onload = function (file) {
-
+                    
                     ulNode.append("<li class='list-group-item'>" +
                         "<img style='height: 135px' src='" + file.target.result + "'><br>" +
                         "<button type='button' data-name='" + fileName + "' class='btn btn-close'></button>" +
@@ -165,35 +165,35 @@
                 };
                 reader.readAsDataURL(file);
             }
-
+            
             // 이미지 파일 검사
             function checkExtension(fileName, fileSize) {
                 const regex = new RegExp("(.*?)\.(exe|sh|zip|alz|tiff)$");
                 const maxSize = 10485760; //10MB
-
+                
                 for (let i = 0; i < fileArr.length; i++) {
                     if (fileArr[i].name === fileName) {
                         alert("중복 이미지입니다.");
                         return false;
                     }
                 }
-
+                
                 if (fileSize >= maxSize) {
                     alert("파일 사이즈 초과");
                     return false;
                 }
-
+                
                 if (regex.test(fileName)) {
                     alert("해당 종류의 파일은 업로드할 수 없습니다.")
                     return false;
                 }
                 return true;
             }
-
+            
             // 이미지 삭제 함수
             $(".list-group").on("click", ".btn-close", function () {
                 let fileName = $(this).data("name");
-
+                
                 for (let i = 0; i < fileArr.length; i++) {
                     if (fileArr[i].name === fileName) {
                         fileArr.splice(i, 1)
@@ -203,8 +203,8 @@
                 // 이미지 개수 보여주기
                 $("#image-cnt").text("상품이미지(" + fileArr.length + "/5)");
             })
-
-
+            
+            
             // 주소 검색 함수
             function searchAddress() {
                 //카카오 지도 발생
@@ -212,17 +212,17 @@
                     oncomplete: function (data) { //선택시 입력값 세팅
                         let address = data.jibunAddress.replace(/[0-9]/g, "").replace(" -", "");
                         address = address.trim();
-
+                        
                         $("input[name='address']").val(address);
                     }
                 }).open();
             }
-
+            
             // 현재 주소 검색 함수
             function getPos() {
                 const currentBtn = $("#current-btn");
                 currentBtn.text("로딩 중...").prop("disabled", true);
-
+                
                 // 현재 좌표 구하기
                 navigator.geolocation.getCurrentPosition((position) => {
                     const lat = position.coords.latitude;
@@ -242,7 +242,7 @@
                     currentBtn.text("현재 위치").prop("disabled", false);
                 });
             }
-
+            
             // 유효성 검사
             function validation() {
                 let inputFile = $("input[type='file']");
@@ -252,7 +252,7 @@
                 let address = $("input[name='address']").val();
                 let price = $("input[name='price']").val();
                 let content = $("textarea[name='content']").val();
-
+                
                 if (fileArr.length < 1) {
                     alert("상품 이미지를 등록해주세요.");
                 } else if (!title.trim()) {
@@ -279,7 +279,7 @@
                     formData.append("address", address);
                     formData.append("price", price);
                     formData.append("content", content);
-
+                    
                     $.ajax({
                         url: '/products/new',
                         processData: false, // query String을 하지 않는다.
@@ -290,7 +290,7 @@
                         success: function (result) {
                             if (result) {
                                 alert("상품등록에 성공했습니다.");
-
+                                
                                 // 상세 페이지로 이동
                                 location.href = "/products/" + result;
                             }
@@ -298,12 +298,12 @@
                             alert("상품등록에 실패했습니다\n" + jqXHR.responseText);
                         }
                     });
-
+                    
                 }
-
-
+                
+                
             }
         </script>
-
+    
     </th:block>
 </th:block>
