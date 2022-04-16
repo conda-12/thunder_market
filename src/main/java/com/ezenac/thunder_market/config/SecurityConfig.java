@@ -4,16 +4,16 @@ package com.ezenac.thunder_market.config;
 import com.ezenac.thunder_market.config.auth.PrincipalDetailsService;
 import com.ezenac.thunder_market.config.oauth.PrincipalOauth2MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true) // 어노테이션으로 접근제한 설정
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PrincipalOauth2MemberService principalOauth2MemberService;
