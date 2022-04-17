@@ -100,32 +100,42 @@
         <script th:inline="javascript">
             // 파일 배열
             const fileArr = [];
-
-            // 대분류 불러오는 함수
-            $(function () {
-                let selectNode = $("#bg-select");
-
-                $.getJSON('/group/bg/all', function (arr) {
-                    for (let i in arr) {
-                        selectNode.append(" <option value='" + arr[i].bgNum + "'>" + arr[i].bgCate + "</option>");
-                    }
-                });
+            const bgSelect = $("select[name='bgNum']");
+            const sgSelect = $("select[name='sgNum']");
+            
+            $(getBGList());
+           
+            $(bgSelect).on("change",function (){
+                bgNum = $(this).val();
+                sgSelect.children().remove();
+                sgSelect.append("<option th:selected=\"${sgNum=='' ? true: false}\">카테고리 소분류</option>")
+                getSGList();
             });
 
-            // 소분류 불러오는 함수
-            $("#bg-select").on("change", function () {
-                let selectNode = $("#sg-select");
-                //소분류 리스트 삭제
-                selectNode.children().remove();
-                let bgNum = $(this).val();
-
-                $.getJSON('/group/sg/' + bgNum, function (arr) {
+            // 대분류 호출 함수
+            function getBGList() {
+                $.getJSON('/group/bg/all', function (arr) {
                     for (let i in arr) {
-                        selectNode.append(" <option value='" + arr[i].sgNum + "'>" + arr[i].sgCate + "</option>");
+                        let optionNode = document.createElement("option");
+                        optionNode.setAttribute("value", arr[i].bgNum);
+                        optionNode.text = arr[i].bgCate;
+                        bgSelect.append(optionNode);
+            
                     }
                 });
-            })
+            }
 
+            // 소분류 호출 함수
+            function getSGList() {
+                $.getJSON('/group/sg/' + bgNum, function (arr) {
+                    for (let i in arr) {
+                        let optionNode = document.createElement("option");
+                        optionNode.setAttribute("value", arr[i].sgNum);
+                        optionNode.text = arr[i].sgCate;
+                        sgSelect.append(optionNode);
+                    }
+                });
+            }
 
             // 이미지 등록 함수
             function addFile(event) {
@@ -300,8 +310,6 @@
                     });
 
                 }
-
-
             }
         </script>
 
