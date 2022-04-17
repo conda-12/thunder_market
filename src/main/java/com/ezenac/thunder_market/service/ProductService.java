@@ -31,6 +31,10 @@ public interface ProductService {
 
     File getImage(String filePath);
 
+    void removeImage(Long imageId);
+
+    Boolean authorityValidate(Long id, String memberId);
+
     default Product dtoToEntity(ProductRegisterDTO dto) {
 
         Member member = Member.builder().memberId(dto.getMemberId()).build();

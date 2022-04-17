@@ -12,15 +12,21 @@
                             </div>
                             <hr>
                             <div class="row">
-                                <div id="image-cnt" class="col-6 col-sm-2">상품이미지(0/5)<small style="color: red">*</small>
+                                <div id="image-cnt" class="col-6 col-sm-2"><small style="color: red">*</small>
                                 </div>
                                 <div class="col" style="height: 320px">
                                     <div class="h-75" id="img-container">
                                         <ul class="list-group list-group-horizontal" style="height: 200px">
-                                            <li class='list-group-item' th:each="image : ${dto.imageDTOList}">
-                                                <img style='height: 135px' th:src='|@{/products/display?imageURL=}${image.imageURL}|'><br>
-                                                <button type='button' data-name=''
-                                                        class='btn'>이미지 편집</button>
+                                            <li class='list-group-item text-center'
+                                                th:each="image : ${dto.imageDTOList}">
+                                                <img style='height: 135px'
+                                                     th:src='|@{/products/display?imageURL=}${image.imageURL}|'><br>
+                                                <button th:data-id="${image.imageId}" type='button'
+                                                        class='btn btn-outline-warning'>변경
+                                                </button>
+                                                <button th:data-id="${image.imageId}" type='button'
+                                                        class='btn btn-outline-danger'>삭제
+                                                </button>
                                             </li>
                                         </ul>
                                     </div>
@@ -115,12 +121,17 @@
         <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
         <script th:inline="javascript">
             // 파일 배열
-            const fileArr = [];
+            let fileArr = [];
+            let imageCnt = $(".list-group-item").length;
             const bgSelect = $("select[name='bgNum']");
             const sgSelect = $("select[name='sgNum']");
             
-            let bgNum = [[${dto.bgNum}]]
+            let bgNum = [[${dto.bgNum}]];
             let sgNum = [[${dto.sgNum}]];
+            
+            $(function () {
+                $("#image-cnt").html("상품이미지(" + imageCnt + "/" + 5 + ")<small style='color: red'>*</small>");
+            })
             
             $(getBGList());
             $(getSGList());
@@ -165,7 +176,7 @@
             
             // 이미지 등록 함수
             function addFile(event) {
-                if (fileArr.length >= 5) {
+                if (imageCnt >= 5) {
                     alert("상품 이미지는 최대 5개입니다.");
                     return;
                 }
@@ -181,7 +192,8 @@
                 // 배열의 파일 저장
                 fileArr.push(file);
                 // 파일 개수 보여주기
-                $("#image-cnt").text("상품이미지(" + fileArr.length + "/5)");
+                imageCnt++;
+                $("#image-cnt").html("상품이미지(" + imageCnt + "/5)<small style='color: red'>*</small>");
                 // 미리보기 처리
                 setThumbnail(file, fileName);
                 
@@ -194,9 +206,9 @@
                 
                 reader.onload = function (file) {
                     
-                    ulNode.append("<li class='list-group-item'>" +
+                    ulNode.append("<li class='list-group-item text-center'>" +
                         "<img style='height: 135px' src='" + file.target.result + "'><br>" +
-                        "<button type='button' data-name='" + fileName + "' class='btn btn-close'></button>" +
+                        "<button type='button' data-name='" + fileName + "' class='btn btn-outline-danger'>삭제</button>" +
                         " </li> ");
                 };
                 reader.readAsDataURL(file);
@@ -227,19 +239,51 @@
             }
             
             // 이미지 삭제 함수
-            $(".list-group").on("click", ".btn-close", function () {
+            $(".list-group").on("click", ".btn-outline-danger", function () {
                 let fileName = $(this).data("name");
-                
-                for (let i = 0; i < fileArr.length; i++) {
-                    if (fileArr[i].name === fileName) {
-                        fileArr.splice(i, 1)
+                if(imageCnt <= 1){
+                    alert("이미지는 1개 이상이어야합니다.");
+                    return;
+                }
+                if (fileName) {  //신규 파일 처리
+                    // 배열에서 삭제
+                    for (let i = 0; i < fileArr.length; i++) {
+                        if (fileArr[i].name === fileName) {
+                            fileArr.splice(i, 1)
+                        }
+                    }
+                } else {    //기존 파일 처리
+                    let imageId = $(this).attr("data-id");
+                    
+                    let result = removeImage(imageId);
+                    alert(result);
+                    if (!result) {
+                        alert("권한이 없습니다.");
+                        return;
                     }
                 }
+                // 미리보기 삭제
                 $(this).closest("li").remove();
                 // 이미지 개수 보여주기
-                $("#image-cnt").text("상품이미지(" + fileArr.length + "/5)");
-            })
+                imageCnt--;
+                $("#image-cnt").html("상품이미지(" + imageCnt + "/5)<small style='color: red'>*</small>");
+            });
             
+            
+            // 기존 상품 이미지 삭제
+            function removeImage(imageId) {
+                $.ajax({
+                    url: '/products/modify/' + [[${dto.id}]] + "/" + imageId,
+                    type: 'delete',
+                    success: function (result) {
+                      
+                        return true;
+                    }, error: function (error) {
+                       
+                        return false;
+                    }
+                });
+            }
             
             // 주소 검색 함수
             function searchAddress() {
@@ -288,25 +332,24 @@
                 let address = $("input[name='address']").val();
                 let price = $("input[name='price']").val();
                 let content = $("textarea[name='content']").val();
-                
-                if (fileArr.length < 1) {
+    
+                if (imageCnt < 1) {
                     alert("상품 이미지를 등록해주세요.");
                 } else if (!title.trim()) {
                     alert("제목을 입력해주세요.");
-                } else if (!bg) {
+                } else if (typeof bg === "number") {
                     alert("카테고리를 선택해주세요.");
-                } else if (bg !== "999" && !sg) {
+                } else if (typeof sg === "number") {
                     alert("카테고리를 선택해주세요.")
                 } else if (!address) {
                     alert("주소를 입력해주세요.");
                 } else if (!price) {
                     alert("가격을 입력해주세요.")
                 } else if (!content) {
-                    console.log(content);
                     alert("상품 설명을 입력해주세요");
                 } else {
                     let formData = new FormData();
-                    for (file of fileArr) {
+                    for (let file of fileArr) {
                         formData.append("files", file);
                     }
                     formData.append("title", title);
@@ -315,27 +358,30 @@
                     formData.append("address", address);
                     formData.append("price", price);
                     formData.append("content", content);
+                        
                     
-                    $.ajax({
-                        url: '/products/new',
-                        processData: false, // query String을 하지 않는다.
-                        contentType: false, // multipart/form-data로 전송되게 하는 설정
-                        data: formData,
-                        type: 'post',
-                        dataType: 'text',
-                        success: function (result) {
-                            if (result) {
-                                alert("상품등록에 성공했습니다.");
-                                
-                                // 상세 페이지로 이동
-                                location.href = "/products/" + result;
+                        $.ajax({
+                            url: '/products/modify',
+                            processData: false, // query String을 하지 않는다.
+                            contentType: false, // multipart/form-data로 전송되게 하는 설정
+                            data: formData,
+                            type: 'post',
+                            dataType: 'text',
+                            success: function (result) {
+                                if (result) {
+                                    alert("상품수정에 성공했습니다.");
+                                    
+                                    // 상세 페이지로 이동
+                                    location.href = "/products/" + result;
+                                }
+                            }, error: function (jqXHR, textStatus, errorThrown) {
+                                alert("상품수정에 실패했습니다");
+                                console.log(jqXHR.responseText);
                             }
-                        }, error: function (jqXHR, textStatus, errorThrown) {
-                            alert("상품등록에 실패했습니다\n" + jqXHR.responseText);
-                        }
-                    });
+                        });
+                    }
                     
-                }
+               
                 
                 
             }

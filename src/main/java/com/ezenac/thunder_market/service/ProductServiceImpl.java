@@ -6,6 +6,7 @@ import com.ezenac.thunder_market.dto.ProductRegisterDTO;
 import com.ezenac.thunder_market.entity.Product;
 import com.ezenac.thunder_market.entity.ProductImage;
 import com.ezenac.thunder_market.entity.SmallGroup;
+import com.ezenac.thunder_market.repository.ProductImageRepository;
 import com.ezenac.thunder_market.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
+    private final ProductImageRepository imageRepository;
 
     @Value("${com.ezenac.thunder_market.upload.path}")
     private String uploadPath;
@@ -167,6 +169,37 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public File getImage(String filePath) {
         return new File(uploadPath + File.separator + filePath);
+    }
+
+    @Transactional
+    @Override
+    public void removeImage(Long imageId) {
+        // 파일 삭제
+        Optional<ProductImage> result = imageRepository.findById(imageId);
+        if (result.isEmpty()) {
+            return;
+        }
+
+        ProductImage productImage = result.get();
+        String filePath = uploadPath + File.separator + productImage.getPath() + File.separator + productImage.getUuid() + "_" + productImage.getImageName();
+        File file = new File(filePath);
+
+        if (file.delete()) {
+            // 디비 삭제
+            imageRepository.deleteById(imageId);
+        }
+
+    }
+
+    @Transactional
+    @Override
+    public Boolean authorityValidate(Long id, String memberId) {
+        Optional<Product> result = productRepository.findById(id);
+        if (result.isEmpty()) {
+            return false;
+        }
+        Product product = result.get();
+        return memberId.equals(product.getMember().getMemberId());
     }
 
 

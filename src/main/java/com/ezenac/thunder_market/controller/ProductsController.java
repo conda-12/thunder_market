@@ -4,6 +4,7 @@ import com.ezenac.thunder_market.config.auth.PrincipalDetails;
 import com.ezenac.thunder_market.dto.PageRequestDTO;
 import com.ezenac.thunder_market.dto.ProductDTO;
 import com.ezenac.thunder_market.dto.ProductRegisterDTO;
+import com.ezenac.thunder_market.entity.Product;
 import com.ezenac.thunder_market.service.FavoriteService;
 import com.ezenac.thunder_market.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -26,6 +29,7 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @Slf4j
@@ -58,13 +62,14 @@ public class ProductsController {
     }
 
     //상품 등록
+    @PreAuthorize("hasRole('ROLE_MEMBER')")
     @ResponseBody
     @PostMapping("/products/new")
     public ResponseEntity<Long> register(ProductRegisterDTO productRegisterDTO) {
         log.info("register => " + productRegisterDTO);
 
-        PrincipalDetails user = (PrincipalDetails) SecurityContextHolder.getContext().getAuthentication();
-        productRegisterDTO.setMemberId(user.getUsername());
+        Authentication user = SecurityContextHolder.getContext().getAuthentication();
+        productRegisterDTO.setMemberId(user.getName());
 
         Long id = productService.register(productRegisterDTO);
 
@@ -138,7 +143,7 @@ public class ProductsController {
 
         for (GrantedAuthority i : user.getAuthorities()) {
             if (i.toString().equals("ROLE_ANONYMOUS")) {
-               return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         }
 
@@ -177,6 +182,7 @@ public class ProductsController {
         return new ResponseEntity<>(count, HttpStatus.OK);
     }
 
+    // 수정 페이지
     @PreAuthorize("hasRole('ROLE_MEMBER')")
     @GetMapping("/products/modify/{productId}")
     public String modifyGet(@PathVariable Long productId, Model model) {
@@ -185,9 +191,39 @@ public class ProductsController {
         ProductDTO productDTO = productService.modifyGet(productId);
 
         model.addAttribute("dto", productDTO);
-        System.out.println(productDTO);
         return "/products/modify";
     }
+
+    // 상품 이미지 삭제
+    @PreAuthorize("hasRole('ROLE_MEMBER')")
+    @DeleteMapping("/products/modify/{productId}/{imageId}")
+    public ResponseEntity<Boolean> removeImage(@PathVariable Long productId, @PathVariable Long imageId) {
+        // 권한 검사
+        Authentication user = SecurityContextHolder.getContext().getAuthentication();
+        boolean result = productService.authorityValidate(productId, user.getName());
+        if (result) {
+            productService.removeImage(imageId);
+            log.info("removeImage => " + imageId);
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
+    }
+
+    // 상품 이미지 변경
+    @PreAuthorize("hasRole('ROLE_MEMBER')")
+    @PutMapping("/products/modify/{productId}/{imageId}")
+    public ResponseEntity<Boolean> changeImage(@PathVariable Long productId, @PathVariable Long imageId) {
+        Authentication user = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean result = productService.authorityValidate(productId, user.getName());
+        if (result) {
+            //todo 상품 체인지
+            log.info("changeImage => " + imageId);
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
+    }
+
 
 
 }
