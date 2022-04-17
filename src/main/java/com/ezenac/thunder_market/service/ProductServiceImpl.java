@@ -147,7 +147,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO modifyGet(Long id) {
-        return null;
+        Optional<Product> result = productRepository.findById(id);
+        return result.map(product -> entityToDTO(product, null)).orElse(null);
     }
 
     @Modifying

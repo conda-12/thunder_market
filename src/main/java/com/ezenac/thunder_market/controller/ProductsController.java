@@ -182,9 +182,10 @@ public class ProductsController {
     public String modifyGet(@PathVariable Long productId, Model model) {
         log.info("modify product => " + productId);
 
-        ProductDTO productDTO = productService.read(productId);
+        ProductDTO productDTO = productService.modifyGet(productId);
 
         model.addAttribute("dto", productDTO);
+        System.out.println(productDTO);
         return "/products/modify";
     }
 

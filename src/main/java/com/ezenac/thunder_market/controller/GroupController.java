@@ -31,7 +31,7 @@ public class GroupController {
 
     @GetMapping("/sg/{bgNum}")
     public ResponseEntity<List<SmallGroupDTO>> getSGList(@PathVariable String bgNum) {
-        log.info(bgNum);
+
         return new ResponseEntity<>(groupService.getSGList(bgNum),HttpStatus.OK);
     }
 }
