@@ -23,7 +23,9 @@ public interface ProductService {
 
     ProductDTO read(Long id);
 
-    void modify(Product product);
+    ProductDTO modifyGet(Long id);
+
+    void modifyPost(Product product);
 
     void remove(Long id);
 

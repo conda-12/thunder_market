@@ -24,6 +24,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -134,18 +135,24 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     @Override
     public ProductDTO read(Long id) {
-        int i = productRepository.updateHit(id);
-        if (i > 0) {
-            Object result = productRepository.readWithFavorite(id);
-            Object[] arr = (Object[]) result;
+        productRepository.updateHit(id);
+        Optional<Object> result = productRepository.readWithFavorite(id);
+
+        if (result.isPresent()) {
+            Object[] arr = (Object[]) result.get();
             return entityToDTO((Product) arr[0], (Long) arr[1]);
         }
         return null;
     }
 
+    @Override
+    public ProductDTO modifyGet(Long id) {
+        return null;
+    }
+
     @Modifying
     @Override
-    public void modify(Product product) {
+    public void modifyPost(Product product) {
         productRepository.save(product);
     }
 
