@@ -51,6 +51,7 @@ public interface ProductService {
         // 이미지 소스 처리
         List<ProductImageDTO> imageDTOList = product.getImages().stream().map(entity -> {
             return ProductImageDTO.builder()
+                    .imageId(entity.getImageId())
                     .path(entity.getPath())
                     .uuid(entity.getUuid())
                     .imgName(entity.getImageName())

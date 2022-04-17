@@ -14,6 +14,8 @@ import java.net.URLEncoder;
 @AllArgsConstructor
 public class ProductImageDTO {
 
+    private Long imageId;
+
     private String uuid;
 
     private String imgName;
