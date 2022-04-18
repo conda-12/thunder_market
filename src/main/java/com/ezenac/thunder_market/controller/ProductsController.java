@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -212,18 +213,17 @@ public class ProductsController {
     // 상품 이미지 변경
     @PreAuthorize("hasRole('ROLE_MEMBER')")
     @PutMapping("/products/modify/{productId}/{imageId}")
-    public ResponseEntity<Boolean> changeImage(@PathVariable Long productId, @PathVariable Long imageId) {
+    public ResponseEntity<Boolean> changeImage(@PathVariable Long productId, @PathVariable Long imageId, MultipartFile file) {
         Authentication user = SecurityContextHolder.getContext().getAuthentication();
 
         boolean result = productService.authorityValidate(productId, user.getName());
         if (result) {
-            //todo 상품 체인지
+            productService.changeImage(imageId, file);
             log.info("changeImage => " + imageId);
             return new ResponseEntity<>(true, HttpStatus.OK);
         }
         return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
     }
-
 
 
 }

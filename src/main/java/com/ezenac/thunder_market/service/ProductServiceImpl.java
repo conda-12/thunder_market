@@ -8,6 +8,7 @@ import com.ezenac.thunder_market.entity.ProductImage;
 import com.ezenac.thunder_market.entity.SmallGroup;
 import com.ezenac.thunder_market.repository.ProductImageRepository;
 import com.ezenac.thunder_market.repository.ProductRepository;
+import com.ezenac.thunder_market.utils.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -35,9 +37,8 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ProductImageRepository imageRepository;
+    private final FileUploadUtil fileUploadUtil;
 
-    @Value("${com.ezenac.thunder_market.upload.path}")
-    private String uploadPath;
 
     @Transactional
     @Override
@@ -51,69 +52,28 @@ public class ProductServiceImpl implements ProductService {
                 continue;   // 이미지 파일이 아닐시 저장하지 않음
             }
 
-            String originalFilename = file.getOriginalFilename();
-            // 파일이름이 전체 경로로 왔을 경우 경로 삭제
-            String fileName = originalFilename.substring(originalFilename.lastIndexOf("\\") + 1);
-
-            log.info("fileName => " + fileName);
-
-            // 멤버아이디로 폴더 생성
-            String folderPath = makeFolder(productRegisterDTO.getMemberId());
-            // uuid 생성
-            String uuid = UUID.randomUUID().toString();
-            // 전체 경로
-            String saveName = uploadPath + File.separator + folderPath + File.separator + uuid + "_" + fileName;
-
             try {
-                saveFile(file, saveName);
+                Map<String, String> fileInfo = fileUploadUtil.saveFile(file, productRegisterDTO.getMemberId());
+
+                ProductImage image = ProductImage.builder()
+                        .imageName(fileInfo.get("fileName"))
+                        .path(fileInfo.get("path"))
+                        .uuid(fileInfo.get("uuid"))
+                        .product(product)
+                        .build();
+                product.setImage(image);
+
             } catch (IOException e) {
-                log.warn("파일 저장에 실패했습니다. fileName => " + fileName);
+                log.warn("파일저장에 실패했습니다 => " + file.getName());
                 e.printStackTrace();
             }
-            ProductImage image = ProductImage.builder().imageName(fileName).path(folderPath).uuid(uuid).product(product).build();
-            product.setImage(image);
+
         }
         productRepository.save(product);
         log.info("product => " + product);
         return product.getId();
     }
 
-    private void saveImageFile(MultipartFile multipartFile){
-
-    }
-
-    private String makeFolder(String memberId) {
-        File uploadPathFolder = new File(uploadPath, memberId);
-
-        if (!uploadPathFolder.exists()) {
-            uploadPathFolder.mkdirs();
-        }
-        return memberId;
-    }
-
-    // 이미지 리사이즈 후 저장
-    private void saveFile(MultipartFile file, String saveName) throws IOException {
-
-        Image image = ImageIO.read(file.getInputStream());
-        // 이미지 가로 세로 측정
-        int originWidth = image.getWidth(null);
-        int originHeight = image.getHeight(null);
-        // 변경할 세로 길이
-        int newHeight = 1100;
-        // 비율 유지하며 가로 길이 설정
-        int newWidth = (originWidth * newHeight) / originHeight;
-
-        Image resizeImage = image.getScaledInstance(newWidth, newHeight, Image.SCALE_DEFAULT);
-
-        BufferedImage newImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
-
-        Graphics graphics = newImage.getGraphics();
-        graphics.drawImage(resizeImage, 0, 0, null);
-        graphics.dispose();
-        File newFile = new File(saveName);
-        ImageIO.write(newImage, "png", newFile);
-
-    }
 
     @Transactional
     @Override
@@ -159,8 +119,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Modifying
     @Override
-    public void modifyPost(Product product) {
-        productRepository.save(product);
+    public Long modifyPost(Product product) {
+        return null;
     }
 
     @Transactional
@@ -172,37 +132,49 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public File getImage(String filePath) {
-        return new File(uploadPath + File.separator + filePath);
+        return fileUploadUtil.getImage(filePath);
     }
 
     @Override
-    public void changeImage(Long imageId, MultipartFile multipartFile) {
-        // todo 기존 이미지 삭제, 새 이미지 저장, 데이터베이스 수정
-        removeFile(imageId);
+    public void changeImage(Long imageId, MultipartFile file) {
+        Optional<ProductImage> result = imageRepository.findById(imageId);
+        if (result.isEmpty()) {
+            return;
+        }
+        // 파일 삭제
+        ProductImage productImage = result.get();
+        fileUploadUtil.removeFile(productImage);
+        // 새 이미지 저장
+        try {
+            Map<String, String> fileInfo = fileUploadUtil.saveFile(file, productImage.getPath());
+            String path = fileInfo.get("path");
+            String uuid = fileInfo.get("uuid");
+            String fileName = fileInfo.get("fileName");
+            productImage.changeFile(path, uuid, fileName);
+            imageRepository.save(productImage);
+                   } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     @Transactional
     @Override
     public void removeImage(Long imageId) {
-        if (removeFile(imageId)) {
-            imageRepository.deleteById(imageId);
-        }
-    }
-
-    // 이미지 파일 삭제
-    private boolean removeFile(Long imageId) {
-        // 파일 삭제
         Optional<ProductImage> result = imageRepository.findById(imageId);
         if (result.isEmpty()) {
-            return false;
+            return;
         }
-
+        // 파일 삭제
         ProductImage productImage = result.get();
-        String filePath = uploadPath + File.separator + productImage.getPath() + File.separator + productImage.getUuid() + "_" + productImage.getImageName();
-        File file = new File(filePath);
+        if (fileUploadUtil.removeFile(productImage)) {
+            // 데이터베이스 삭제
+            imageRepository.deleteById(imageId);
 
-        return file.delete();
+        }
     }
+
 
     @Transactional
     @Override
