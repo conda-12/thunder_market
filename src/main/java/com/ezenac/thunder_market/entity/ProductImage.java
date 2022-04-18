@@ -13,16 +13,21 @@ import javax.persistence.*;
 public class ProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long imageNo;
+    private Long imageId;
+
+    private String path;
 
     private String uuid;
 
     private String imageName;
 
-    private String path;
-
     @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
 
+    public void changeFile(String path, String uuid, String imageName) {
+        this.path = path;
+        this.uuid = uuid;
+        this.imageName = imageName;
+    }
 
 }

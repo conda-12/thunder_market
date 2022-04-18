@@ -3,7 +3,9 @@ package com.ezenac.thunder_market.controller;
 import com.ezenac.thunder_market.config.auth.PrincipalDetails;
 import com.ezenac.thunder_market.dto.PageRequestDTO;
 import com.ezenac.thunder_market.dto.ProductDTO;
+import com.ezenac.thunder_market.dto.ProductImageDTO;
 import com.ezenac.thunder_market.dto.ProductRegisterDTO;
+import com.ezenac.thunder_market.entity.Product;
 import com.ezenac.thunder_market.service.FavoriteService;
 import com.ezenac.thunder_market.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +14,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -20,12 +24,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @Slf4j
@@ -39,6 +47,9 @@ public class ProductsController {
     public String read(@PathVariable("productId") Long productId, Model model) {
         log.info("read product => " + productId);
         ProductDTO productDTO = productService.read(productId);
+        if (productDTO == null) {
+            return "redirect:/";
+        }
         // 유저가 좋아요를 했는지 체크
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.isAuthenticated()) {
@@ -58,13 +69,14 @@ public class ProductsController {
     }
 
     //상품 등록
+    @PreAuthorize("hasRole('ROLE_MEMBER')")
     @ResponseBody
     @PostMapping("/products/new")
     public ResponseEntity<Long> register(ProductRegisterDTO productRegisterDTO) {
         log.info("register => " + productRegisterDTO);
 
-        PrincipalDetails user = (PrincipalDetails) SecurityContextHolder.getContext().getAuthentication();
-        productRegisterDTO.setMemberId(user.getUsername());
+        Authentication user = SecurityContextHolder.getContext().getAuthentication();
+        productRegisterDTO.setMemberId(user.getName());
 
         Long id = productService.register(productRegisterDTO);
 
@@ -138,7 +150,7 @@ public class ProductsController {
 
         for (GrantedAuthority i : user.getAuthorities()) {
             if (i.toString().equals("ROLE_ANONYMOUS")) {
-               return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         }
 
@@ -177,15 +189,77 @@ public class ProductsController {
         return new ResponseEntity<>(count, HttpStatus.OK);
     }
 
+    // 수정 페이지
     @PreAuthorize("hasRole('ROLE_MEMBER')")
     @GetMapping("/products/modify/{productId}")
     public String modifyGet(@PathVariable Long productId, Model model) {
-        log.info("modify product => " + productId);
+        log.info("modifyGET product => " + productId);
 
-        ProductDTO productDTO = productService.read(productId);
+        ProductDTO productDTO = productService.modifyGet(productId);
+        if (productDTO == null) {
+            return "redirect:/";
+        }
 
         model.addAttribute("dto", productDTO);
         return "/products/modify";
+    }
+
+    // 상품 수정
+    @ResponseBody
+    @PreAuthorize("hasRole('ROLE_MEMBER')")
+    @PostMapping("/products/modify")
+    public ResponseEntity<Long> modifyPost(ProductRegisterDTO productRegisterDTO) {
+        log.info("modifyPOST product => " + productRegisterDTO.getId());
+        //권한 검사
+        Authentication user = SecurityContextHolder.getContext().getAuthentication();
+        boolean result = productService.authorityValidate(productRegisterDTO.getId(), user.getName());
+        if (result) {
+            productRegisterDTO.setMemberId(user.getName());
+            Long id = productService.modifyPost(productRegisterDTO);
+            return new ResponseEntity<>(id, HttpStatus.OK);
+        }
+        log.warn("권한 없는 사용자 요청");
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+
+    }
+
+
+    // 상품 이미지 삭제
+    @PreAuthorize("hasRole('ROLE_MEMBER')")
+    @DeleteMapping("/products/modify/{productId}/{imageId}")
+    public ResponseEntity<Boolean> removeImage(@PathVariable Long productId, @PathVariable Long imageId) {
+        // 권한 검사
+        Authentication user = SecurityContextHolder.getContext().getAuthentication();
+        boolean result = productService.authorityValidate(productId, user.getName());
+        if (result) {
+            productService.removeImage(imageId);
+            log.info("removeImage => " + imageId);
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        }
+        log.warn("권한 없는 사용자 요청");
+        return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
+    }
+
+    // 상품 이미지 변경
+    @PreAuthorize("hasRole('ROLE_MEMBER')")
+    @PostMapping("/products/modify/{productId}/image")
+    public ResponseEntity<Map<String, String>> changeImage(@PathVariable Long productId, Long imageId, MultipartFile file) {
+        if (!file.isEmpty() || imageId == null) { //파일 유효성 검사
+            Authentication user = SecurityContextHolder.getContext().getAuthentication();
+
+            boolean result = productService.authorityValidate(productId, user.getName());
+            if (result) {
+                ProductImageDTO productImageDTO = productService.changeImage(imageId, file);
+                log.info("changeImage => " + productImageDTO);
+
+                Map<String, String> map = new HashMap<>();
+                map.put("imageId", String.valueOf(imageId));
+                map.put("imageURL", productImageDTO.getImageURL());
+                return new ResponseEntity<>(map, HttpStatus.OK);
+            }
+        }
+        log.warn("권한 없는 사용자 요청");
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
 

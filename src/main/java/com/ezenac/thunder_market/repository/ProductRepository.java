@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Optional;
+
 public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
 
     @Query("SELECT p, COUNT (f)" +
@@ -20,11 +22,11 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
             " FROM Product p" +
             " LEFT JOIN Favorite f ON f.product = p" +
             " WHERE p.state = 'SELLING' AND p.id = :id")
-    Object readWithFavorite(Long id);
+    Optional<Object> readWithFavorite(Long id);
 
     @Modifying
     @Query("UPDATE Product p" +
             " set p.hit = p.hit + 1" +
             " WHERE p.id = :id")
-    int updateHit(Long id);
+    void updateHit(Long id);
 }

@@ -14,11 +14,11 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductRegisterDTO {
 
+    private Long id;
+
     private List<MultipartFile> files;
 
     private String title;
-
-    private String bgNum;
 
     private String sgNum;
 
