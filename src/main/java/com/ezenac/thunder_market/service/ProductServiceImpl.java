@@ -49,7 +49,7 @@ public class ProductServiceImpl implements ProductService {
         for (MultipartFile file : productRegisterDTO.getFiles()) {
             // 유효성 검사
             if (!file.getContentType().startsWith("image")) {
-                log.warn("this files is not imageFile");
+                log.warn("이미지 파일이 아닙니다.");
                 continue;   // 이미지 파일이 아닐시 저장하지 않음
             }
 
@@ -131,11 +131,12 @@ public class ProductServiceImpl implements ProductService {
         String content = productRegisterDTO.getContent();
 
         product.changeInfo(title, address, price, content, SmallGroup.builder().sgNum(sgNum).build());
+        
         if (productRegisterDTO.getFiles() != null) {
             for (MultipartFile file : productRegisterDTO.getFiles()) {
                 // 유효성 검사
                 if (!file.getContentType().startsWith("image")) {
-                    log.warn("this files is not imageFile");
+                    log.warn("이미지 파일이 아닙니다.");
                     continue;   // 이미지 파일이 아닐시 저장하지 않음
                 }
 
