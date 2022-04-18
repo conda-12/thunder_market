@@ -241,7 +241,7 @@
             // 이미지 삭제 함수
             $(".list-group").on("click", ".btn-outline-danger", function () {
                 let fileName = $(this).data("name");
-                if(imageCnt <= 1){
+                if (imageCnt <= 1) {
                     alert("이미지는 1개 이상이어야합니다.");
                     return;
                 }
@@ -256,7 +256,6 @@
                     let imageId = $(this).attr("data-id");
                     
                     let result = removeImage(imageId);
-                    alert(result);
                     if (!result) {
                         alert("권한이 없습니다.");
                         return;
@@ -272,17 +271,19 @@
             
             // 기존 상품 이미지 삭제
             function removeImage(imageId) {
+                let rtn = false;
                 $.ajax({
                     url: '/products/modify/' + [[${dto.id}]] + "/" + imageId,
                     type: 'delete',
+                    async: false,
                     success: function (result) {
-                      
-                        return true;
+                        console.log("removed");
+                        rtn = true;
                     }, error: function (error) {
-                       
-                        return false;
+                        console.log(error);
                     }
                 });
+                return rtn;
             }
             
             // 주소 검색 함수
@@ -332,7 +333,7 @@
                 let address = $("input[name='address']").val();
                 let price = $("input[name='price']").val();
                 let content = $("textarea[name='content']").val();
-    
+                
                 if (imageCnt < 1) {
                     alert("상품 이미지를 등록해주세요.");
                 } else if (!title.trim()) {
@@ -358,30 +359,28 @@
                     formData.append("address", address);
                     formData.append("price", price);
                     formData.append("content", content);
-                        
                     
-                        $.ajax({
-                            url: '/products/modify',
-                            processData: false, // query String을 하지 않는다.
-                            contentType: false, // multipart/form-data로 전송되게 하는 설정
-                            data: formData,
-                            type: 'post',
-                            dataType: 'text',
-                            success: function (result) {
-                                if (result) {
-                                    alert("상품수정에 성공했습니다.");
-                                    
-                                    // 상세 페이지로 이동
-                                    location.href = "/products/" + result;
-                                }
-                            }, error: function (jqXHR, textStatus, errorThrown) {
-                                alert("상품수정에 실패했습니다");
-                                console.log(jqXHR.responseText);
+                    
+                    $.ajax({
+                        url: '/products/modify',
+                        processData: false, // query String을 하지 않는다.
+                        contentType: false, // multipart/form-data로 전송되게 하는 설정
+                        data: formData,
+                        type: 'post',
+                        dataType: 'text',
+                        success: function (result) {
+                            if (result) {
+                                alert("상품수정에 성공했습니다.");
+                                
+                                // 상세 페이지로 이동
+                                location.href = "/products/" + result;
                             }
-                        });
-                    }
-                    
-               
+                        }, error: function (jqXHR, textStatus, errorThrown) {
+                            alert("상품수정에 실패했습니다");
+                            console.log(jqXHR.responseText);
+                        }
+                    });
+                }
                 
                 
             }
