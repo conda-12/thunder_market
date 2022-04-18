@@ -26,13 +26,13 @@ public interface ProductService {
 
     ProductDTO modifyGet(Long id);
 
-    Long modifyPost(Product product);
+    Long modifyPost(ProductDTO productDTO);
 
     void remove(Long id);
 
     File getImage(String filePath);
 
-    void changeImage(Long imageId ,MultipartFile multipartFile);
+    ProductImageDTO changeImage(Long imageId ,MultipartFile multipartFile);
 
     void removeImage(Long imageId);
 

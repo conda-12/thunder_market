@@ -19,12 +19,13 @@
                                         <ul class="list-group list-group-horizontal" style="height: 200px">
                                             <li class='list-group-item text-center'
                                                 th:each="image : ${dto.imageDTOList}">
-                                                <img style='height: 135px'
+                                                <img th:image-id="${image.imageId}" style='height: 135px'
                                                      th:src='|@{/products/display?imageURL=}${image.imageURL}|'><br>
-                                                <button th:data-id="${image.imageId}" type='button'
+                                                <button type='button'
+                                                        data-bs-toggle="modal" data-bs-target="#staticBackdrop"
                                                         class='btn btn-outline-warning'>변경
                                                 </button>
-                                                <button th:data-id="${image.imageId}" type='button'
+                                                <button type='button'
                                                         class='btn btn-outline-danger'>삭제
                                                 </button>
                                             </li>
@@ -111,9 +112,30 @@
                         구매/판매 내역
                     </div>
                 </div>
-            
             </div>
         </section>
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">상품 이미지 변경</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form enctype="multipart/form-data" id="imageChange">
+                        <div class="modal-body">
+                            <input type="file" name="file" accept="image/*" >
+                            <input hidden name="imageId">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                            <button type="submit" class="btn btn-primary">변경</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
@@ -142,6 +164,7 @@
                 sgSelect.append("<option th:selected=\"${sgNum=='' ? true: false}\">카테고리 소분류</option>")
                 getSGList();
             });
+            
             
             // 대분류 호출 함수
             function getBGList() {
@@ -174,6 +197,48 @@
                 });
             }
             
+            // 이미지id 전달
+            $(".list-group-item").on("click", ".btn-outline-warning", function () {
+                let imageId = $(this).siblings("img").attr("image-id");
+                $("input[name='imageId']").val(imageId);
+            });
+            
+            // 이미지 변경 함수
+            $(".modal-footer > .btn-primary").on("click", function (event) {
+                event.preventDefault();
+                
+                if(!$("input[name=file]").val()){
+                    alert("파일을 첨부해주세요");
+                    return;
+                }
+                
+                let form = $("#imageChange")[0];
+                let data = new FormData(form);
+                let closeBtn = $(this).siblings(".btn-secondary");
+                
+                $.ajax({
+                    url: '/products/modify/' + [[${dto.id}]] + "/image",
+                    type: 'post',
+                    processData: false, // query String을 하지 않는다.
+                    contentType: false, // multipart/form-data로 전송되게 하는 설정
+                    async: false,
+                    data: data,
+                    success: function (result) {
+                        alert("이미지가 변경되었습니다.");
+                        console.log(result);
+                        let imageId = result.imageId;
+                        let imageURL = result.imageURL;
+                        closeBtn.click();
+                        $("img[image-id=" + imageId + "]").attr("src", "/products/display?imageURL=" + imageURL);
+                    }, error: function (error) {
+                        alert("이미지 변경에 실패했습니다.");
+                        closeBtn.click();
+                        console.log(error);
+                    }
+                });
+            })
+            
+            
             // 이미지 등록 함수
             function addFile(event) {
                 if (imageCnt >= 5) {
@@ -181,9 +246,9 @@
                     return;
                 }
                 
-                const fileList = event.target.files;
-                const file = fileList[0];
-                const fileName = file.name;
+                let fileList = event.target.files;
+                let file = fileList[0];
+                let fileName = file.name;
                 
                 // 이미지 파일 검사
                 if (!checkExtension(fileName, file.size)) {
@@ -213,6 +278,8 @@
                 };
                 reader.readAsDataURL(file);
             }
+            
+            $()
             
             // 이미지 파일 검사
             function checkExtension(fileName, fileSize) {
@@ -253,7 +320,7 @@
                         }
                     }
                 } else {    //기존 파일 처리
-                    let imageId = $(this).attr("data-id");
+                    let imageId = $(this).siblings("img").attr("image-id");
                     
                     let result = removeImage(imageId);
                     if (!result) {
@@ -285,6 +352,7 @@
                 });
                 return rtn;
             }
+            
             
             // 주소 검색 함수
             function searchAddress() {
@@ -338,9 +406,9 @@
                     alert("상품 이미지를 등록해주세요.");
                 } else if (!title.trim()) {
                     alert("제목을 입력해주세요.");
-                } else if (typeof bg === "number") {
+                } else if (bg === "") {
                     alert("카테고리를 선택해주세요.");
-                } else if (typeof sg === "number") {
+                } else if (sg === "") {
                     alert("카테고리를 선택해주세요.")
                 } else if (!address) {
                     alert("주소를 입력해주세요.");
@@ -371,7 +439,6 @@
                         success: function (result) {
                             if (result) {
                                 alert("상품수정에 성공했습니다.");
-                                
                                 // 상세 페이지로 이동
                                 location.href = "/products/" + result;
                             }

@@ -69,7 +69,8 @@ public class FileUploadUtil {
         // 변경할 세로 길이
         int newHeight = 1100;
         // 비율 유지하며 가로 길이 설정
-        int newWidth = (originWidth * newHeight) / originHeight;
+        //int newWidth = (originWidth * newHeight) / originHeight;
+        int newWidth = 1100;
 
         Image resizeImage = image.getScaledInstance(newWidth, newHeight, Image.SCALE_DEFAULT);
 

@@ -3,6 +3,7 @@ package com.ezenac.thunder_market.controller;
 import com.ezenac.thunder_market.config.auth.PrincipalDetails;
 import com.ezenac.thunder_market.dto.PageRequestDTO;
 import com.ezenac.thunder_market.dto.ProductDTO;
+import com.ezenac.thunder_market.dto.ProductImageDTO;
 import com.ezenac.thunder_market.dto.ProductRegisterDTO;
 import com.ezenac.thunder_market.entity.Product;
 import com.ezenac.thunder_market.service.FavoriteService;
@@ -29,7 +30,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -44,6 +47,9 @@ public class ProductsController {
     public String read(@PathVariable("productId") Long productId, Model model) {
         log.info("read product => " + productId);
         ProductDTO productDTO = productService.read(productId);
+        if (productDTO == null) {
+            return "redirect:/";
+        }
         // 유저가 좋아요를 했는지 체크
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.isAuthenticated()) {
@@ -190,6 +196,9 @@ public class ProductsController {
         log.info("modify product => " + productId);
 
         ProductDTO productDTO = productService.modifyGet(productId);
+        if (productDTO == null) {
+            return "redirect:/";
+        }
 
         model.addAttribute("dto", productDTO);
         return "/products/modify";
@@ -212,17 +221,23 @@ public class ProductsController {
 
     // 상품 이미지 변경
     @PreAuthorize("hasRole('ROLE_MEMBER')")
-    @PutMapping("/products/modify/{productId}/{imageId}")
-    public ResponseEntity<Boolean> changeImage(@PathVariable Long productId, @PathVariable Long imageId, MultipartFile file) {
-        Authentication user = SecurityContextHolder.getContext().getAuthentication();
+    @PostMapping("/products/modify/{productId}/image")
+    public ResponseEntity<Map<String, String>> changeImage(@PathVariable Long productId, Long imageId, MultipartFile file) {
+        if (!file.isEmpty() || imageId == null) { //파일 유효성 검사
+            Authentication user = SecurityContextHolder.getContext().getAuthentication();
 
-        boolean result = productService.authorityValidate(productId, user.getName());
-        if (result) {
-            productService.changeImage(imageId, file);
-            log.info("changeImage => " + imageId);
-            return new ResponseEntity<>(true, HttpStatus.OK);
+            boolean result = productService.authorityValidate(productId, user.getName());
+            if (result) {
+                ProductImageDTO productImageDTO = productService.changeImage(imageId, file);
+                log.info("changeImage => " + productImageDTO);
+
+                Map<String, String> map = new HashMap<>();
+                map.put("imageId", String.valueOf(imageId));
+                map.put("imageURL", productImageDTO.getImageURL());
+                return new ResponseEntity<>(map, HttpStatus.OK);
+            }
         }
-        return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
 

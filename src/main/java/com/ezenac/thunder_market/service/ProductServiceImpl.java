@@ -2,6 +2,7 @@ package com.ezenac.thunder_market.service;
 
 import com.ezenac.thunder_market.dto.PageRequestDTO;
 import com.ezenac.thunder_market.dto.ProductDTO;
+import com.ezenac.thunder_market.dto.ProductImageDTO;
 import com.ezenac.thunder_market.dto.ProductRegisterDTO;
 import com.ezenac.thunder_market.entity.Product;
 import com.ezenac.thunder_market.entity.ProductImage;
@@ -111,15 +112,18 @@ public class ProductServiceImpl implements ProductService {
         return null;
     }
 
+    // 상품 수정 페이지 요청
     @Override
     public ProductDTO modifyGet(Long id) {
         Optional<Product> result = productRepository.findById(id);
         return result.map(product -> entityToDTO(product, null)).orElse(null);
     }
 
+    // 상품 수정 요청
     @Modifying
     @Override
-    public Long modifyPost(Product product) {
+    public Long modifyPost(ProductDTO productDTO) {
+        // todo 엔티티 꺼내서 수정
         return null;
     }
 
@@ -130,52 +134,57 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteById(id);
     }
 
+    // 이미지 파일 요청
     @Override
     public File getImage(String filePath) {
         return fileUploadUtil.getImage(filePath);
     }
 
+    // 이미지 변경
     @Override
-    public void changeImage(Long imageId, MultipartFile file) {
+    public ProductImageDTO changeImage(Long imageId, MultipartFile file) {
         Optional<ProductImage> result = imageRepository.findById(imageId);
-        if (result.isEmpty()) {
-            return;
+        if (result.isPresent()) {
+            // 파일 삭제
+            ProductImage productImage = result.get();
+            fileUploadUtil.removeFile(productImage);
+            // 새 이미지 저장
+            try {
+                Map<String, String> fileInfo = fileUploadUtil.saveFile(file, productImage.getPath());
+                String path = fileInfo.get("path");
+                String uuid = fileInfo.get("uuid");
+                String fileName = fileInfo.get("fileName");
+                productImage.changeFile(path, uuid, fileName);
+                imageRepository.save(productImage);
+                return ProductImageDTO.builder()
+                        .imageId(productImage.getImageId())
+                        .path(productImage.getPath())
+                        .uuid(productImage.getUuid())
+                        .imgName(productImage.getImageName())
+                        .build();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        // 파일 삭제
-        ProductImage productImage = result.get();
-        fileUploadUtil.removeFile(productImage);
-        // 새 이미지 저장
-        try {
-            Map<String, String> fileInfo = fileUploadUtil.saveFile(file, productImage.getPath());
-            String path = fileInfo.get("path");
-            String uuid = fileInfo.get("uuid");
-            String fileName = fileInfo.get("fileName");
-            productImage.changeFile(path, uuid, fileName);
-            imageRepository.save(productImage);
-                   } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
+        return null;
     }
 
+    // 이미지 삭제
     @Transactional
     @Override
     public void removeImage(Long imageId) {
         Optional<ProductImage> result = imageRepository.findById(imageId);
-        if (result.isEmpty()) {
-            return;
-        }
-        // 파일 삭제
-        ProductImage productImage = result.get();
-        if (fileUploadUtil.removeFile(productImage)) {
-            // 데이터베이스 삭제
-            imageRepository.deleteById(imageId);
-
+        if (result.isPresent()) {
+            // 파일 삭제
+            ProductImage productImage = result.get();
+            if (fileUploadUtil.removeFile(productImage)) {
+                // 데이터베이스 삭제
+                imageRepository.deleteById(imageId);
+            }
         }
     }
 
-
+    // 상품 수정 권한 검사
     @Transactional
     @Override
     public Boolean authorityValidate(Long id, String memberId) {
