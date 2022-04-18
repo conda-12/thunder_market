@@ -125,7 +125,7 @@
                     </div>
                     <form enctype="multipart/form-data" id="imageChange">
                         <div class="modal-body">
-                            <input type="file" name="file" accept="image/*" >
+                            <input type="file" name="file" accept="image/*">
                             <input hidden name="imageId">
                         </div>
                         <div class="modal-footer">
@@ -207,7 +207,7 @@
             $(".modal-footer > .btn-primary").on("click", function (event) {
                 event.preventDefault();
                 
-                if(!$("input[name=file]").val()){
+                if (!$("input[name=file]").val()) {
                     alert("파일을 첨부해주세요");
                     return;
                 }
@@ -406,8 +406,6 @@
                     alert("상품 이미지를 등록해주세요.");
                 } else if (!title.trim()) {
                     alert("제목을 입력해주세요.");
-                } else if (bg === "") {
-                    alert("카테고리를 선택해주세요.");
                 } else if (sg === "") {
                     alert("카테고리를 선택해주세요.")
                 } else if (!address) {
@@ -421,8 +419,9 @@
                     for (let file of fileArr) {
                         formData.append("files", file);
                     }
+                    let productId = [[${dto.id}]];
+                    formData.append("id", productId);
                     formData.append("title", title);
-                    formData.append("bgNum", bg);
                     formData.append("sgNum", sg);
                     formData.append("address", address);
                     formData.append("price", price);

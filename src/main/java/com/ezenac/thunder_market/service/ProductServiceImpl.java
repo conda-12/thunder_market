@@ -119,12 +119,47 @@ public class ProductServiceImpl implements ProductService {
         return result.map(product -> entityToDTO(product, null)).orElse(null);
     }
 
-    // 상품 수정 요청
+    // 상품 수정
     @Modifying
     @Override
-    public Long modifyPost(ProductDTO productDTO) {
-        // todo 엔티티 꺼내서 수정
-        return null;
+    public Long modifyPost(ProductRegisterDTO productRegisterDTO) {
+        Product product = productRepository.getById(productRegisterDTO.getId());
+        String title = productRegisterDTO.getTitle();
+        String sgNum = productRegisterDTO.getSgNum();
+        String address = productRegisterDTO.getAddress();
+        int price = productRegisterDTO.getPrice();
+        String content = productRegisterDTO.getContent();
+
+        product.changeInfo(title, address, price, content, SmallGroup.builder().sgNum(sgNum).build());
+        if (productRegisterDTO.getFiles() != null) {
+            for (MultipartFile file : productRegisterDTO.getFiles()) {
+                // 유효성 검사
+                if (!file.getContentType().startsWith("image")) {
+                    log.warn("this files is not imageFile");
+                    continue;   // 이미지 파일이 아닐시 저장하지 않음
+                }
+
+                try {
+                    Map<String, String> fileInfo = fileUploadUtil.saveFile(file, productRegisterDTO.getMemberId());
+
+                    ProductImage image = ProductImage.builder()
+                            .imageName(fileInfo.get("fileName"))
+                            .path(fileInfo.get("path"))
+                            .uuid(fileInfo.get("uuid"))
+                            .product(product)
+                            .build();
+                    product.setImage(image);
+
+                } catch (IOException e) {
+                    log.warn("파일저장에 실패했습니다 => " + file.getName());
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        productRepository.save(product);
+        log.info("product => " + product);
+        return product.getId();
     }
 
     @Transactional

@@ -193,7 +193,7 @@ public class ProductsController {
     @PreAuthorize("hasRole('ROLE_MEMBER')")
     @GetMapping("/products/modify/{productId}")
     public String modifyGet(@PathVariable Long productId, Model model) {
-        log.info("modify product => " + productId);
+        log.info("modifyGET product => " + productId);
 
         ProductDTO productDTO = productService.modifyGet(productId);
         if (productDTO == null) {
@@ -203,6 +203,26 @@ public class ProductsController {
         model.addAttribute("dto", productDTO);
         return "/products/modify";
     }
+
+    // 상품 수정
+    @ResponseBody
+    @PreAuthorize("hasRole('ROLE_MEMBER')")
+    @PostMapping("/products/modify")
+    public ResponseEntity<Long> modifyPost(ProductRegisterDTO productRegisterDTO) {
+        log.info("modifyPOST product => " + productRegisterDTO.getId());
+        //권한 검사
+        Authentication user = SecurityContextHolder.getContext().getAuthentication();
+        boolean result = productService.authorityValidate(productRegisterDTO.getId(), user.getName());
+        if (result) {
+            productRegisterDTO.setMemberId(user.getName());
+            Long id = productService.modifyPost(productRegisterDTO);
+            return new ResponseEntity<>(id, HttpStatus.OK);
+        }
+        log.warn("권한 없는 사용자 요청");
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+
+    }
+
 
     // 상품 이미지 삭제
     @PreAuthorize("hasRole('ROLE_MEMBER')")
@@ -216,6 +236,7 @@ public class ProductsController {
             log.info("removeImage => " + imageId);
             return new ResponseEntity<>(true, HttpStatus.OK);
         }
+        log.warn("권한 없는 사용자 요청");
         return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
     }
 
@@ -237,6 +258,7 @@ public class ProductsController {
                 return new ResponseEntity<>(map, HttpStatus.OK);
             }
         }
+        log.warn("권한 없는 사용자 요청");
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 

@@ -49,7 +49,7 @@ public class Product extends BaseTime {
         this.state = productState;
     }
 
-    private void changeInfo(String title, String address, int price, String content, SmallGroup smallGroup) {
+    public void changeInfo(String title, String address, int price, String content, SmallGroup smallGroup) {
         this.title = title;
         this.address = address;
         this.price = price;
