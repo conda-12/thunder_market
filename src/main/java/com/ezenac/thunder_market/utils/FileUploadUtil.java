@@ -27,7 +27,11 @@ public class FileUploadUtil {
     }
 
     public Map<String, String> saveFile(MultipartFile file, String folderPath) throws IOException {
-
+        // 유효성 검사
+        if (!file.getContentType().startsWith("image")) {
+            log.warn("이미지 파일이 아닙니다.");
+            throw new IOException();
+        }
         // 파일이름이 전체 경로로 왔을 경우 경로 삭제
         String originalFilename = file.getOriginalFilename();
         String fileName = originalFilename.substring(originalFilename.lastIndexOf("\\") + 1);

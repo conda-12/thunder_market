@@ -47,12 +47,6 @@ public class ProductServiceImpl implements ProductService {
         Product product = dtoToEntity(productRegisterDTO);
 
         for (MultipartFile file : productRegisterDTO.getFiles()) {
-            // 유효성 검사
-            if (!file.getContentType().startsWith("image")) {
-                log.warn("이미지 파일이 아닙니다.");
-                continue;   // 이미지 파일이 아닐시 저장하지 않음
-            }
-
             try {
                 Map<String, String> fileInfo = fileUploadUtil.saveFile(file, productRegisterDTO.getMemberId());
 
@@ -68,8 +62,8 @@ public class ProductServiceImpl implements ProductService {
                 log.warn("파일저장에 실패했습니다 => " + file.getName());
                 e.printStackTrace();
             }
-
         }
+
         productRepository.save(product);
         log.info("product => " + product);
         return product.getId();
@@ -131,15 +125,9 @@ public class ProductServiceImpl implements ProductService {
         String content = productRegisterDTO.getContent();
 
         product.changeInfo(title, address, price, content, SmallGroup.builder().sgNum(sgNum).build());
-        
+
         if (productRegisterDTO.getFiles() != null) {
             for (MultipartFile file : productRegisterDTO.getFiles()) {
-                // 유효성 검사
-                if (!file.getContentType().startsWith("image")) {
-                    log.warn("이미지 파일이 아닙니다.");
-                    continue;   // 이미지 파일이 아닐시 저장하지 않음
-                }
-
                 try {
                     Map<String, String> fileInfo = fileUploadUtil.saveFile(file, productRegisterDTO.getMemberId());
 
