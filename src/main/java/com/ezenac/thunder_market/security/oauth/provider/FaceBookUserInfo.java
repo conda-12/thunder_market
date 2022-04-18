@@ -1,18 +1,18 @@
-package com.ezenac.thunder_market.config.oauth.provider;
+package com.ezenac.thunder_market.security.oauth.provider;
 
 import java.util.Map;
 
-public class GoogleUserInfo implements OAuth2UserInfo{
+public class FaceBookUserInfo implements OAuth2UserInfo{
 
     private final Map<String, Object> attributes;
 
-    public GoogleUserInfo(Map<String, Object> attributes) {
+    public FaceBookUserInfo(Map<String, Object> attributes) {
         this.attributes = attributes;
     }
 
     @Override
     public String getProviderId() {
-        return (String) attributes.get("sub");
+        return (String) attributes.get("id");
     }
 
     @Override
@@ -27,7 +27,6 @@ public class GoogleUserInfo implements OAuth2UserInfo{
 
     @Override
     public String getProvider() {
-        return "google";
+        return "facebook";
     }
-
 }

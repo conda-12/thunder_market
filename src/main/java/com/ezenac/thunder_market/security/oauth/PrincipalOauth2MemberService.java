@@ -1,7 +1,7 @@
-package com.ezenac.thunder_market.config.oauth;
+package com.ezenac.thunder_market.security.oauth;
 
-import com.ezenac.thunder_market.config.auth.PrincipalDetails;
-import com.ezenac.thunder_market.config.oauth.provider.*;
+import com.ezenac.thunder_market.security.auth.PrincipalDetails;
+import com.ezenac.thunder_market.security.oauth.provider.*;
 import com.ezenac.thunder_market.entity.Member;
 import com.ezenac.thunder_market.repository.MemberRepository;
 import lombok.AllArgsConstructor;

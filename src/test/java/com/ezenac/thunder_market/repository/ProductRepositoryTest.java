@@ -27,14 +27,14 @@ public class ProductRepositoryTest {
         }
     }
 
-    @Transactional
-    @Test
-    public void testReadWithFavorite(){
-        Optional<Object> result = productRepository.readWithFavorite(1L);
-        if(result.isPresent()){
-            Object[] arr = (Object[]) result.get();
-        System.out.println(Arrays.toString(arr));
-        }
-
-    }
+//    @Transactional
+//    @Test
+//    public void testReadWithFavorite(){
+//        Optional<Object> result = productRepository.readWithFavorite(1L);
+//        if(result.isPresent()){
+//            Object[] arr = (Object[]) result.get();
+//        System.out.println(Arrays.toString(arr));
+//        }
+//
+//    }
 }

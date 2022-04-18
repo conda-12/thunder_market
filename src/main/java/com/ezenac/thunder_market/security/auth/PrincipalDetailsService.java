@@ -1,4 +1,4 @@
-package com.ezenac.thunder_market.config.auth;
+package com.ezenac.thunder_market.security.auth;
 
 import com.ezenac.thunder_market.entity.Member;
 import com.ezenac.thunder_market.repository.MemberRepository;

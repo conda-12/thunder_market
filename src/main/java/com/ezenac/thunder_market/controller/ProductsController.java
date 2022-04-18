@@ -1,6 +1,5 @@
 package com.ezenac.thunder_market.controller;
 
-import com.ezenac.thunder_market.config.auth.PrincipalDetails;
 import com.ezenac.thunder_market.dto.PageRequestDTO;
 import com.ezenac.thunder_market.dto.ProductDTO;
 import com.ezenac.thunder_market.dto.ProductRegisterDTO;
@@ -16,7 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
@@ -63,8 +61,8 @@ public class ProductsController {
     public ResponseEntity<Long> register(ProductRegisterDTO productRegisterDTO) {
         log.info("register => " + productRegisterDTO);
 
-        PrincipalDetails user = (PrincipalDetails) SecurityContextHolder.getContext().getAuthentication();
-        productRegisterDTO.setMemberId(user.getUsername());
+        Authentication user = SecurityContextHolder.getContext().getAuthentication();
+        productRegisterDTO.setMemberId(user.getName());
 
         Long id = productService.register(productRegisterDTO);
 
@@ -138,7 +136,7 @@ public class ProductsController {
 
         for (GrantedAuthority i : user.getAuthorities()) {
             if (i.toString().equals("ROLE_ANONYMOUS")) {
-               return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+               return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
         }
 
@@ -161,7 +159,7 @@ public class ProductsController {
 
         for (GrantedAuthority i : user.getAuthorities()) {
             if (i.toString().equals("ROLE_ANONYMOUS")) {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
         }
 
