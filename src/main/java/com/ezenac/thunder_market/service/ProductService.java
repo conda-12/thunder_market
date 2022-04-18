@@ -8,6 +8,7 @@ import com.ezenac.thunder_market.dto.PageRequestDTO;
 import com.ezenac.thunder_market.dto.ProductDTO;
 import com.ezenac.thunder_market.dto.ProductImageDTO;
 import com.ezenac.thunder_market.dto.ProductRegisterDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.List;
@@ -30,6 +31,8 @@ public interface ProductService {
     void remove(Long id);
 
     File getImage(String filePath);
+
+    void changeImage(Long imageId ,MultipartFile multipartFile);
 
     void removeImage(Long imageId);
 

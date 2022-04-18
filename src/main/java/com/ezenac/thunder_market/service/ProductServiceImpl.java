@@ -78,6 +78,10 @@ public class ProductServiceImpl implements ProductService {
         return product.getId();
     }
 
+    private void saveImageFile(MultipartFile multipartFile){
+
+    }
+
     private String makeFolder(String memberId) {
         File uploadPathFolder = new File(uploadPath, memberId);
 
@@ -171,24 +175,33 @@ public class ProductServiceImpl implements ProductService {
         return new File(uploadPath + File.separator + filePath);
     }
 
+    @Override
+    public void changeImage(Long imageId, MultipartFile multipartFile) {
+        // todo 기존 이미지 삭제, 새 이미지 저장, 데이터베이스 수정
+        removeFile(imageId);
+    }
+
     @Transactional
     @Override
     public void removeImage(Long imageId) {
+        if (removeFile(imageId)) {
+            imageRepository.deleteById(imageId);
+        }
+    }
+
+    // 이미지 파일 삭제
+    private boolean removeFile(Long imageId) {
         // 파일 삭제
         Optional<ProductImage> result = imageRepository.findById(imageId);
         if (result.isEmpty()) {
-            return;
+            return false;
         }
 
         ProductImage productImage = result.get();
         String filePath = uploadPath + File.separator + productImage.getPath() + File.separator + productImage.getUuid() + "_" + productImage.getImageName();
         File file = new File(filePath);
 
-        if (file.delete()) {
-            // 디비 삭제
-            imageRepository.deleteById(imageId);
-        }
-
+        return file.delete();
     }
 
     @Transactional
