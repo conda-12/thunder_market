@@ -22,13 +22,13 @@ public interface ProductService {
 
     List<ProductDTO> searchList(PageRequestDTO pageRequestDTO);
 
-    ProductDTO read(Long id);
+    ProductDTO read(Long productId);
 
-    ProductDTO modifyGet(Long id);
+    ProductDTO modifyGet(Long productId);
 
     Long modifyPost(ProductRegisterDTO productRegisterDTO);
 
-    void remove(Long id);
+    void remove(Long productId);
 
     File getImage(String filePath);
 
@@ -36,7 +36,7 @@ public interface ProductService {
 
     void removeImage(Long imageId);
 
-    Boolean authorityValidate(Long id, String memberId);
+    Boolean authorityValidate(Long productId, String memberId);
 
     default Product dtoToEntity(ProductRegisterDTO dto) {
 
@@ -66,7 +66,7 @@ public interface ProductService {
         }).collect(Collectors.toList());
 
         return ProductDTO.builder()
-                .id(product.getId())
+                .productId(product.getProductId())
                 .imageDTOList(imageDTOList)
                 .title(product.getTitle())
                 .address(product.getAddress())

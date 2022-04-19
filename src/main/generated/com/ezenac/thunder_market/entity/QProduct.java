@@ -30,8 +30,6 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final NumberPath<Integer> hit = createNumber("hit", Integer.class);
 
-    public final NumberPath<Long> id = createNumber("id", Long.class);
-
     public final ListPath<ProductImage, QProductImage> images = this.<ProductImage, QProductImage>createList("images", ProductImage.class, QProductImage.class, PathInits.DIRECT2);
 
     public final QMember member;
@@ -40,6 +38,8 @@ public class QProduct extends EntityPathBase<Product> {
     public final DateTimePath<java.time.LocalDateTime> modDate = _super.modDate;
 
     public final NumberPath<Integer> price = createNumber("price", Integer.class);
+
+    public final NumberPath<Long> productId = createNumber("productId", Long.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> regDate = _super.regDate;

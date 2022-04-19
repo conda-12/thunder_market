@@ -66,14 +66,14 @@ public class ProductServiceImpl implements ProductService {
 
         productRepository.save(product);
         log.info("product => " + product);
-        return product.getId();
+        return product.getProductId();
     }
 
 
     @Transactional
     @Override
     public List<ProductDTO> list(PageRequestDTO pageRequestDTO) {
-        Pageable pageable = pageRequestDTO.getPageable(Sort.by("id").descending());
+        Pageable pageable = pageRequestDTO.getPageable(Sort.by("productId").descending());
 
         Page<Object[]> result = productRepository.getList(pageable);
 
@@ -82,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> searchList(PageRequestDTO pageRequestDTO) {
-        Pageable pageable = pageRequestDTO.getPageable(Sort.by("id").descending());
+        Pageable pageable = pageRequestDTO.getPageable(Sort.by("productId").descending());
         String keyword = pageRequestDTO.getKeyword();
         String sgNum = pageRequestDTO.getSgNum();
         SmallGroup smallGroup = null;
@@ -95,9 +95,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public ProductDTO read(Long id) {
-        productRepository.updateHit(id);
-        Optional<Object> result = productRepository.readWithFavorite(id);
+    public ProductDTO read(Long productId) {
+        productRepository.updateHit(productId);
+        Optional<Object> result = productRepository.readWithFavorite(productId);
 
         if (result.isPresent()) {
             Object[] arr = (Object[]) result.get();
@@ -108,8 +108,8 @@ public class ProductServiceImpl implements ProductService {
 
     // 상품 수정 페이지 요청
     @Override
-    public ProductDTO modifyGet(Long id) {
-        Optional<Product> result = productRepository.findById(id);
+    public ProductDTO modifyGet(Long productId) {
+        Optional<Product> result = productRepository.findById(productId);
         return result.map(product -> entityToDTO(product, null)).orElse(null);
     }
 
@@ -117,7 +117,7 @@ public class ProductServiceImpl implements ProductService {
     @Modifying
     @Override
     public Long modifyPost(ProductRegisterDTO productRegisterDTO) {
-        Product product = productRepository.getById(productRegisterDTO.getId());
+        Product product = productRepository.getById(productRegisterDTO.getProductId());
         String title = productRegisterDTO.getTitle();
         String sgNum = productRegisterDTO.getSgNum();
         String address = productRegisterDTO.getAddress();
@@ -148,14 +148,14 @@ public class ProductServiceImpl implements ProductService {
         }
         productRepository.save(product);
         log.info("product => " + product);
-        return product.getId();
+        return product.getProductId();
     }
 
     @Transactional
     @Override
-    public void remove(Long id) {
+    public void remove(Long productId) {
         // todo 찜하기 삭제 후
-        productRepository.deleteById(id);
+        productRepository.deleteById(productId);
     }
 
     // 이미지 파일 요청
@@ -211,8 +211,8 @@ public class ProductServiceImpl implements ProductService {
     // 상품 수정 권한 검사
     @Transactional
     @Override
-    public Boolean authorityValidate(Long id, String memberId) {
-        Optional<Product> result = productRepository.findById(id);
+    public Boolean authorityValidate(Long productId, String memberId) {
+        Optional<Product> result = productRepository.findById(productId);
         if (result.isEmpty()) {
             return false;
         }

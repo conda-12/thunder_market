@@ -21,7 +21,7 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     public boolean isFavorite(String memberId, Long productId) {
         Member member = Member.builder().memberId(memberId).build();
-        Product product = Product.builder().id(productId).build();
+        Product product = Product.builder().productId(productId).build();
         Optional<Favorite> result = favoriteRepository.findByMemberAndProduct(member, product);
 
         return result.isPresent();
@@ -30,7 +30,7 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     public void add(String memberId, Long productId) {
         Member member = Member.builder().memberId(memberId).build();
-        Product product = Product.builder().id(productId).build();
+        Product product = Product.builder().productId(productId).build();
         Favorite favorite = Favorite.builder().member(member).product(product).build();
         favoriteRepository.save(favorite);
     }
@@ -39,13 +39,13 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     public void remove(String memberId, Long productId) {
         Member member = Member.builder().memberId(memberId).build();
-        Product product = Product.builder().id(productId).build();
+        Product product = Product.builder().productId(productId).build();
         favoriteRepository.deleteByMemberAndProduct(member,product);
     }
 
     @Override
     public Long count(Long productId) {
-        Product product = Product.builder().id(productId).build();
+        Product product = Product.builder().productId(productId).build();
         return favoriteRepository.countByProduct(product);
     }
 

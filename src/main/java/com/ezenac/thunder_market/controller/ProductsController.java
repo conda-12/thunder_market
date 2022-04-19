@@ -59,6 +59,7 @@ public class ProductsController {
         }
 
         model.addAttribute("dto", productDTO);
+        System.out.println(productDTO);
         return "/products/read";
     }
 
@@ -209,10 +210,10 @@ public class ProductsController {
     @PreAuthorize("hasRole('ROLE_MEMBER')")
     @PostMapping("/products/modify")
     public ResponseEntity<Long> modifyPost(ProductRegisterDTO productRegisterDTO) {
-        log.info("modifyPOST product => " + productRegisterDTO.getId());
+        log.info("modifyPOST product => " + productRegisterDTO.getProductId());
         //권한 검사
         Authentication user = SecurityContextHolder.getContext().getAuthentication();
-        boolean result = productService.authorityValidate(productRegisterDTO.getId(), user.getName());
+        boolean result = productService.authorityValidate(productRegisterDTO.getProductId(), user.getName());
         if (result) {
             productRegisterDTO.setMemberId(user.getName());
             Long id = productService.modifyPost(productRegisterDTO);

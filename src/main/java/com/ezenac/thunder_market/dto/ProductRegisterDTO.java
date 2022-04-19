@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductRegisterDTO {
 
-    private Long id;
+    private Long productId;
 
     private List<MultipartFile> files;
 

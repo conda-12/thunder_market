@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductDTO {
 
-    private Long id;
+    private Long productId;
 
     private List<ProductImageDTO> imageDTOList;
 
