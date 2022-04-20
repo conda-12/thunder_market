@@ -18,10 +18,6 @@ public class Product extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<ProductImage> images = new ArrayList<>();
-
     private String title;
 
     private String address;
@@ -42,15 +38,20 @@ public class Product extends BaseTime {
     @Enumerated(EnumType.STRING)
     private ProductState state;
 
+    @Builder.Default
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<ProductImage> images = new ArrayList<>();
 
-    public void soldOut(){
+
+    public void soldOut() {
         this.state = ProductState.SOLD_OUT;
     }
-    public void selling(){
+
+    public void selling() {
         this.state = ProductState.SELLING;
     }
 
-    public void reserved(){
+    public void reserved() {
         this.state = ProductState.RESERVED;
     }
 
