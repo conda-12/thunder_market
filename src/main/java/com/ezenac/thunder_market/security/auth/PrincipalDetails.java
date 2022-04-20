@@ -1,6 +1,7 @@
 package com.ezenac.thunder_market.security.auth;
 
 import com.ezenac.thunder_market.entity.Member;
+import com.ezenac.thunder_market.entity.Role;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,6 +11,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -37,7 +39,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();
-        collection.add((GrantedAuthority) () -> member.getRole());
+        collection.add((GrantedAuthority) () -> String.valueOf(member.getMemberRoles()));
         return collection;
     }
 

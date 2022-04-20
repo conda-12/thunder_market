@@ -2,8 +2,10 @@ package com.ezenac.thunder_market.security.config;
 
 
 import com.ezenac.thunder_market.security.auth.PrincipalDetailsService;
+import com.ezenac.thunder_market.security.factory.UrlResourcesMapFactoryBean;
 import com.ezenac.thunder_market.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import com.ezenac.thunder_market.security.oauth.PrincipalOauth2MemberService;
+import com.ezenac.thunder_market.security.service.SecurityResourceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +21,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -30,7 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PrincipalOauth2MemberService principalOauth2MemberService;
     private final PrincipalDetailsService principalDetailsService;
-
+    private final SecurityResourceService securityResourceService;
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
@@ -42,11 +43,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
 
         http.authorizeRequests()
-                .antMatchers("/member/auth/**").permitAll()
-                .antMatchers("/member/**").access("hasRole('MEMBER') or hasRole('ADMIN') or hasRole('MANAGER')")
-                .antMatchers("/products/new").access("hasRole('MEMBER') or hasRole('MANAGER')")
-                .antMatchers("/manager/**").access("hasRole('ADMIN') or hasRole('MANAGER')")
-                .antMatchers("/admin/**").access("hasRole('ADMIN')")
+//                .antMatchers("/member/auth/**").permitAll()
+//                .antMatchers("/member/**").access("hasRole('MEMBER') or hasRole('ADMIN') or hasRole('MANAGER')")
+//                .antMatchers("/products/new").access("hasRole('MEMBER') or hasRole('MANAGER')")
+//                .antMatchers("/manager/**").access("hasRole('ADMIN') or hasRole('MANAGER')")
+//                .antMatchers("/admin/**").access("hasRole('ADMIN')")
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()
@@ -91,12 +92,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private List<AccessDecisionVoter<?>> getAccessDecisionVoters() {
-
         return List.of(new RoleVoter());
     }
 
     @Bean
-    public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() {
-        return new UrlFilterInvocationSecurityMetadataSource();
+    public UrlFilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() throws Exception {
+        return new UrlFilterInvocationSecurityMetadataSource(urlResourcesMapFactoryBean().getObject(), securityResourceService);
+    }
+
+    private UrlResourcesMapFactoryBean urlResourcesMapFactoryBean() {
+        return new UrlResourcesMapFactoryBean(securityResourceService);
     }
 }
