@@ -104,15 +104,15 @@ public class ProductServiceImpl implements ProductService {
     // 상품 수정 페이지 요청
     @Override
     public ProductDTO modifyGet(Long productId) {
-        Optional<Product> result = productRepository.findById(productId);
-        return result.map(product -> entityToDTO(product, null)).orElse(null);
+        Product product = productRepository.findById(productId).orElseThrow(()->new IllegalArgumentException("해당 상품이 없습니다. id="+productId));
+        return entityToDTO(product, null);
     }
 
     // 상품 수정 todo productUpdateDto 만들기
     @Transactional
     @Override
-    public Long modifyPost(Long id, ProductRegisterDTO productRegisterDTO) {
-        Product product = productRepository.findById(id).orElseThrow(()->new IllegalArgumentException("해당 상품이 없습니다. id="+id));
+    public Long modifyPost(Long productId, ProductRegisterDTO productRegisterDTO) {
+        Product product = productRepository.findById(productId).orElseThrow(()->new IllegalArgumentException("해당 상품이 없습니다. id="+productId));
         String title = productRegisterDTO.getTitle();
         String sgNum = productRegisterDTO.getSgNum();
         String address = productRegisterDTO.getAddress();
