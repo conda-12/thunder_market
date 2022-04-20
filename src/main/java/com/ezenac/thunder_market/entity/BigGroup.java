@@ -5,12 +5,12 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Entity
+@ToString
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@ToString
+@Entity
 @Table(name = "BIGGROUP")
 public class BigGroup {
     @Id
