@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Controller
+@RequestMapping("/products/")
 @Slf4j
 @RequiredArgsConstructor
 public class ProductsController {
@@ -43,7 +44,7 @@ public class ProductsController {
     private final FavoriteService favoriteService;
 
     // 상품 상세 조회
-    @GetMapping("/products/{productId}")
+    @GetMapping("/{productId}")
     public String read(@PathVariable("productId") Long productId, Model model) {
         log.info("read product => " + productId);
         ProductDTO productDTO = productService.read(productId);
@@ -64,15 +65,16 @@ public class ProductsController {
     }
 
     // 상품 등록 페이지
-    @GetMapping("/products/new")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/new")
     public String register() {
         return "/products/new";
     }
 
     //상품 등록
-    @PreAuthorize("hasRole('ROLE_MEMBER')")
+    @PreAuthorize("isAuthenticated()")
     @ResponseBody
-    @PostMapping("/products/new")
+    @PostMapping("/new")
     public ResponseEntity<Long> register(ProductRegisterDTO productRegisterDTO) {
         log.info("register => " + productRegisterDTO);
 
@@ -85,7 +87,7 @@ public class ProductsController {
     }
 
     // 인덱스 페이지 상품 리스트
-    @GetMapping("/products/list")
+    @GetMapping("/list")
     @ResponseBody
     public ResponseEntity<List<ProductDTO>> list(PageRequestDTO pageRequestDTO) {
         log.info("pageRequestDTO =>" + pageRequestDTO);
@@ -95,22 +97,12 @@ public class ProductsController {
     }
 
     //상품 검색 페이지
-    @GetMapping("/search/products")
+    @GetMapping("/search")
     public String searchPage(PageRequestDTO pageRequestDTO, Model model) {
         log.info("PageRequestDTO => " + pageRequestDTO);
 
         model.addAttribute("keyword", pageRequestDTO.getKeyword());
         return "/products/search";
-    }
-
-    // 상품 검색, 카테고리 리스트
-    @ResponseBody
-    @PostMapping("/products/searchList")
-    public ResponseEntity<List<ProductDTO>> keywordList(@ModelAttribute PageRequestDTO pageRequestDTO) {
-        log.info("pageRequestDTO => " + pageRequestDTO);
-
-        List<ProductDTO> result = productService.searchList(pageRequestDTO);
-        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     // 카테고리 검색 페이지
@@ -121,9 +113,19 @@ public class ProductsController {
         return "/products/search";
     }
 
+    // 상품 검색 페이지 내에 페이징 처리
+    @ResponseBody
+    @PostMapping("/searchList")
+    public ResponseEntity<List<ProductDTO>> keywordList(@ModelAttribute PageRequestDTO pageRequestDTO) {
+        log.info("pageRequestDTO => " + pageRequestDTO);
+
+        List<ProductDTO> result = productService.searchList(pageRequestDTO);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
     // 상품 이미지 파일 리스폰스
     @ResponseBody
-    @GetMapping("/products/display")
+    @GetMapping("/display")
     public ResponseEntity<byte[]> getImage(String imageURL) {
         try {
             String filePath = URLDecoder.decode(imageURL, "UTF-8");
@@ -143,9 +145,9 @@ public class ProductsController {
         }
     }
 
-    // 찜하기
+    // 찜하기 todo 비로그인시 로그인 페이지로 이동
     @ResponseBody
-    @PostMapping("/products/favorite/{productId}")
+    @PostMapping("/favorite/{productId}")
     public ResponseEntity<Long> addFavorite(@PathVariable Long productId) {
         Authentication user = SecurityContextHolder.getContext().getAuthentication();
 
@@ -168,7 +170,7 @@ public class ProductsController {
 
     // 찜하기 취소
     @ResponseBody
-    @DeleteMapping("/products/favorite/{productId}")
+    @DeleteMapping("/favorite/{productId}")
     public ResponseEntity<Long> removeFavorite(@PathVariable Long productId) {
         Authentication user = SecurityContextHolder.getContext().getAuthentication();
 
@@ -191,8 +193,8 @@ public class ProductsController {
     }
 
     // 수정 페이지
-    @PreAuthorize("hasRole('ROLE_MEMBER')")
-    @GetMapping("/products/modify/{productId}")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modify/{productId}")
     public String modifyGet(@PathVariable Long productId, Model model) {
         log.info("modifyGET product => " + productId);
 
@@ -207,8 +209,8 @@ public class ProductsController {
 
     // 상품 수정
     @ResponseBody
-    @PreAuthorize("hasRole('ROLE_MEMBER')")
-    @PostMapping("/products/modify")
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modify")
     public ResponseEntity<Long> modifyPost(ProductRegisterDTO productRegisterDTO) {
         log.info("modifyPOST product => " + productRegisterDTO.getProductId());
         //권한 검사
@@ -226,8 +228,8 @@ public class ProductsController {
 
 
     // 상품 이미지 삭제
-    @PreAuthorize("hasRole('ROLE_MEMBER')")
-    @DeleteMapping("/products/modify/{productId}/{imageId}")
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/modify/{productId}/{imageId}")
     public ResponseEntity<Boolean> removeImage(@PathVariable Long productId, @PathVariable Long imageId) {
         // 권한 검사
         Authentication user = SecurityContextHolder.getContext().getAuthentication();
@@ -242,8 +244,8 @@ public class ProductsController {
     }
 
     // 상품 이미지 변경
-    @PreAuthorize("hasRole('ROLE_MEMBER')")
-    @PostMapping("/products/modify/{productId}/image")
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modify/{productId}/image")
     public ResponseEntity<Map<String, String>> changeImage(@PathVariable Long productId, Long imageId, MultipartFile file) {
         if (!file.isEmpty() || imageId == null) { //파일 유효성 검사
             Authentication user = SecurityContextHolder.getContext().getAuthentication();

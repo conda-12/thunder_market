@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 @ToString(exclude = {"smallGroup", "member"})
 public class Product extends BaseTime {
+    /*상품 아이디*/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;

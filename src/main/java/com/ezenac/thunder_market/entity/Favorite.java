@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class Favorite extends BaseTime{
+public class Favorite{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long favoriteId;

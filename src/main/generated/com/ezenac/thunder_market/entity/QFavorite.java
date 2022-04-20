@@ -22,19 +22,11 @@ public class QFavorite extends EntityPathBase<Favorite> {
 
     public static final QFavorite favorite = new QFavorite("favorite");
 
-    public final QBaseTime _super = new QBaseTime(this);
-
     public final NumberPath<Long> favoriteId = createNumber("favoriteId", Long.class);
 
     public final QMember member;
 
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> modDate = _super.modDate;
-
     public final QProduct product;
-
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> regDate = _super.regDate;
 
     public QFavorite(String variable) {
         this(Favorite.class, forVariable(variable), INITS);
