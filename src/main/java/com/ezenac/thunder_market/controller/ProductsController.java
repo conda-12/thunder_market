@@ -210,15 +210,15 @@ public class ProductsController {
     // 상품 수정
     @ResponseBody
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/modify")
-    public ResponseEntity<Long> modifyPost(ProductRegisterDTO productRegisterDTO) {
+    @PostMapping("/modify/{productId}")
+    public ResponseEntity<Long> modifyPost(@PathVariable Long productId, ProductRegisterDTO productRegisterDTO) {
         log.info("modifyPOST product => " + productRegisterDTO.getProductId());
         //권한 검사
         Authentication user = SecurityContextHolder.getContext().getAuthentication();
         boolean result = productService.authorityValidate(productRegisterDTO.getProductId(), user.getName());
         if (result) {
             productRegisterDTO.setMemberId(user.getName());
-            Long id = productService.modifyPost(productRegisterDTO);
+            Long id = productService.modifyPost(productId, productRegisterDTO);
             return new ResponseEntity<>(id, HttpStatus.OK);
         }
         log.warn("권한 없는 사용자 요청");

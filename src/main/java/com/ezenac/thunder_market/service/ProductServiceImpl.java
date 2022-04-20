@@ -12,7 +12,6 @@ import com.ezenac.thunder_market.repository.ProductRepository;
 import com.ezenac.thunder_market.utils.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,15 +20,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -113,18 +108,18 @@ public class ProductServiceImpl implements ProductService {
         return result.map(product -> entityToDTO(product, null)).orElse(null);
     }
 
-    // 상품 수정
-    @Modifying
+    // 상품 수정 todo productUpdateDto 만들기
+    @Transactional
     @Override
-    public Long modifyPost(ProductRegisterDTO productRegisterDTO) {
-        Product product = productRepository.getById(productRegisterDTO.getProductId());
+    public Long modifyPost(Long id, ProductRegisterDTO productRegisterDTO) {
+        Product product = productRepository.findById(id).orElseThrow(()->new IllegalArgumentException("해당 상품이 없습니다. id="+id));
         String title = productRegisterDTO.getTitle();
         String sgNum = productRegisterDTO.getSgNum();
         String address = productRegisterDTO.getAddress();
         int price = productRegisterDTO.getPrice();
         String content = productRegisterDTO.getContent();
 
-        product.changeInfo(title, address, price, content, SmallGroup.builder().sgNum(sgNum).build());
+        product.update(title, address, price, content, SmallGroup.builder().sgNum(sgNum).build());
 
         if (productRegisterDTO.getFiles() != null) {
             for (MultipartFile file : productRegisterDTO.getFiles()) {
@@ -146,7 +141,6 @@ public class ProductServiceImpl implements ProductService {
 
             }
         }
-        productRepository.save(product);
         log.info("product => " + product);
         return product.getProductId();
     }
@@ -178,7 +172,7 @@ public class ProductServiceImpl implements ProductService {
                 String path = fileInfo.get("path");
                 String uuid = fileInfo.get("uuid");
                 String fileName = fileInfo.get("fileName");
-                productImage.changeFile(path, uuid, fileName);
+                productImage.update(path, uuid, fileName);
                 imageRepository.save(productImage);
                 return ProductImageDTO.builder()
                         .imageId(productImage.getImageId())

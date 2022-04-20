@@ -420,7 +420,6 @@
                         formData.append("files", file);
                     }
                     let productId = [[${dto.id}]];
-                    formData.append("id", productId);
                     formData.append("title", title);
                     formData.append("sgNum", sg);
                     formData.append("address", address);
@@ -429,7 +428,7 @@
                     
                     
                     $.ajax({
-                        url: '/products/modify',
+                        url: '/products/modify/' + productId,
                         processData: false, // query String을 하지 않는다.
                         contentType: false, // multipart/form-data로 전송되게 하는 설정
                         data: formData,

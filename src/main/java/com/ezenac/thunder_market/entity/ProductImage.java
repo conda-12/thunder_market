@@ -24,7 +24,7 @@ public class ProductImage {
     @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
 
-    public void changeFile(String path, String uuid, String imageName) {
+    public void update(String path, String uuid, String imageName) {
         this.path = path;
         this.uuid = uuid;
         this.imageName = imageName;
