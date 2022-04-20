@@ -121,9 +121,9 @@
                 for (let dto of arr) {
                     let productDiv = template.clone();
                     productDiv.removeClass("template");
-                    productDiv.attr("product-id", dto.id);
+                    productDiv.attr("product-id", dto.productId);
                     productDiv.find("img").attr("src", "/products/display/?imageURL=" + dto.imageDTOList[0].imageURL);
-                    productDiv.find("a").attr("href", "/products/" + dto.id);
+                    productDiv.find("a").attr("href", "/products/" + dto.productId);
 
                     let title = dto.title;
                     if (title.length > 21) {
@@ -141,7 +141,7 @@
 
             sgSelect.on("change", function () {
                 let sgNum = $(this).val();
-                location.href = "/categories/" + sgNum;
+                location.href = "/products/categories/" + sgNum;
             });
             
             function timeForToday(value) {

@@ -145,29 +145,29 @@
             function addItem(arr) {
                 const template = $(".template");
 
-                for (let item of arr) {
-                    let itemDiv = template.clone();
-                    itemDiv.removeClass("template");
-                    itemDiv.attr("product-id", item.id);
-                    itemDiv.find("img").attr("src", "/products/display/?imageURL=" + item.imageDTOList[0].imageURL);
-                    itemDiv.find("a").attr("href", "/products/" + item.id);
+                for (let dto of arr) {
+                    let dtoDiv = template.clone();
+                    dtoDiv.removeClass("template");
+                    dtoDiv.attr("product-id", dto.productId);
+                    dtoDiv.find("img").attr("src", "/products/display/?imageURL=" + dto.imageDTOList[0].imageURL);
+                    dtoDiv.find("a").attr("href", "/products/" + dto.productId);
 
-                    let title = item.title;
+                    let title = dto.title;
                     if (title.length > 21) {
                         title = title.substring(0, 21) + "...";
                     }
-                    itemDiv.find(".title").text(title);
+                    dtoDiv.find(".title").text(title);
 
-                    let price = item.price.toLocaleString('ko-KR')
-                    itemDiv.find(".price").text(price + " 원");
-                    itemDiv.css("display", "inline-block")
-                    template.closest(".row").append(itemDiv);
+                    let price = dto.price.toLocaleString('ko-KR')
+                    dtoDiv.find(".price").text(price + " 원");
+                    dtoDiv.css("display", "inline-block")
+                    template.closest(".row").append(dtoDiv);
                 }
             }
 
             sgSelect.on("change", function () {
                 let sgNum = $(this).val();
-                location.href = "/categories/" + sgNum;
+                location.href = "/products/categories/" + sgNum;
             });
 
         </script>
