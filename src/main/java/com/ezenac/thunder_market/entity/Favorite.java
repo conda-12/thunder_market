@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Entity
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
+@Entity
 public class Favorite{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

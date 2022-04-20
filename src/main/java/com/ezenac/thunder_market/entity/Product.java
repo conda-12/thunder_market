@@ -6,21 +6,17 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@ToString(exclude = {"smallGroup", "member"})
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@ToString(exclude = {"smallGroup", "member"})
+@Entity
 public class Product extends BaseTime {
-    /*상품 아이디*/
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
-
-    @Builder.Default
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<ProductImage> images = new ArrayList<>();
 
     private String title;
 
@@ -42,12 +38,25 @@ public class Product extends BaseTime {
     @Enumerated(EnumType.STRING)
     private ProductState state;
 
-    public void setImage(ProductImage productImage) {
-        this.images.add(productImage);
+    @Builder.Default
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<ProductImage> images = new ArrayList<>();
+
+
+    public void soldOut() {
+        this.state = ProductState.SOLD_OUT;
     }
 
-    public void changeState(ProductState productState) {
-        this.state = productState;
+    public void selling() {
+        this.state = ProductState.SELLING;
+    }
+
+    public void reserved() {
+        this.state = ProductState.RESERVED;
+    }
+
+    public void setImage(ProductImage productImage) {
+        this.images.add(productImage);
     }
 
     public void changeInfo(String title, String address, int price, String content, SmallGroup smallGroup) {
