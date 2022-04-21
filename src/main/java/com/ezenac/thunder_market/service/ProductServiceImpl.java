@@ -70,7 +70,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> searchList(PageRequestDTO pageRequestDTO) {
+    public List<ProductListDTO> searchList(PageRequestDTO pageRequestDTO) {
         Pageable pageable = pageRequestDTO.getPageable(Sort.by("productId").descending());
         String keyword = pageRequestDTO.getKeyword();
         String sgNum = pageRequestDTO.getSgNum();
@@ -78,8 +78,8 @@ public class ProductServiceImpl implements ProductService {
         if (!sgNum.equals("")) {
             smallGroup = SmallGroup.builder().sgNum(sgNum).build();
         }
-        Page<Object[]> result = productRepository.getSearchList(keyword, smallGroup, pageable);
-        return result.stream().map(row -> entityToDTO((Product) row[0], (Long) row[1])).collect(Collectors.toList());
+        Page<Product> result = productRepository.getSearchList(keyword, smallGroup, pageable);
+        return result.stream().map(ProductListDTO::new).collect(Collectors.toList());
     }
 
     @Transactional
@@ -98,7 +98,7 @@ public class ProductServiceImpl implements ProductService {
     // 상품 수정 페이지 요청
     @Override
     public ProductDTO modifyGet(Long productId) {
-        Product product = productRepository.findById(productId).orElseThrow(()->new IllegalArgumentException("해당 상품이 없습니다. id="+productId));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다. id=" + productId));
         return entityToDTO(product, null);
     }
 
@@ -106,7 +106,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     @Override
     public Long modifyPost(Long productId, ProductRegisterDTO productRegisterDTO) {
-        Product product = productRepository.findById(productId).orElseThrow(()->new IllegalArgumentException("해당 상품이 없습니다. id="+productId));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다. id=" + productId));
         String title = productRegisterDTO.getTitle();
         String sgNum = productRegisterDTO.getSgNum();
         String address = productRegisterDTO.getAddress();

@@ -2,7 +2,6 @@ package com.ezenac.thunder_market.repository;
 
 import com.ezenac.thunder_market.entity.*;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class ProductRepositoryImpl extends QuerydslRepositorySupport implements ProductRepositoryCustom {
@@ -21,12 +19,10 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport implements 
         super(Product.class);
     }
 
-    public Page<Object[]> getSearchList(String keyword, SmallGroup smallGroup, Pageable pageable) {
+    public Page<Product> getSearchList(String keyword, SmallGroup smallGroup, Pageable pageable) {
         QProduct product = QProduct.product;
-        QFavorite favorite = QFavorite.favorite;
 
-        JPQLQuery<Product> jpqlQuery = from(product).leftJoin(favorite).on(favorite.product.eq(product));
-        JPQLQuery<Tuple> tuple = jpqlQuery.select(product, favorite.count());
+        JPQLQuery<Product> jpqlQuery = from(product);
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         BooleanExpression booleanExpression = product.state.eq(ProductState.SELLING);
@@ -40,14 +36,13 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport implements 
             BooleanExpression cateSearch = product.smallGroup.eq(smallGroup);
             booleanBuilder.and(cateSearch);
         }
-        tuple.where(booleanBuilder);
-        tuple.groupBy(product);
+        jpqlQuery.where(booleanBuilder);
 
-        Long count = tuple.fetchCount();
 
-        List<Tuple> result = getQuerydsl().applyPagination(pageable, tuple).fetch();
+        long count = jpqlQuery.fetchCount();
+        List<Product> result = getQuerydsl().applyPagination(pageable, jpqlQuery).fetch();
 
-        return new PageImpl<Object[]>(result.stream().map(Tuple::toArray).collect(Collectors.toList()), pageable, count);
+        return new PageImpl<Product>(result, pageable, count);
     }
 
 }

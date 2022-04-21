@@ -17,7 +17,7 @@ public interface ProductService {
 
     List<ProductListDTO> list(PageRequestDTO pageRequestDTO);
 
-    List<ProductDTO> searchList(PageRequestDTO pageRequestDTO);
+    List<ProductListDTO> searchList(PageRequestDTO pageRequestDTO);
 
     ProductDTO read(Long productId);
 

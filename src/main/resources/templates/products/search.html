@@ -149,7 +149,7 @@
                     let dtoDiv = template.clone();
                     dtoDiv.removeClass("template");
                     dtoDiv.attr("product-id", dto.productId);
-                    dtoDiv.find("img").attr("src", "/products/display/?imageURL=" + dto.imageDTOList[0].imageURL);
+                    dtoDiv.find("img").attr("src", "/products/display/?imageURL=" + dto.imageURL);
                     dtoDiv.find("a").attr("href", "/products/" + dto.productId);
 
                     let title = dto.title;
