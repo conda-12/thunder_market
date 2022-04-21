@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 @Data
-public class BigGroupDTO implements Serializable {
+public class BigGroupDTO {
 
     private String bgNum;
 
