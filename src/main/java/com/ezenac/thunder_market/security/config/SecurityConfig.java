@@ -26,7 +26,6 @@ import java.util.List;
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true) // 어노테이션으로 접근제한 설정
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PrincipalOauth2MemberService principalOauth2MemberService;
