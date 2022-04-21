@@ -61,7 +61,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public List<ProductListDTO> list(PageRequestDTO pageRequestDTO) {
         Pageable pageable = pageRequestDTO.getPageable(Sort.by("regDate").descending());
@@ -69,6 +69,7 @@ public class ProductServiceImpl implements ProductService {
         return result.stream().map(ProductListDTO::new).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ProductListDTO> searchList(PageRequestDTO pageRequestDTO) {
         Pageable pageable = pageRequestDTO.getPageable(Sort.by("productId").descending());

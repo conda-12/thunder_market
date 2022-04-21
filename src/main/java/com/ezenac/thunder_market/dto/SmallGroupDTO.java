@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 @Data
-public class SmallGroupDTO implements Serializable {
+public class SmallGroupDTO {
     private String sgNum;
     private String sgCate;
 
