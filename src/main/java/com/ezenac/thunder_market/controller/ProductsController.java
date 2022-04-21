@@ -113,10 +113,10 @@ public class ProductsController {
     // 상품 검색 페이지 내에 페이징 처리
     @ResponseBody
     @PostMapping("/searchList")
-    public ResponseEntity<List<ProductDTO>> keywordList(@ModelAttribute PageRequestDTO pageRequestDTO) {
+    public ResponseEntity<List<ProductListDTO>> keywordList(@ModelAttribute PageRequestDTO pageRequestDTO) {
         log.info("pageRequestDTO => " + pageRequestDTO);
 
-        List<ProductDTO> result = productService.searchList(pageRequestDTO);
+        List<ProductListDTO> result = productService.searchList(pageRequestDTO);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
