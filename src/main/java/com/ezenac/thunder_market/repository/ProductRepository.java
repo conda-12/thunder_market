@@ -18,15 +18,20 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
             " GROUP BY p")
     Page<Object[]> getList(Pageable pageable);
 
+    @Query("SELECT p" +
+            " FROM Product p" +
+            " WHERE p.state = 'SELLING'")
+    Page<Product> findList(Pageable pageable);
+
     @Query("SELECT p, COUNT (f)" +
             " FROM Product p" +
             " LEFT JOIN Favorite f ON f.product = p" +
-            " WHERE p.state = 'SELLING' AND p.id = :id")
-    Optional<Object> readWithFavorite(Long id);
+            " WHERE p.state = 'SELLING' AND p.productId = :productId")
+    Optional<Object> readWithFavorite(Long productId);
 
     @Modifying
     @Query("UPDATE Product p" +
             " set p.hit = p.hit + 1" +
-            " WHERE p.id = :id")
-    void updateHit(Long id);
+            " WHERE p.productId = :productId")
+    void updateHit(Long productId);
 }

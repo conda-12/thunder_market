@@ -1,9 +1,6 @@
 package com.ezenac.thunder_market.service;
 
-import com.ezenac.thunder_market.dto.PageRequestDTO;
-import com.ezenac.thunder_market.dto.ProductDTO;
-import com.ezenac.thunder_market.dto.ProductImageDTO;
-import com.ezenac.thunder_market.dto.ProductRegisterDTO;
+import com.ezenac.thunder_market.dto.*;
 import com.ezenac.thunder_market.entity.Product;
 import com.ezenac.thunder_market.entity.ProductImage;
 import com.ezenac.thunder_market.entity.SmallGroup;
@@ -12,24 +9,18 @@ import com.ezenac.thunder_market.repository.ProductRepository;
 import com.ezenac.thunder_market.utils.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,12 +63,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public List<ProductDTO> list(PageRequestDTO pageRequestDTO) {
-        Pageable pageable = pageRequestDTO.getPageable(Sort.by("productId").descending());
-
-        Page<Object[]> result = productRepository.getList(pageable);
-
-        return result.stream().map(row -> entityToDTO((Product) row[0], (Long) row[1])).collect(Collectors.toList());
+    public List<ProductListDTO> list(PageRequestDTO pageRequestDTO) {
+        Pageable pageable = pageRequestDTO.getPageable(Sort.by("regDate").descending());
+        Page<Product> result = productRepository.findList(pageable);
+        return result.stream().map(ProductListDTO::new).collect(Collectors.toList());
     }
 
     @Override
@@ -109,22 +98,22 @@ public class ProductServiceImpl implements ProductService {
     // 상품 수정 페이지 요청
     @Override
     public ProductDTO modifyGet(Long productId) {
-        Optional<Product> result = productRepository.findById(productId);
-        return result.map(product -> entityToDTO(product, null)).orElse(null);
+        Product product = productRepository.findById(productId).orElseThrow(()->new IllegalArgumentException("해당 상품이 없습니다. id="+productId));
+        return entityToDTO(product, null);
     }
 
-    // 상품 수정
-    @Modifying
+    // 상품 수정 todo productUpdateDto 만들기
+    @Transactional
     @Override
-    public Long modifyPost(ProductRegisterDTO productRegisterDTO) {
-        Product product = productRepository.getById(productRegisterDTO.getProductId());
+    public Long modifyPost(Long productId, ProductRegisterDTO productRegisterDTO) {
+        Product product = productRepository.findById(productId).orElseThrow(()->new IllegalArgumentException("해당 상품이 없습니다. id="+productId));
         String title = productRegisterDTO.getTitle();
         String sgNum = productRegisterDTO.getSgNum();
         String address = productRegisterDTO.getAddress();
         int price = productRegisterDTO.getPrice();
         String content = productRegisterDTO.getContent();
 
-        product.changeInfo(title, address, price, content, SmallGroup.builder().sgNum(sgNum).build());
+        product.update(title, address, price, content, SmallGroup.builder().sgNum(sgNum).build());
 
         if (productRegisterDTO.getFiles() != null) {
             for (MultipartFile file : productRegisterDTO.getFiles()) {
@@ -146,7 +135,6 @@ public class ProductServiceImpl implements ProductService {
 
             }
         }
-        productRepository.save(product);
         log.info("product => " + product);
         return product.getProductId();
     }
@@ -165,6 +153,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     // 이미지 변경
+    @Transactional
     @Override
     public ProductImageDTO changeImage(Long imageId, MultipartFile file) {
         Optional<ProductImage> result = imageRepository.findById(imageId);
@@ -178,14 +167,8 @@ public class ProductServiceImpl implements ProductService {
                 String path = fileInfo.get("path");
                 String uuid = fileInfo.get("uuid");
                 String fileName = fileInfo.get("fileName");
-                productImage.changeFile(path, uuid, fileName);
-                imageRepository.save(productImage);
-                return ProductImageDTO.builder()
-                        .imageId(productImage.getImageId())
-                        .path(productImage.getPath())
-                        .uuid(productImage.getUuid())
-                        .imgName(productImage.getImageName())
-                        .build();
+                productImage.update(path, uuid, fileName);
+                return new ProductImageDTO(productImage);
             } catch (IOException e) {
                 e.printStackTrace();
             }

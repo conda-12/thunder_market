@@ -30,14 +30,14 @@
                         <div class="col-lg-6 col-md-12 col-12 border-end">
                             <div class="col text-center m-2">
                                 <img id="main-image"
-                                     th:src="|@{/products/display?imageURL=}${dto.imageDTOList[0].getImageURL}|"
+                                     th:src="|@{/products/display?imageURL=}${dto.imageDTOList[0].imageURL}|"
                                      style="height: 300px; ">
                             </div>
                             <div class="col ">
                                 <ul class="list-group list-group-horizontal" style="justify-content: center">
                                     <li class="list-group-item" th:each="image : ${dto.imageDTOList}">
                                         <a href="#">
-                                            <img th:src="|@{/products/display?imageURL=}${image.getImageURL()}|"
+                                            <img th:src="|@{/products/display?imageURL=}${image.imageURL}|"
                                                  style="height: 90px">
                                         </a>
                                     </li>
