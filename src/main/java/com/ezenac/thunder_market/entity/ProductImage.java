@@ -30,4 +30,9 @@ public class ProductImage {
         this.imageName = imageName;
     }
 
+    public String getImageURL() {
+        return path + "/" + uuid + "_" + imageName;
+    }
+
+
 }

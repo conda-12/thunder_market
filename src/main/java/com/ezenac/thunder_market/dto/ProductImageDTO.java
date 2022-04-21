@@ -1,33 +1,22 @@
 package com.ezenac.thunder_market.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.ezenac.thunder_market.entity.ProductImage;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProductImageDTO {
 
     private Long imageId;
 
-    private String uuid;
+    private String imageURL;
 
-    private String imgName;
+    public ProductImageDTO(ProductImage entity) {
+        this.imageId = entity.getImageId();
 
-    private String path;
-
-    public String getImageURL() {
-        try {
-            return URLEncoder.encode(path + "/" + uuid + "_" + imgName, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return "";
+        String _imageURL = entity.getPath() + "/" + entity.getUuid() + "_" + entity.getImageName();
+        
+        this.imageURL = URLEncoder.encode(_imageURL, StandardCharsets.UTF_8);
     }
 }
