@@ -18,15 +18,19 @@ public class Product extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
 
+    @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
     private String address;
 
+    @Column(nullable = false)
     private int price;
 
-    @Column(columnDefinition = "text")
+    @Column(columnDefinition = "text", nullable = false)
     private String content;
 
+    @Column(nullable = false)
     private int hit;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,6 +40,7 @@ public class Product extends BaseTime {
     private Member member;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ProductState state;
 
     @Builder.Default
