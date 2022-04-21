@@ -1,10 +1,7 @@
 package com.ezenac.thunder_market.controller;
 
 import com.ezenac.thunder_market.config.auth.PrincipalDetails;
-import com.ezenac.thunder_market.dto.PageRequestDTO;
-import com.ezenac.thunder_market.dto.ProductDTO;
-import com.ezenac.thunder_market.dto.ProductImageDTO;
-import com.ezenac.thunder_market.dto.ProductRegisterDTO;
+import com.ezenac.thunder_market.dto.*;
 import com.ezenac.thunder_market.entity.Product;
 import com.ezenac.thunder_market.service.FavoriteService;
 import com.ezenac.thunder_market.service.ProductService;
@@ -89,9 +86,9 @@ public class ProductsController {
     // 인덱스 페이지 상품 리스트
     @GetMapping("/list")
     @ResponseBody
-    public ResponseEntity<List<ProductDTO>> list(PageRequestDTO pageRequestDTO) {
+    public ResponseEntity<List<ProductListDTO>> list(PageRequestDTO pageRequestDTO) {
         log.info("pageRequestDTO =>" + pageRequestDTO);
-        List<ProductDTO> result = productService.list(pageRequestDTO);
+        List<ProductListDTO> result = productService.list(pageRequestDTO);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -204,6 +201,7 @@ public class ProductsController {
         }
 
         model.addAttribute("dto", productDTO);
+        System.out.println(productDTO);
         return "/products/modify";
     }
 

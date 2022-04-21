@@ -1,13 +1,10 @@
 package com.ezenac.thunder_market.service;
 
+import com.ezenac.thunder_market.dto.*;
 import com.ezenac.thunder_market.entity.Member;
 import com.ezenac.thunder_market.entity.Product;
 import com.ezenac.thunder_market.entity.ProductState;
 import com.ezenac.thunder_market.entity.SmallGroup;
-import com.ezenac.thunder_market.dto.PageRequestDTO;
-import com.ezenac.thunder_market.dto.ProductDTO;
-import com.ezenac.thunder_market.dto.ProductImageDTO;
-import com.ezenac.thunder_market.dto.ProductRegisterDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -18,7 +15,7 @@ public interface ProductService {
 
     Long register(ProductRegisterDTO productRegisterDTO);
 
-    List<ProductDTO> list(PageRequestDTO pageRequestDTO);
+    List<ProductListDTO> list(PageRequestDTO pageRequestDTO);
 
     List<ProductDTO> searchList(PageRequestDTO pageRequestDTO);
 
@@ -56,14 +53,7 @@ public interface ProductService {
 
     default ProductDTO entityToDTO(Product product, Long favoriteCnt) {
         // 이미지 소스 처리
-        List<ProductImageDTO> imageDTOList = product.getImages().stream().map(entity -> {
-            return ProductImageDTO.builder()
-                    .imageId(entity.getImageId())
-                    .path(entity.getPath())
-                    .uuid(entity.getUuid())
-                    .imgName(entity.getImageName())
-                    .build();
-        }).collect(Collectors.toList());
+        List<ProductImageDTO> imageDTOList = product.getImages().stream().map(ProductImageDTO::new).collect(Collectors.toList());
 
         return ProductDTO.builder()
                 .productId(product.getProductId())
