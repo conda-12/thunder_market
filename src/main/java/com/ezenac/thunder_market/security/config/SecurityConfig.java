@@ -3,6 +3,7 @@ package com.ezenac.thunder_market.security.config;
 
 import com.ezenac.thunder_market.security.auth.PrincipalDetailsService;
 import com.ezenac.thunder_market.security.factory.UrlResourcesMapFactoryBean;
+import com.ezenac.thunder_market.security.filter.PermitAllFilter;
 import com.ezenac.thunder_market.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import com.ezenac.thunder_market.security.oauth.PrincipalOauth2MemberService;
 import com.ezenac.thunder_market.security.service.SecurityResourceService;
@@ -14,11 +15,9 @@ import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 
 import java.util.List;
@@ -31,6 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final PrincipalOauth2MemberService principalOauth2MemberService;
     private final PrincipalDetailsService principalDetailsService;
     private final SecurityResourceService securityResourceService;
+    private final String[] permitAll = {"/", "/member/auth/**"};
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
@@ -76,13 +76,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Bean
-    public FilterSecurityInterceptor customFilterSecurityInterceptor() throws Exception {
-        FilterSecurityInterceptor filterSecurityInterceptor = new FilterSecurityInterceptor();
-        filterSecurityInterceptor.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
-        filterSecurityInterceptor.setAccessDecisionManager(affirmativeBased());
-        filterSecurityInterceptor.setAuthenticationManager(authenticationManagerBean());
+    public PermitAllFilter customFilterSecurityInterceptor() throws Exception {
+        PermitAllFilter permitAllFilter = new PermitAllFilter(permitAll);
+        permitAllFilter.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
+        permitAllFilter.setAccessDecisionManager(affirmativeBased());
+        permitAllFilter.setAuthenticationManager(authenticationManagerBean());
 
-        return filterSecurityInterceptor;
+        return permitAllFilter;
     }
 
     private AccessDecisionManager affirmativeBased() {
