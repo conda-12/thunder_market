@@ -1,8 +1,10 @@
 package com.ezenac.thunder_market.service;
 
 import com.ezenac.thunder_market.dto.MemberDTO;
+import com.ezenac.thunder_market.entity.Role;
 import com.ezenac.thunder_market.entity.Token;
 import com.ezenac.thunder_market.repository.MemberRepository;
+import com.ezenac.thunder_market.repository.RoleRepository;
 import com.ezenac.thunder_market.repository.TokenRedisRepository;
 import com.ezenac.thunder_market.entity.Product;
 import com.ezenac.thunder_market.entity.Member;
@@ -13,14 +15,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
+    private final RoleRepository roleRepository;
     private final TokenRedisRepository tokenRedisRepository;
     private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
@@ -33,7 +38,10 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = modelMapper.map(memberDTO, Member.class);
         member.setPassword(encPassword);
-        member.setRole("ROLE_MEMBER");
+        Role role = roleRepository.findByRoleName("ROLE_MEMBER");
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
+        member.setMemberRoles(roles);
 
         memberRepository.save(member);
     }

@@ -1,7 +1,9 @@
-package com.ezenac.thunder_market.config.oauth;
+package com.ezenac.thunder_market.security.oauth;
 
-import com.ezenac.thunder_market.config.auth.PrincipalDetails;
-import com.ezenac.thunder_market.config.oauth.provider.*;
+import com.ezenac.thunder_market.entity.Role;
+import com.ezenac.thunder_market.repository.RoleRepository;
+import com.ezenac.thunder_market.security.auth.PrincipalDetails;
+import com.ezenac.thunder_market.security.oauth.provider.*;
 import com.ezenac.thunder_market.entity.Member;
 import com.ezenac.thunder_market.repository.MemberRepository;
 import lombok.AllArgsConstructor;
@@ -12,13 +14,16 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @AllArgsConstructor
 @Service
 public class PrincipalOauth2MemberService extends DefaultOAuth2UserService {
 
+    private final RoleRepository roleRepository;
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -51,7 +56,9 @@ public class PrincipalOauth2MemberService extends DefaultOAuth2UserService {
         String providerId = oAuth2UserInfo.getProviderId(); // ex. Google PrimaryKey
         String memberId = provider + "_" + providerId;
         String email = oAuth2UserInfo.getEmail();
-        String role = "ROLE_MEMBER";
+        Role role = roleRepository.findByRoleName("ROLE_MEMBER");
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
 
         Optional<Member> member = memberRepository.findById(memberId);
         Member setMember = null;
@@ -64,7 +71,7 @@ public class PrincipalOauth2MemberService extends DefaultOAuth2UserService {
                     .memberId(memberId)
                     .password(bCryptPasswordEncoder.encode("@SOCIAL_PASSWORD"))
                     .email(email)
-                    .role(role)
+                    .memberRoles(roles)
                     .provider(provider)
                     .providerId(providerId)
                     .build();

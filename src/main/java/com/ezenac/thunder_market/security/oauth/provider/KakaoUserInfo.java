@@ -1,4 +1,4 @@
-package com.ezenac.thunder_market.config.oauth.provider;
+package com.ezenac.thunder_market.security.oauth.provider;
 
 import java.util.Map;
 
