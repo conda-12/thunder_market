@@ -1,7 +1,6 @@
 package com.ezenac.thunder_market.security.config;
 
 import com.ezenac.thunder_market.security.factory.MethodResourcesMapFactoryBean;
-import com.ezenac.thunder_market.security.processor.ProtectPointcutPostProcessor;
 import com.ezenac.thunder_market.security.service.SecurityResourceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -33,22 +32,7 @@ public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
     public MethodResourcesMapFactoryBean methodResourcesMapFactoryBean(){
         MethodResourcesMapFactoryBean methodResourcesMapFactoryBean = new MethodResourcesMapFactoryBean();
         methodResourcesMapFactoryBean.setSecurityResourceService(securityResourceService);
-        methodResourcesMapFactoryBean.setResourceType("method");
         return methodResourcesMapFactoryBean;
     }
 
-    @Bean
-    public MethodResourcesMapFactoryBean pointcutResourcesMapFactoryBean(){
-        MethodResourcesMapFactoryBean methodResourcesMapFactoryBean = new MethodResourcesMapFactoryBean();
-        methodResourcesMapFactoryBean.setSecurityResourceService(securityResourceService);
-        methodResourcesMapFactoryBean.setResourceType("pointcut");
-        return methodResourcesMapFactoryBean;
-    }
-
-    @Bean
-    public ProtectPointcutPostProcessor protectPointcutPostProcessor(){
-        ProtectPointcutPostProcessor protectPointcutPostProcessor = new ProtectPointcutPostProcessor(mapBasedMethodSecurityMetadataSource());
-        protectPointcutPostProcessor.setPointcutMap(pointcutResourcesMapFactoryBean().getObject());
-        return protectPointcutPostProcessor;
-    }
 }

@@ -1,36 +1,40 @@
 package com.ezenac.thunder_market.security.config;
 
 
+import com.ezenac.thunder_market.entity.RoleHierarchy;
 import com.ezenac.thunder_market.security.auth.PrincipalDetailsService;
 import com.ezenac.thunder_market.security.factory.UrlResourcesMapFactoryBean;
 import com.ezenac.thunder_market.security.filter.PermitAllFilter;
 import com.ezenac.thunder_market.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import com.ezenac.thunder_market.security.oauth.PrincipalOauth2MemberService;
 import com.ezenac.thunder_market.security.service.SecurityResourceService;
+import com.ezenac.thunder_market.service.RoleHierarchyService;
+import com.ezenac.thunder_market.service.RoleHierarchyServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.access.vote.AffirmativeBased;
-import org.springframework.security.access.vote.RoleVoter;
+import org.springframework.security.access.vote.RoleHierarchyVoter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
     private final PrincipalOauth2MemberService principalOauth2MemberService;
     private final PrincipalDetailsService principalDetailsService;
     private final SecurityResourceService securityResourceService;
-    private final String[] permitAll = {"/", "/member/auth/**"};
+    private final String[] permitAll = {"/"};
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
@@ -86,12 +90,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private AccessDecisionManager affirmativeBased() {
-
         return new AffirmativeBased(getAccessDecisionVoters());
     }
 
     private List<AccessDecisionVoter<?>> getAccessDecisionVoters() {
-        return List.of(new RoleVoter());
+
+        List<AccessDecisionVoter<?>> accessDecisionVoters = new ArrayList<>();
+        accessDecisionVoters.add(roleVoter());
+
+        return accessDecisionVoters;
+    }
+
+    private AccessDecisionVoter<?> roleVoter() {
+
+        return new RoleHierarchyVoter(roleHierarchy());
+    }
+
+    @Bean
+    public RoleHierarchyImpl roleHierarchy() {
+        return new RoleHierarchyImpl();
     }
 
     @Bean

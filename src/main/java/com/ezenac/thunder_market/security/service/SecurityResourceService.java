@@ -37,22 +37,7 @@ public class SecurityResourceService {
     public LinkedHashMap<String, List<ConfigAttribute>> getMethodResourceList() {
 
         LinkedHashMap<String, List<ConfigAttribute>> result = new LinkedHashMap<>();
-        List<Resource> resourceList = resourceRepository.findAllResources();
-        resourceList.forEach(resource -> {
-            List<ConfigAttribute> configAttributeList = new ArrayList<>();
-            resource.getRoleSet().forEach(role -> {
-                configAttributeList.add(new SecurityConfig(role.getRoleName()));
-            });
-            result.put(resource.getResourceName(), configAttributeList);
-        });
-
-        return result;
-    }
-
-    public LinkedHashMap<String, List<ConfigAttribute>> getPointcutMethodResourceList() {
-
-        LinkedHashMap<String, List<ConfigAttribute>> result = new LinkedHashMap<>();
-        List<Resource> resourceList = resourceRepository.findAllResources();
+        List<Resource> resourceList = resourceRepository.findAllMethodResources();
         resourceList.forEach(resource -> {
             List<ConfigAttribute> configAttributeList = new ArrayList<>();
             resource.getRoleSet().forEach(role -> {
