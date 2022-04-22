@@ -2,8 +2,6 @@ package com.ezenac.thunder_market.service;
 
 import com.ezenac.thunder_market.entity.RoleHierarchy;
 import com.ezenac.thunder_market.repository.RoleHierarchyRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
