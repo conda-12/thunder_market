@@ -1,6 +1,5 @@
 package com.ezenac.thunder_market.controller;
 
-import com.ezenac.thunder_market.config.auth.PrincipalDetails;
 import com.ezenac.thunder_market.dto.*;
 import com.ezenac.thunder_market.entity.Product;
 import com.ezenac.thunder_market.service.FavoriteService;

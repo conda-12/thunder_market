@@ -28,6 +28,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath memberId = createString("memberId");
 
+    public final SetPath<Role, QRole> memberRoles = this.<Role, QRole>createSet("memberRoles", Role.class, QRole.class, PathInits.DIRECT2);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modDate = _super.modDate;
 
@@ -45,8 +47,6 @@ public class QMember extends EntityPathBase<Member> {
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> regDate = _super.regDate;
-
-    public final StringPath role = createString("role");
 
     public QMember(String variable) {
         super(Member.class, forVariable(variable));
