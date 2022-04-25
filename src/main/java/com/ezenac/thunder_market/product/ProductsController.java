@@ -1,10 +1,6 @@
 package com.ezenac.thunder_market.product;
 
-import com.ezenac.thunder_market.product.dto.ProductListRequestDTO;
-import com.ezenac.thunder_market.product.dto.ProductListDTO;
-import com.ezenac.thunder_market.product.dto.ProductReadDTO;
-import com.ezenac.thunder_market.product.dto.ProductRegisterDTO;
-import com.ezenac.thunder_market.product.dto.ProductImageDTO;
+import com.ezenac.thunder_market.product.dto.*;
 import com.ezenac.thunder_market.favorite.service.FavoriteService;
 import com.ezenac.thunder_market.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -65,21 +61,6 @@ public class ProductsController {
     @GetMapping("/new")
     public String register() {
         return "/products/new";
-    }
-
-    //상품 등록
-    @PreAuthorize("isAuthenticated()")
-    @ResponseBody
-    @PostMapping("/new")
-    public ResponseEntity<Long> register(ProductRegisterDTO productRegisterDTO) {
-        log.info("register => " + productRegisterDTO);
-
-        Authentication user = SecurityContextHolder.getContext().getAuthentication();
-        productRegisterDTO.setMemberId(user.getName());
-
-        Long id = productService.register(productRegisterDTO);
-
-        return new ResponseEntity<>(id, HttpStatus.OK);
     }
 
     // 인덱스 페이지 상품 리스트
@@ -193,34 +174,9 @@ public class ProductsController {
     @GetMapping("/modify/{productId}")
     public String modifyGet(@PathVariable Long productId, Model model) {
         log.info("modifyGET product => " + productId);
-
-        ProductReadDTO productDTO = productService.modifyGet(productId);
-        if (productDTO == null) {
-            return "redirect:/";
-        }
-
-        model.addAttribute("dto", productDTO);
-        System.out.println(productDTO);
+        ProductModifyDTO ProductModifyDTO = productService.modifyGet(productId);
+        model.addAttribute("dto", ProductModifyDTO);
         return "/products/modify";
-    }
-
-    // 상품 수정
-    @ResponseBody
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping("/modify/{productId}")
-    public ResponseEntity<Long> modifyPost(@PathVariable Long productId, ProductRegisterDTO productRegisterDTO) {
-        log.info("modifyPOST product => " + productRegisterDTO.getProductId());
-        //권한 검사
-        Authentication user = SecurityContextHolder.getContext().getAuthentication();
-        boolean result = productService.authorityValidate(productRegisterDTO.getProductId(), user.getName());
-        if (result) {
-            productRegisterDTO.setMemberId(user.getName());
-            Long id = productService.modifyPost(productId, productRegisterDTO);
-            return new ResponseEntity<>(id, HttpStatus.OK);
-        }
-        log.warn("권한 없는 사용자 요청");
-        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-
     }
 
 

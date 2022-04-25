@@ -428,11 +428,11 @@
                     
                     
                     $.ajax({
-                        url: '/products/modify/' + productId,
+                        url: '/product',
                         processData: false, // query String을 하지 않는다.
                         contentType: false, // multipart/form-data로 전송되게 하는 설정
                         data: formData,
-                        type: 'post',
+                        type: 'put',
                         dataType: 'text',
                         success: function (result) {
                             if (result) {

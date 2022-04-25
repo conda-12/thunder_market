@@ -1,10 +1,6 @@
 package com.ezenac.thunder_market.product.service;
 
-import com.ezenac.thunder_market.product.dto.ProductListRequestDTO;
-import com.ezenac.thunder_market.product.dto.ProductListDTO;
-import com.ezenac.thunder_market.product.dto.ProductReadDTO;
-import com.ezenac.thunder_market.product.dto.ProductRegisterDTO;
-import com.ezenac.thunder_market.product.dto.ProductImageDTO;
+import com.ezenac.thunder_market.product.dto.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -20,9 +16,9 @@ public interface ProductService {
 
     ProductReadDTO read(Long productId);
 
-    ProductReadDTO modifyGet(Long productId);
+    ProductModifyDTO modifyGet(Long productId);
 
-    Long modifyPost(Long id, ProductRegisterDTO productRegisterDTO);
+    Long modifyPost(ProductModifyDTO productModifyDTO);
 
     void remove(Long productId);
 

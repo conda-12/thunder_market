@@ -1,13 +1,9 @@
 package com.ezenac.thunder_market.product.service;
 
-import com.ezenac.thunder_market.product.dto.ProductListRequestDTO;
-import com.ezenac.thunder_market.product.dto.ProductListDTO;
-import com.ezenac.thunder_market.product.dto.ProductReadDTO;
-import com.ezenac.thunder_market.product.dto.ProductRegisterDTO;
+import com.ezenac.thunder_market.product.dto.*;
 import com.ezenac.thunder_market.product.entity.Product;
 import com.ezenac.thunder_market.product.entity.ProductImage;
 import com.ezenac.thunder_market.group.entity.SmallGroup;
-import com.ezenac.thunder_market.product.dto.ProductImageDTO;
 import com.ezenac.thunder_market.product.repository.ProductImageRepository;
 import com.ezenac.thunder_market.product.repository.ProductRepository;
 import com.ezenac.thunder_market.utils.FileUploadUtil;
@@ -102,45 +98,26 @@ public class ProductServiceImpl implements ProductService {
 
     // 상품 수정 페이지 요청
     @Override
-    public ProductReadDTO modifyGet(Long productId) {
+    public ProductModifyDTO modifyGet(Long productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다. id=" + productId));
-        return new ProductReadDTO(product, null);
+        return new ProductModifyDTO(product);
     }
 
     // 상품 수정 todo productUpdateDto 만들기
     @Transactional
     @Override
-    public Long modifyPost(Long productId, ProductRegisterDTO productRegisterDTO) {
+    public Long modifyPost(ProductModifyDTO productModifyDTO) {
+        Long productId = productModifyDTO.getProductId();
         Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다. id=" + productId));
-        String title = productRegisterDTO.getTitle();
-        String sgNum = productRegisterDTO.getSgNum();
-        String address = productRegisterDTO.getAddress();
-        int price = productRegisterDTO.getPrice();
-        String content = productRegisterDTO.getContent();
+        String title = productModifyDTO.getTitle();
+        String sgNum = productModifyDTO.getSgNum();
+        String address = productModifyDTO.getAddress();
+        int price = productModifyDTO.getPrice();
+        String content = productModifyDTO.getContent();
 
         product.update(title, address, price, content, SmallGroup.builder().sgNum(sgNum).build());
 
-        if (productRegisterDTO.getFiles() != null) {
-            for (MultipartFile file : productRegisterDTO.getFiles()) {
-                try {
-                    Map<String, String> fileInfo = fileUploadUtil.saveFile(file, productRegisterDTO.getMemberId());
-
-                    ProductImage image = ProductImage.builder()
-                            .imageName(fileInfo.get("fileName"))
-                            .path(fileInfo.get("path"))
-                            .uuid(fileInfo.get("uuid"))
-                            .product(product)
-                            .build();
-                    product.setImage(image);
-
-                } catch (IOException e) {
-                    log.warn("파일저장에 실패했습니다 => " + file.getName());
-                    e.printStackTrace();
-                }
-
-            }
-        }
-        log.info("product => " + product);
+        log.info("modify product => " + product);
         return product.getProductId();
     }
 
