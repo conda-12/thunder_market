@@ -141,7 +141,7 @@ public class ProductsController {
         }
     }
 
-    // 찜하기 todo 비로그인시 로그인 페이지로 이동
+    // 찜하기
     @ResponseBody
     @PostMapping("/favorite/{productId}")
     public ResponseEntity<Long> addFavorite(@PathVariable Long productId) {
