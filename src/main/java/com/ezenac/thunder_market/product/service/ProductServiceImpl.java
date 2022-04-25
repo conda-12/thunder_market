@@ -1,10 +1,10 @@
 package com.ezenac.thunder_market.product.service;
 
+import com.ezenac.thunder_market.favorite.repository.FavoriteRepository;
+import com.ezenac.thunder_market.group.entity.SmallGroup;
 import com.ezenac.thunder_market.product.dto.*;
 import com.ezenac.thunder_market.product.entity.Product;
 import com.ezenac.thunder_market.product.entity.ProductImage;
-import com.ezenac.thunder_market.group.entity.SmallGroup;
-import com.ezenac.thunder_market.product.repository.ProductImageRepository;
 import com.ezenac.thunder_market.product.repository.ProductRepository;
 import com.ezenac.thunder_market.utils.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -28,9 +27,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
-    private final ProductImageRepository imageRepository;
+    private final FavoriteRepository favoriteRepository;
     private final FileUploadUtil fileUploadUtil;
-
 
     @Transactional
     @Override
@@ -97,13 +95,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     // 상품 수정 페이지 요청
+    @Transactional(readOnly = true)
     @Override
     public ProductModifyDTO modifyGet(Long productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다. id=" + productId));
         return new ProductModifyDTO(product);
     }
 
-    // 상품 수정 todo productUpdateDto 만들기
+    // 상품 수정
     @Transactional
     @Override
     public Long modifyPost(ProductModifyDTO productModifyDTO) {
@@ -120,62 +119,23 @@ public class ProductServiceImpl implements ProductService {
         log.info("modify product => " + product);
         return product.getProductId();
     }
-
+    // 상품 삭제
     @Transactional
     @Override
     public void remove(Long productId) {
-        // todo 찜하기 삭제 후
-        productRepository.deleteById(productId);
-    }
-
-    // 이미지 파일 요청
-    @Override
-    public File getImage(String filePath) {
-        return fileUploadUtil.getImage(filePath);
-    }
-
-    // 이미지 변경
-    @Transactional
-    @Override
-    public ProductImageDTO changeImage(Long imageId, MultipartFile file) {
-        Optional<ProductImage> result = imageRepository.findById(imageId);
-        if (result.isPresent()) {
-            // 파일 삭제
-            ProductImage productImage = result.get();
+        Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다. id=" + productId));
+        // 이미지 파일 삭제
+        for (ProductImage productImage : product.getImages()) {
             fileUploadUtil.removeFile(productImage);
-            // 새 이미지 저장
-            try {
-                Map<String, String> fileInfo = fileUploadUtil.saveFile(file, productImage.getPath());
-                String path = fileInfo.get("path");
-                String uuid = fileInfo.get("uuid");
-                String fileName = fileInfo.get("fileName");
-                productImage.update(path, uuid, fileName);
-                return new ProductImageDTO(productImage);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
-        return null;
-    }
-
-    // 이미지 삭제
-    @Transactional
-    @Override
-    public void removeImage(Long imageId) {
-        Optional<ProductImage> result = imageRepository.findById(imageId);
-        if (result.isPresent()) {
-            // 파일 삭제
-            ProductImage productImage = result.get();
-            if (fileUploadUtil.removeFile(productImage)) {
-                // 데이터베이스 삭제
-                imageRepository.deleteById(imageId);
-            }
-        }
+        // 찜하기 삭제
+        favoriteRepository.deleteByProduct(product);
+        // 상품 삭제
+        productRepository.deleteById(productId);
     }
 
     // 상품 수정 권한 검사
     @Transactional
-    @Override
     public Boolean authorityValidate(Long productId, String memberId) {
         Optional<Product> result = productRepository.findById(productId);
         if (result.isEmpty()) {
