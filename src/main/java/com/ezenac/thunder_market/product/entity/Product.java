@@ -33,7 +33,6 @@ public class Product extends BaseTime {
     @Column(columnDefinition = "text", nullable = false)
     private String content;
 
-    @Column(nullable = false)
     private int hit;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -6,9 +6,11 @@ import com.ezenac.thunder_market.product.entity.Product;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 
+@ToString(exclude = {"sender","recipient","product"})
 @Getter
 @Entity
 @NoArgsConstructor
@@ -20,18 +22,15 @@ public class Message extends BaseTime {
     private String text;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(nullable = false)
     private Member sender;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(nullable = false)
     private Member recipient;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
 
-    private Boolean check;
+    private Boolean checked;
 
     @Builder
     public Message(Product product, Member sender, Member recipient, String text) {
@@ -39,10 +38,10 @@ public class Message extends BaseTime {
         this.sender = sender;
         this.recipient = recipient;
         this.text = text;
-        this.check = false;
+        this.checked = false;
     }
 
     public void checked() {
-        this.check = true;
+       this.checked = true;
     }
 }

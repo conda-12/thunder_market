@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 public class MessageDTO {
     private Long messageId;
-
     private Long productId;
     private String sender;
     private String recipient;
