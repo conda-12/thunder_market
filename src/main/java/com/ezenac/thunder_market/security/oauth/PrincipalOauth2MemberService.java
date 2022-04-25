@@ -7,6 +7,7 @@ import com.ezenac.thunder_market.security.oauth.provider.*;
 import com.ezenac.thunder_market.entity.Member;
 import com.ezenac.thunder_market.repository.MemberRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -19,7 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class PrincipalOauth2MemberService extends DefaultOAuth2UserService {
 
@@ -42,7 +43,7 @@ public class PrincipalOauth2MemberService extends DefaultOAuth2UserService {
             oAuth2UserInfo = new FaceBookUserInfo(oAuth2User.getAttributes());
         } else if (userRequest.getClientRegistration().getRegistrationId().equals("naver")){
             System.out.println("네이버 로그인 요청");
-            oAuth2UserInfo = new NaverUserInfo((Map) oAuth2User.getAttributes().get("response"));
+            oAuth2UserInfo = new NaverUserInfo(oAuth2User.getAttribute("response"));
         } else if (userRequest.getClientRegistration().getRegistrationId().equals("kakao")) {
             System.out.println("카카오 로그인 요청");
             oAuth2UserInfo = new KakaoUserInfo(oAuth2User.getAttributes());

@@ -7,11 +7,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
-public class RoleHierarchyTest {
+public class RoleHierarchyRepositoryTest {
 
     @Autowired
     private RoleHierarchyRepository roleHierarchyRepository;
 
+    // ROLE 계층 구현
     @Test
     public void createRoleHierarchy() {
 

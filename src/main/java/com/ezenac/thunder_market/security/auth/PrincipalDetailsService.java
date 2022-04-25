@@ -3,6 +3,7 @@ package com.ezenac.thunder_market.security.auth;
 import com.ezenac.thunder_market.entity.Member;
 import com.ezenac.thunder_market.repository.MemberRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class PrincipalDetailsService implements UserDetailsService {
 

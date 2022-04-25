@@ -2,6 +2,7 @@ package com.ezenac.thunder_market.security.service;
 
 import com.ezenac.thunder_market.entity.Resource;
 import com.ezenac.thunder_market.repository.ResourceRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -11,13 +12,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class SecurityResourceService {
 
     private final ResourceRepository resourceRepository;
-
-    public SecurityResourceService(ResourceRepository resourceRepository) {
-        this.resourceRepository = resourceRepository;
-    }
 
     public LinkedHashMap<RequestMatcher, List<ConfigAttribute>> getResourceList() {
 

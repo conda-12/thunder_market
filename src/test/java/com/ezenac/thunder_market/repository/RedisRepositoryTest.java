@@ -1,4 +1,4 @@
-package com.ezenac.thunder_market;
+package com.ezenac.thunder_market.repository;
 
 import com.ezenac.thunder_market.entity.Token;
 import com.ezenac.thunder_market.repository.TokenRedisRepository;
