@@ -15,7 +15,7 @@ public class ProductImageDTO {
     public ProductImageDTO(ProductImage entity) {
         this.imageId = entity.getImageId();
 
-        String _imageURL = entity.getPath() + "/" + entity.getUuid() + "_" + entity.getImageName();
+        String _imageURL = entity.getImageURL();
         
         this.imageURL = URLEncoder.encode(_imageURL, StandardCharsets.UTF_8);
     }

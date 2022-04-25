@@ -1,6 +1,7 @@
 package com.ezenac.thunder_market.dto;
 
 import com.ezenac.thunder_market.entity.Product;
+import com.ezenac.thunder_market.entity.ProductImage;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -13,11 +14,11 @@ public class ProductListDTO {
     private LocalDateTime regDate;
     private String imageURL;
 
-    public ProductListDTO(Product entity){
+    public ProductListDTO(Product entity) {
         this.productId = entity.getProductId();
         this.title = entity.getTitle();
         this.price = entity.getPrice();
         this.regDate = entity.getRegDate();
-        this.imageURL = entity.getImages().get(0).getImageURL();
+        this.imageURL = entity.getImages().get(0).toDto().getImageURL();
     }
 }

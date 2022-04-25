@@ -1,7 +1,6 @@
 package com.ezenac.thunder_market.controller;
 
 import com.ezenac.thunder_market.dto.*;
-import com.ezenac.thunder_market.entity.Product;
 import com.ezenac.thunder_market.service.FavoriteService;
 import com.ezenac.thunder_market.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -10,13 +9,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
@@ -25,11 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/products/")
@@ -43,7 +39,7 @@ public class ProductsController {
     @GetMapping("/{productId}")
     public String read(@PathVariable("productId") Long productId, Model model) {
         log.info("read product => " + productId);
-        ProductDTO productDTO = productService.read(productId);
+        ProductReadDTO productDTO = productService.read(productId);
         if (productDTO == null) {
             return "redirect:/";
         }
@@ -79,7 +75,7 @@ public class ProductsController {
 
         Long id = productService.register(productRegisterDTO);
 
-        return new ResponseEntity<Long>(id, HttpStatus.OK);
+        return new ResponseEntity<>(id, HttpStatus.OK);
     }
 
     // 인덱스 페이지 상품 리스트
@@ -124,7 +120,7 @@ public class ProductsController {
     @GetMapping("/display")
     public ResponseEntity<byte[]> getImage(String imageURL) {
         try {
-            String filePath = URLDecoder.decode(imageURL, "UTF-8");
+            String filePath = URLDecoder.decode(imageURL, StandardCharsets.UTF_8);
             log.info("displayRequest => " + imageURL);
             // 이미지 파일
             File file = productService.getImage(filePath);
@@ -194,7 +190,7 @@ public class ProductsController {
     public String modifyGet(@PathVariable Long productId, Model model) {
         log.info("modifyGET product => " + productId);
 
-        ProductDTO productDTO = productService.modifyGet(productId);
+        ProductReadDTO productDTO = productService.modifyGet(productId);
         if (productDTO == null) {
             return "redirect:/";
         }

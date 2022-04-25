@@ -71,4 +71,5 @@ public class Product extends BaseTime {
         this.content = content;
         this.smallGroup = smallGroup;
     }
+
 }

@@ -35,7 +35,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     @Override
     public Long register(ProductRegisterDTO productRegisterDTO) {
-        Product product = dtoToEntity(productRegisterDTO);
+        Product product = productRegisterDTO.toEntity();
 
         for (MultipartFile file : productRegisterDTO.getFiles()) {
             try {
@@ -85,22 +85,22 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public ProductDTO read(Long productId) {
+    public ProductReadDTO read(Long productId) {
         productRepository.updateHit(productId);
         Optional<Object> result = productRepository.readWithFavorite(productId);
 
         if (result.isPresent()) {
             Object[] arr = (Object[]) result.get();
-            return entityToDTO((Product) arr[0], (Long) arr[1]);
+            return new ProductReadDTO((Product) arr[0], (Long) arr[1]);
         }
         return null;
     }
 
     // 상품 수정 페이지 요청
     @Override
-    public ProductDTO modifyGet(Long productId) {
+    public ProductReadDTO modifyGet(Long productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다. id=" + productId));
-        return entityToDTO(product, null);
+        return new ProductReadDTO(product, null);
     }
 
     // 상품 수정 todo productUpdateDto 만들기

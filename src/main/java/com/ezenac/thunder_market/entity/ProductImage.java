@@ -1,5 +1,6 @@
 package com.ezenac.thunder_market.entity;
 
+import com.ezenac.thunder_market.dto.ProductImageDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,11 +15,11 @@ public class ProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long imageId;
-
+    @Column(nullable = false)
     private String path;
-
+    @Column(nullable = false)
     private String uuid;
-
+    @Column(nullable = false)
     private String imageName;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,9 +31,11 @@ public class ProductImage {
         this.imageName = imageName;
     }
 
+    public ProductImageDTO toDto() {
+        return new ProductImageDTO(this);
+    }
     public String getImageURL() {
         return path + "/" + uuid + "_" + imageName;
     }
-
 
 }
