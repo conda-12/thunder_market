@@ -1,9 +1,9 @@
 package com.ezenac.thunder_market.product.repository;
 
-import com.ezenac.thunder_market.entity.*;
 import com.ezenac.thunder_market.group.entity.SmallGroup;
-import com.ezenac.thunder_market.product.entity.ProductState;
 import com.ezenac.thunder_market.product.entity.Product;
+import com.ezenac.thunder_market.product.entity.ProductState;
+import com.ezenac.thunder_market.product.entity.QProduct;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
