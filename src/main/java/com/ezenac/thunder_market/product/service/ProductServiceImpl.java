@@ -84,14 +84,11 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     @Override
     public ProductReadDTO read(Long productId) {
-        productRepository.updateHit(productId);
-        Optional<Object> result = productRepository.readWithFavorite(productId);
-
-        if (result.isPresent()) {
-            Object[] arr = (Object[]) result.get();
-            return new ProductReadDTO((Product) arr[0], (Long) arr[1]);
-        }
-        return null;
+        Object result = productRepository.readWithFavorite(productId).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다. id=" + productId));
+        Object[] arr = (Object[]) result;
+        Product product = (Product) arr[0];
+        product.read();
+        return new ProductReadDTO(product, (Long) arr[1]);
     }
 
     // 상품 수정 페이지 요청
@@ -119,6 +116,7 @@ public class ProductServiceImpl implements ProductService {
         log.info("modify product => " + product);
         return product.getProductId();
     }
+
     // 상품 삭제
     @Transactional
     @Override

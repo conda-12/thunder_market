@@ -66,6 +66,10 @@ public class Product extends BaseTime {
         this.images.add(productImage);
     }
 
+    public void read() {
+        this.hit += 1;
+    }
+
     public void update(String title, String address, int price, String content, SmallGroup smallGroup) {
         this.title = title;
         this.address = address;
