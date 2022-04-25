@@ -394,7 +394,6 @@
             
             // 유효성 검사
             function validation() {
-                let inputFile = $("input[type='file']");
                 let title = $("input[name='title']").val();
                 let bg = $("#bg-select").val();
                 let sg = $("#sg-select").val();
@@ -406,6 +405,8 @@
                     alert("상품 이미지를 등록해주세요.");
                 } else if (!title.trim()) {
                     alert("제목을 입력해주세요.");
+                } else if (bg === "") {
+                    alert("카테고리를 선택해주세요.")
                 } else if (sg === "") {
                     alert("카테고리를 선택해주세요.")
                 } else if (!address) {
@@ -415,24 +416,22 @@
                 } else if (!content) {
                     alert("상품 설명을 입력해주세요");
                 } else {
-                    let formData = new FormData();
-                    for (let file of fileArr) {
-                        formData.append("files", file);
-                    }
                     let productId = [[${dto.productId}]];
-                    formData.append("title", title);
-                    formData.append("sgNum", sg);
-                    formData.append("address", address);
-                    formData.append("price", price);
-                    formData.append("content", content);
+                    let data = {
+                        'productId' : productId,
+                        'title' : title,
+                        'address' : address,
+                        'price' : price,
+                        'content' : content,
+                        'bgNum' : bg,
+                        'sgNum' : sg
+                    }
                     
                     
                     $.ajax({
-                        url: '/products/modify/' + productId,
-                        processData: false, // query String을 하지 않는다.
-                        contentType: false, // multipart/form-data로 전송되게 하는 설정
-                        data: formData,
-                        type: 'post',
+                        url: '/product',
+                        data: data,
+                        type: 'put',
                         dataType: 'text',
                         success: function (result) {
                             if (result) {
