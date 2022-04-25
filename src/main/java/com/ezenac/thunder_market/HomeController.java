@@ -13,7 +13,6 @@ public class HomeController {
 
         return "index";
     }
-
     @GetMapping(value = "/manager/{number}")
     @ResponseBody
     public String manager(@PathVariable int number) {
@@ -27,5 +26,7 @@ public class HomeController {
 
         return "admin" + number;
     }
+
+
 
 }

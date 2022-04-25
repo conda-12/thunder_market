@@ -1,9 +1,10 @@
 package com.ezenac.thunder_market.repository;
 
-import com.ezenac.thunder_market.entity.BigGroup;
-import com.ezenac.thunder_market.entity.SmallGroup;
+import com.ezenac.thunder_market.group.entity.BigGroup;
+import com.ezenac.thunder_market.group.repository.BigGroupRepository;
+import com.ezenac.thunder_market.group.entity.SmallGroup;
+import com.ezenac.thunder_market.group.repository.SmallGroupRepository;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.BeanInfoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;

@@ -1,8 +1,7 @@
 package com.ezenac.thunder_market.security.auth;
 
-import com.ezenac.thunder_market.entity.Member;
-import com.ezenac.thunder_market.repository.MemberRepository;
-import lombok.AllArgsConstructor;
+import com.ezenac.thunder_market.member.entity.Member;
+import com.ezenac.thunder_market.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

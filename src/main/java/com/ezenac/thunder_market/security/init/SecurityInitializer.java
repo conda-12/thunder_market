@@ -1,6 +1,6 @@
 package com.ezenac.thunder_market.security.init;
 
-import com.ezenac.thunder_market.service.RoleHierarchyService;
+import com.ezenac.thunder_market.security.RoleHierarchyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

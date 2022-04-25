@@ -1,6 +1,6 @@
 package com.ezenac.thunder_market.utils;
 
-import com.ezenac.thunder_market.entity.ProductImage;
+import com.ezenac.thunder_market.product.entity.ProductImage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

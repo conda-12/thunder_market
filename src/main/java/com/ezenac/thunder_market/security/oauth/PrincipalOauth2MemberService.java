@@ -1,12 +1,11 @@
 package com.ezenac.thunder_market.security.oauth;
 
-import com.ezenac.thunder_market.entity.Role;
-import com.ezenac.thunder_market.repository.RoleRepository;
+import com.ezenac.thunder_market.security.Role;
+import com.ezenac.thunder_market.security.RoleRepository;
 import com.ezenac.thunder_market.security.auth.PrincipalDetails;
 import com.ezenac.thunder_market.security.oauth.provider.*;
-import com.ezenac.thunder_market.entity.Member;
-import com.ezenac.thunder_market.repository.MemberRepository;
-import lombok.AllArgsConstructor;
+import com.ezenac.thunder_market.member.entity.Member;
+import com.ezenac.thunder_market.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -16,7 +15,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 

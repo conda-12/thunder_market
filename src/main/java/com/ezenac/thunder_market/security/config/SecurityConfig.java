@@ -1,15 +1,12 @@
 package com.ezenac.thunder_market.security.config;
 
 
-import com.ezenac.thunder_market.entity.RoleHierarchy;
 import com.ezenac.thunder_market.security.auth.PrincipalDetailsService;
 import com.ezenac.thunder_market.security.factory.UrlResourcesMapFactoryBean;
 import com.ezenac.thunder_market.security.filter.PermitAllFilter;
 import com.ezenac.thunder_market.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import com.ezenac.thunder_market.security.oauth.PrincipalOauth2MemberService;
 import com.ezenac.thunder_market.security.service.SecurityResourceService;
-import com.ezenac.thunder_market.service.RoleHierarchyService;
-import com.ezenac.thunder_market.service.RoleHierarchyServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -2,6 +2,9 @@ package com.ezenac.thunder_market.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
+import com.ezenac.thunder_market.product.entity.Product;
+import com.ezenac.thunder_market.product.entity.ProductState;
+import com.ezenac.thunder_market.product.entity.ProductImage;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;

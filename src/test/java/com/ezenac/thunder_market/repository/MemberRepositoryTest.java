@@ -1,16 +1,14 @@
 package com.ezenac.thunder_market.repository;
 
-import com.ezenac.thunder_market.entity.Member;
-import com.ezenac.thunder_market.entity.Role;
-import com.ezenac.thunder_market.repository.MemberRepository;
+import com.ezenac.thunder_market.member.entity.Member;
+import com.ezenac.thunder_market.security.Role;
+import com.ezenac.thunder_market.member.repository.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
