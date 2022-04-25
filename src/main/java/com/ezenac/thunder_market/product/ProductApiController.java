@@ -3,6 +3,7 @@ package com.ezenac.thunder_market.product;
 import com.ezenac.thunder_market.favorite.service.FavoriteService;
 import com.ezenac.thunder_market.product.dto.*;
 import com.ezenac.thunder_market.product.service.ProductService;
+import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -56,6 +57,15 @@ public class ProductApiController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    // 상품 검색 페이지 내에 페이징 처리
+    @PostMapping("/search")
+    public ResponseEntity<List<ProductListDTO>> searchList(@ModelAttribute ProductListRequestDTO productListRequestDTO) {
+        log.info("pageRequestDTO => " + productListRequestDTO);
+
+        List<ProductListDTO> result = productService.searchList(productListRequestDTO);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
     // 상품 수정
     @PutMapping("/products")
     @PreAuthorize("isAuthenticated()")
@@ -66,7 +76,6 @@ public class ProductApiController {
     }
 
     // 상품 이미지 파일 리스폰스
-    @ResponseBody
     @GetMapping("/images")
     public ResponseEntity<byte[]> getImage(String imageURL) {
         try {
@@ -100,23 +109,18 @@ public class ProductApiController {
 
     // 상품 이미지 변경
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/images/{productId}/image")
-    public ResponseEntity<Map<String, String>> changeImage(@PathVariable Long productId, Long imageId, MultipartFile file) {
+    @PutMapping("/images")
+    public ResponseEntity<Map<String, String>> changeImage(Long imageId, MultipartFile file) {
         if (!file.isEmpty() || imageId == null) { //파일 유효성 검사
-            Authentication user = SecurityContextHolder.getContext().getAuthentication();
 
-            boolean result = productService.authorityValidate(productId, user.getName());
-            if (result) {
-                ProductImageDTO productImageDTO = productService.changeImage(imageId, file);
-                log.info("changeImage => " + productImageDTO);
+            ProductImageDTO productImageDTO = productService.changeImage(imageId, file);
+            log.info("changeImage => " + productImageDTO);
 
-                Map<String, String> map = new HashMap<>();
-                map.put("imageId", String.valueOf(imageId));
-                map.put("imageURL", productImageDTO.getImageURL());
-                return new ResponseEntity<>(map, HttpStatus.OK);
-            }
+            Map<String, String> map = new HashMap<>();
+            map.put("imageId", String.valueOf(imageId));
+            map.put("imageURL", productImageDTO.getImageURL());
+            return new ResponseEntity<>(map, HttpStatus.OK);
         }
-        log.warn("권한 없는 사용자 요청");
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 

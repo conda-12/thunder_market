@@ -132,7 +132,7 @@
                         "sgNum": sgNum
                     },
                     dataType: 'json',
-                    url: '/api/products/searchList',
+                    url: '/api/search',
                     success: function (data) {
                         console.log(data)
                         addItem(data);
@@ -149,7 +149,7 @@
                     let dtoDiv = template.clone();
                     dtoDiv.removeClass("template");
                     dtoDiv.attr("product-id", dto.productId);
-                    dtoDiv.find("img").attr("src", "/products/display/?imageURL=" + dto.imageURL);
+                    dtoDiv.find("img").attr("src", "/api/images/?imageURL=" + dto.imageURL);
                     dtoDiv.find("a").attr("href", "/products/" + dto.productId);
 
                     let title = dto.title;

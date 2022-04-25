@@ -97,13 +97,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     // 상품 수정 페이지 요청
+    @Transactional(readOnly = true)
     @Override
     public ProductModifyDTO modifyGet(Long productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다. id=" + productId));
         return new ProductModifyDTO(product);
     }
 
-    // 상품 수정 todo productUpdateDto 만들기
+    // 상품 수정
     @Transactional
     @Override
     public Long modifyPost(ProductModifyDTO productModifyDTO) {

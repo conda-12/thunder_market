@@ -54,7 +54,6 @@ public class ProductsController {
         return "/products/new";
     }
 
-
     //상품 검색 페이지
     @GetMapping("/search")
     public String searchPage(ProductListRequestDTO productListRequestDTO, Model model) {
@@ -69,16 +68,6 @@ public class ProductsController {
         String bgNum = sgNum.substring(0, 3);
         model.addAttribute("bgNum", bgNum);
         return "/products/search";
-    }
-
-    // 상품 검색 페이지 내에 페이징 처리
-    @ResponseBody
-    @PostMapping("/searchList")
-    public ResponseEntity<List<ProductListDTO>> keywordList(@ModelAttribute ProductListRequestDTO productListRequestDTO) {
-        log.info("pageRequestDTO => " + productListRequestDTO);
-
-        List<ProductListDTO> result = productService.searchList(productListRequestDTO);
-        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     // 수정 페이지
