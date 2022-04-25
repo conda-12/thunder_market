@@ -98,6 +98,8 @@ public class ProductApiController {
         }
     }
 
+    // 이미지 등록
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/images/{productId}")
     public ResponseEntity<ProductImageDTO> registerImage(@PathVariable Long productId, MultipartFile file) {
 
