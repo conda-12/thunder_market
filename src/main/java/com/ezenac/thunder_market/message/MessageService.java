@@ -25,6 +25,7 @@ public class MessageService {
 
     public MessageDTO read(Long messageId) {
         Message message = messageRepository.findById(messageId).orElseThrow(() -> new IllegalArgumentException("해당 메세지가 없습니다."));
+        message.checked();
         return new MessageDTO(message);
     }
 
