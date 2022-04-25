@@ -1,11 +1,13 @@
 package com.ezenac.thunder_market.product;
 
 import com.ezenac.thunder_market.favorite.service.FavoriteService;
-import com.ezenac.thunder_market.product.dto.*;
+import com.ezenac.thunder_market.product.dto.ProductListDTO;
+import com.ezenac.thunder_market.product.dto.ProductListRequestDTO;
+import com.ezenac.thunder_market.product.dto.ProductModifyDTO;
+import com.ezenac.thunder_market.product.dto.ProductReadDTO;
 import com.ezenac.thunder_market.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,18 +15,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -51,7 +44,6 @@ public class ProductsController {
         }
 
         model.addAttribute("dto", productDTO);
-        System.out.println(productDTO);
         return "/products/read";
     }
 
