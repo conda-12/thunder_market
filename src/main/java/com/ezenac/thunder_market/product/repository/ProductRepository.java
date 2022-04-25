@@ -1,5 +1,6 @@
 package com.ezenac.thunder_market.product.repository;
 
+import com.ezenac.thunder_market.member.entity.Member;
 import com.ezenac.thunder_market.product.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,4 +29,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
             " set p.hit = p.hit + 1" +
             " WHERE p.productId = :productId")
     void updateHit(@Param("productId") Long productId);
+
+    Page<Product> findProductsByMemberOrderByRegDateDesc(Member member, Pageable pageable);
 }

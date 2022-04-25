@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -21,17 +22,16 @@ public class GroupRepositoryTest {
     @Autowired
     private SmallGroupRepository smallGroupRepository;
 
-    @Transactional
     @Test
     public void saveBigGroup() {
         BigGroup bigGroup = BigGroup.builder()
-                .bgNum("002")
+                .bgNum("001")
                 .bgCate("테스트 대분류")
                 .build();
 
         bigGroupRepository.save(bigGroup);
 
-        Optional<BigGroup> result = bigGroupRepository.findById("002");
+        Optional<BigGroup> result = bigGroupRepository.findById("001");
 
         if (result.isPresent()) {
             System.out.println(result);
@@ -39,6 +39,7 @@ public class GroupRepositoryTest {
 
     }
     @Transactional
+    @Commit
     @Test
     public void saveSmallGroup() {
         BigGroup bigGroup = BigGroup.builder()
@@ -46,14 +47,14 @@ public class GroupRepositoryTest {
                 .build();
 
         SmallGroup smallGroup = SmallGroup.builder()
-                .sgNum("003")
+                .sgNum("002")
                 .sgCate("테스트 소분류")
                 .bigGroup(bigGroup)
                 .build();
 
         smallGroupRepository.save(smallGroup);
 
-        Optional<SmallGroup> result = smallGroupRepository.findById("003");
+        Optional<SmallGroup> result = smallGroupRepository.findById("002");
 
         if (result.isPresent()) {
             System.out.println("SmallGroup is ==> " + result);
