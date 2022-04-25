@@ -298,11 +298,11 @@
                     formData.append("content", content);
                     
                     $.ajax({
-                        url: '/product',
+                        type: 'post',
+                        url: '/api/products',
                         processData: false, // query String을 하지 않는다.
                         contentType: false, // multipart/form-data로 전송되게 하는 설정
                         data: formData,
-                        type: 'post',
                         dataType: 'text',
                         success: function (result) {
                             if (result) {

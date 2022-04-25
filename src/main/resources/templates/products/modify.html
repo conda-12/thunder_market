@@ -418,21 +418,21 @@
                 } else {
                     let productId = [[${dto.productId}]];
                     let data = {
-                        'productId' : productId,
-                        'title' : title,
-                        'address' : address,
-                        'price' : price,
-                        'content' : content,
-                        'bgNum' : bg,
-                        'sgNum' : sg
-                    }
-                    
-                    
+                        productId : productId,
+                        title : title,
+                        address : address,
+                        price : price,
+                        content : content,
+                        bgNum : bg,
+                        sgNum : sg
+                    };
+
                     $.ajax({
-                        url: '/product',
-                        data: data,
                         type: 'put',
-                        dataType: 'text',
+                        url: '/api/products',
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        data: JSON.stringify(data),
                         success: function (result) {
                             if (result) {
                                 alert("상품수정에 성공했습니다.");
