@@ -22,11 +22,7 @@ public interface ProductService {
 
     void remove(Long productId);
 
-    File getImage(String filePath);
 
-    ProductImageDTO changeImage(Long imageId , MultipartFile multipartFile);
-
-    void removeImage(Long imageId);
 
     Boolean authorityValidate(Long productId, String memberId);
 }

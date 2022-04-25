@@ -14,4 +14,6 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
     Optional<Favorite> findByMemberAndProduct(Member member, Product product);
 
     void deleteByMemberAndProduct(Member member, Product product);
+
+    void deleteByProduct(Product product);
 }
