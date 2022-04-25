@@ -22,7 +22,5 @@ public interface ProductService {
 
     void remove(Long productId);
 
-
-
     Boolean authorityValidate(Long productId, String memberId);
 }
