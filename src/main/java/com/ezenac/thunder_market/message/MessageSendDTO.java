@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class MessageRequestDTO {
+public class MessageSendDTO {
     private Long productId;
 
     private String recipientId;

@@ -19,8 +19,8 @@ public class MessageController {
 
     @PostMapping()
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Long> send(@RequestBody MessageRequestDTO requestDTO) {
-        log.info("send Message"+requestDTO);
+    public ResponseEntity<Long> send(@RequestBody MessageSendDTO requestDTO) {
+        log.info("send Message" + requestDTO);
         Authentication user = SecurityContextHolder.getContext().getAuthentication();
         Long id = messageService.send(requestDTO, user.getName());
         return new ResponseEntity<>(id, HttpStatus.OK);
@@ -28,22 +28,23 @@ public class MessageController {
 
     @GetMapping("/{messageId}")
     @PreAuthorize("isAuthenticated()")
-    public void read(@PathVariable Long messageId) {
-        log.info("read Message"+ messageId);
-        messageService.read(messageId);
+    public ResponseEntity<MessageReadDTO> read(@PathVariable Long messageId) {
+        log.info("read Message" + messageId);
+        return new ResponseEntity<>(messageService.read(messageId), HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping()
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Page<MessageResponseDTO>> list(MessageListRequestDTO requestDTO) {
+    public ResponseEntity<Page<MessageListResponseDTO>> list(MessageListRequestDTO requestDTO) {
+        log.info("Message List" + requestDTO);
         Authentication user = SecurityContextHolder.getContext().getAuthentication();
-        Page<MessageResponseDTO> list = messageService.list(requestDTO, user.getName());
+        Page<MessageListResponseDTO> list = messageService.list(requestDTO, user.getName());
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @DeleteMapping("/{messageId}")
     @PreAuthorize("isAuthenticated()")
-    public void remove(@PathVariable Long messageId){
+    public void remove(@PathVariable Long messageId) {
         log.info("remove Message" + messageId);
         messageService.remove(messageId);
     }
