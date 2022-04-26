@@ -167,6 +167,22 @@
                 return `${Math.floor(betweenTimeDay / 365)}년전`;
             }
 
+            $(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/message/check',
+                    dataType: 'json',
+                    success: function (count) {
+                        if (count > 0) {
+                            alert("읽지 않은 메세지가 있어요.");
+                        }
+                    },
+                    error: function (error) {
+
+                    }
+                })
+            });
+
             
             
         </script>
