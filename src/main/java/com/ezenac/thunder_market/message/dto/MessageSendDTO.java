@@ -1,6 +1,7 @@
-package com.ezenac.thunder_market.message;
+package com.ezenac.thunder_market.message.dto;
 
 import com.ezenac.thunder_market.member.entity.Member;
+import com.ezenac.thunder_market.message.entity.Message;
 import com.ezenac.thunder_market.product.entity.Product;
 import lombok.Data;
 import lombok.NoArgsConstructor;

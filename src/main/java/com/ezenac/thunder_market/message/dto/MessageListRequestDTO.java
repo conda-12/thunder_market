@@ -1,4 +1,4 @@
-package com.ezenac.thunder_market.message;
+package com.ezenac.thunder_market.message.dto;
 
 import lombok.Data;
 import org.springframework.data.domain.PageRequest;

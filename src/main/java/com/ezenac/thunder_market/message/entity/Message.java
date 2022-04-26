@@ -1,4 +1,4 @@
-package com.ezenac.thunder_market.message;
+package com.ezenac.thunder_market.message.entity;
 
 import com.ezenac.thunder_market.common.BaseTime;
 import com.ezenac.thunder_market.member.entity.Member;

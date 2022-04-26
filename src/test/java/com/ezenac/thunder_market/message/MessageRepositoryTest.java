@@ -2,10 +2,11 @@ package com.ezenac.thunder_market.message;
 
 import com.ezenac.thunder_market.member.entity.Member;
 import com.ezenac.thunder_market.member.repository.MemberRepository;
+import com.ezenac.thunder_market.message.entity.Message;
+import com.ezenac.thunder_market.message.repository.MessageRepository;
 import com.ezenac.thunder_market.product.entity.Product;
 import com.ezenac.thunder_market.product.entity.ProductState;
 import com.ezenac.thunder_market.product.repository.ProductRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,5 +1,6 @@
-package com.ezenac.thunder_market.message;
+package com.ezenac.thunder_market.message.dto;
 
+import com.ezenac.thunder_market.message.entity.Message;
 import lombok.Data;
 
 @Data
