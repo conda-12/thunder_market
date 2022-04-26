@@ -62,9 +62,10 @@
                 integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
                 crossOrigin="anonymous"></script>
         <script th:inline="javascript">
-            // 메세지 가져오기
+            // 메세지 읽기
             $("tbody").on("click", '.btn-read', function (event) {
                 let messageId = $(this).attr("data-id");
+                $(this).text("읽음");
 
                 $.ajax({
                     type: 'GET',
@@ -128,7 +129,6 @@
 
 
             let readMessage = function (message) {
-                console.log(message);
                 $(".modal-title").text("보낸사람 : " + message.senderId);
                 $("#message").val(message.text);
                 $("#productId").val(message.productId);
@@ -177,16 +177,16 @@
                 let messages = page.content;
 
                 for (let message of messages) {
-
-                    let list = '<tr>' +
+                    let tr = '<tr>' +
                         '<td class="productTitle"><img style="height: 50px; ' + '" class="productImage" src="/api/images?imageURL=' + message.productImageURL + '">' + message.productTitle + '</td>' +
-                        '<td class="recipientId">' + message.senderId + '</td>' +
-                        '<td>' +
-                        '<button data-id="' + message.messageId + '" class="btn btn-primary btn-read"  data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">읽기</button>' +
-                        '</td>' +
+                        '<td class="recipientId">' + message.senderId + '</td>';
 
-                        '</tr>';
-                    $("tbody").append(list);
+                    if (!message.checked) {
+                        tr += '<td><button data-id="' + message.messageId + '" class="btn btn-primary btn-read"  data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">읽지 않음</button></td></tr>';
+                    }else{
+                        tr += '<td><button data-id="' + message.messageId + '" class="btn btn-primary btn-read"  data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">읽음</button></td></tr>';
+                    }
+                    $("tbody").append(tr);
                 }
             }
             getMessage(1);

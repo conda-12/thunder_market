@@ -48,4 +48,12 @@ public class MessageController {
         log.info("remove Message" + messageId);
         messageService.remove(messageId);
     }
+
+    @GetMapping("/uncheck")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Long> uncheckCount() {
+        Authentication user = SecurityContextHolder.getContext().getAuthentication();
+        Long count = messageService.uncheckCount(user.getName());
+        return new ResponseEntity<>(count, HttpStatus.OK);
+    }
 }

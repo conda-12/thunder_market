@@ -42,4 +42,8 @@ public class MessageService {
         messageRepository.delete(message);
     }
 
+    public Long uncheckCount(String memberId){
+        Member member = Member.builder().memberId(memberId).build();
+        return messageRepository.countByRecipientAndCheckedFalse(member);
+    }
 }

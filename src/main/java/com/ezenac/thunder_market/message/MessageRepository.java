@@ -9,4 +9,6 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     Page<Message> findByRecipient(Member recipient, Pageable pageable);
 
     Page<Message> findBySender(Member sender, Pageable pageable);
+
+    Long countByRecipientAndCheckedFalse(Member recipient);
 }
