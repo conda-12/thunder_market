@@ -1,5 +1,6 @@
 package com.ezenac.thunder_market;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +26,12 @@ public class HomeController {
     public String admin(@PathVariable int number) {
 
         return "admin" + number;
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/message")
+    public String messagePage(){
+        return "message";
     }
 
 

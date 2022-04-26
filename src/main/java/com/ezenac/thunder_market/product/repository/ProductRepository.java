@@ -23,9 +23,4 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
             " WHERE p.state = 'SELLING' AND p.productId = :productId")
     Optional<Object> readWithFavorite(@Param("productId")Long productId);
 
-    @Modifying
-    @Query("UPDATE Product p" +
-            " set p.hit = p.hit + 1" +
-            " WHERE p.productId = :productId")
-    void updateHit(@Param("productId") Long productId);
 }

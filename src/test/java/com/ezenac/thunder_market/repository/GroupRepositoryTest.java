@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -25,19 +26,20 @@ public class GroupRepositoryTest {
     @Test
     public void saveBigGroup() {
         BigGroup bigGroup = BigGroup.builder()
-                .bgNum("002")
+                .bgNum("001")
                 .bgCate("테스트 대분류")
                 .build();
 
         bigGroupRepository.save(bigGroup);
 
-        Optional<BigGroup> result = bigGroupRepository.findById("002");
+        Optional<BigGroup> result = bigGroupRepository.findById("001");
 
         if (result.isPresent()) {
             System.out.println(result);
         }
 
     }
+    @Commit
     @Transactional
     @Test
     public void saveSmallGroup() {
@@ -64,7 +66,7 @@ public class GroupRepositoryTest {
         }
 
     }
-
+    @Commit
     @Transactional
     @Test
     public void findSmallGroupByBigGroup() {

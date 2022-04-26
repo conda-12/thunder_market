@@ -33,7 +33,6 @@ public class Product extends BaseTime {
     @Column(columnDefinition = "text", nullable = false)
     private String content;
 
-    @Column(nullable = false)
     private int hit;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -65,6 +64,10 @@ public class Product extends BaseTime {
 
     public void setImage(ProductImage productImage) {
         this.images.add(productImage);
+    }
+
+    public void read() {
+        this.hit += 1;
     }
 
     public void update(String title, String address, int price, String content, SmallGroup smallGroup) {
