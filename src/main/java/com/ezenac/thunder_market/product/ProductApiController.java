@@ -4,7 +4,6 @@ import com.ezenac.thunder_market.favorite.service.FavoriteService;
 import com.ezenac.thunder_market.product.dto.*;
 import com.ezenac.thunder_market.product.service.ProductImageService;
 import com.ezenac.thunder_market.product.service.ProductService;
-import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -23,9 +22,7 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @RequestMapping("/api")

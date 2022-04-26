@@ -10,7 +10,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 
-@ToString(exclude = {"sender","recipient","product"})
+@ToString()
 @Getter
 @Entity
 @NoArgsConstructor

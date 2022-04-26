@@ -17,23 +17,24 @@ import org.springframework.transaction.annotation.Transactional;
 public class MessageService {
     private final MessageRepository messageRepository;
 
-    public Long send(MessageDTO messageDTO) {
-        Message message = messageDTO.toEntity();
+    @Transactional
+    public Long send(MessageRequestDTO requestDTO, String senderId) {
+        Message message = requestDTO.toEntity(senderId);
         messageRepository.save(message);
         return message.getMessageId();
     }
 
-    public MessageDTO read(Long messageId) {
+    @Transactional
+    public void read(Long messageId) {
         Message message = messageRepository.findById(messageId).orElseThrow(() -> new IllegalArgumentException("해당 메세지가 없습니다."));
         message.checked();
-        return new MessageDTO(message);
     }
 
-    public Page<MessageDTO> list(MessageListRequestDTO requestDTO) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = Member.builder().memberId(authentication.getName()).build();
-        Pageable pageable = requestDTO.getPageable(Sort.by("regDate"));
-        return messageRepository.findByRecipientOrderByRegDate(member, pageable).map(MessageDTO::new);
+    public Page<MessageResponseDTO> list(MessageListRequestDTO requestDTO, String recipientId) {
+        Member member = Member.builder().memberId(recipientId).build();
+        Pageable pageable = requestDTO.getPageable(Sort.by("regDate").descending());
+        return messageRepository.findByRecipient(member, pageable).map(MessageResponseDTO::new);
+
     }
 
     @Transactional

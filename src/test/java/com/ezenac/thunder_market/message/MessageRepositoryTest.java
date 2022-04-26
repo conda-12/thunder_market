@@ -5,6 +5,7 @@ import com.ezenac.thunder_market.member.repository.MemberRepository;
 import com.ezenac.thunder_market.product.entity.Product;
 import com.ezenac.thunder_market.product.entity.ProductState;
 import com.ezenac.thunder_market.product.repository.ProductRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +31,7 @@ class MessageRepositoryTest {
     public void saveAndReadTest() {
         // given
         Member recipient = Member.builder().memberId("user1").build();
-        Member sender = Member.builder().memberId("kakao_2202067468").build();
+        Member sender = Member.builder().memberId("user2").build();
 
         memberRepository.save(recipient);
         memberRepository.save(sender);
@@ -40,7 +41,7 @@ class MessageRepositoryTest {
                 .price(777)
                 .member(recipient)
                 .state(ProductState.SELLING)
-                .address("테스트동")
+                .address("테스트")
                 .content("테스트")
                 .build();
         productRepository.save(product);
@@ -57,14 +58,14 @@ class MessageRepositoryTest {
                 .build());
 
         //then
-        Page<Message> messages = messageRepository.findByRecipientOrderByRegDate(recipient, Pageable.ofSize(10));
+        Page<Message> messages = messageRepository.findByRecipient(recipient, Pageable.ofSize(10));
         Message message = messages.getContent().get(0);
         assertThat(message.getRecipient()).isEqualTo(recipient);
         assertThat(message.getSender()).isEqualTo(sender);
         assertThat(message.getProduct()).isEqualTo(product);
         assertThat(message.getText()).isEqualTo(text);
 
-        Page<Message> messages2 = messageRepository.findBySenderOrderByRegDate(sender, Pageable.ofSize(10));
+        Page<Message> messages2 = messageRepository.findBySender(sender, Pageable.ofSize(10));
         Message message2 = messages2.getContent().get(0);
         assertThat(message2.getRecipient()).isEqualTo(recipient);
         assertThat(message2.getSender()).isEqualTo(sender);

@@ -86,7 +86,9 @@
                                             </button>
                                         </div>
                                         <div class="col text-center m-1">
-                                            <button class="btn btn-outline-danger" style="width: 200px; height: 50px">
+                                            <button class="btn btn-outline-danger" style="width: 200px; height: 50px"
+                                                    data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                                    data-bs-whatever="@mdo">
                                                 연락하기
                                             </button>
                                         </div>
@@ -111,6 +113,35 @@
                 </div>
             </div>
         </section>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Send message</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form id="message">
+                            <div class="mb-3">
+                                <label for="recipient-name" class="col-form-label">판매자</label>
+                                <input type="text" class="form-control" name="recipient" th:value="${dto.getMemberId()}"
+                                       readonly>
+                                <input name="productId" th:value="${dto.getProductId()}" type="hidden">
+                            </div>
+                            <div class="mb-3">
+                                <label for="message-text" class="col-form-label">메세지</label>
+                                <textarea class="form-control" name="text"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btn-close">Close
+                        </button>
+                        <button type="button" class="btn btn-primary" id="btn-send">Send message</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -254,6 +285,41 @@
                     }
                 });
             }
+
+            $("#btn-close").on("click", function () {
+                $("textarea[name='text']").val("");
+            });
+
+            $("#btn-send").on("click", function () {
+                let message = {
+                    productId: $("input[name='productId']").val(),
+                    recipientId: $("input[name='recipient']").val(),
+                    text: $("textarea[name='text']").val()
+                };
+                if(!message.text){
+                    alert("메세지를 입력해주세요");
+                    return;
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/message',
+                    data: JSON.stringify(message),
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    success: function (messageId) {
+                        alert("메세지를 보냈습니다.");
+                    }, error: function (error) {
+                        alert("실패 했습니다.");
+                        console.log(error)
+                    }
+                }).done(function (){
+                    $("#btn-close").click();
+                }).fail(function (){
+                    $("#btn-close").click();
+                });
+
+            })
         
         </script>
     
