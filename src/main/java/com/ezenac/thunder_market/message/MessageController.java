@@ -1,5 +1,10 @@
 package com.ezenac.thunder_market.message;
 
+import com.ezenac.thunder_market.message.dto.MessageListRequestDTO;
+import com.ezenac.thunder_market.message.dto.MessageListResponseDTO;
+import com.ezenac.thunder_market.message.dto.MessageReadDTO;
+import com.ezenac.thunder_market.message.dto.MessageSendDTO;
+import com.ezenac.thunder_market.message.service.MessageServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,14 +20,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 public class MessageController {
-    private final MessageService messageService;
+    private final MessageServiceImpl messageServiceImpl;
 
     @PostMapping()
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Long> send(@RequestBody MessageSendDTO requestDTO) {
         log.info("send Message" + requestDTO);
         Authentication user = SecurityContextHolder.getContext().getAuthentication();
-        Long id = messageService.send(requestDTO, user.getName());
+        Long id = messageServiceImpl.send(requestDTO, user.getName());
         return new ResponseEntity<>(id, HttpStatus.OK);
     }
 
@@ -30,7 +35,7 @@ public class MessageController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<MessageReadDTO> read(@PathVariable Long messageId) {
         log.info("read Message" + messageId);
-        return new ResponseEntity<>(messageService.read(messageId), HttpStatus.OK);
+        return new ResponseEntity<>(messageServiceImpl.read(messageId), HttpStatus.OK);
     }
 
     @GetMapping()
@@ -38,7 +43,7 @@ public class MessageController {
     public ResponseEntity<Page<MessageListResponseDTO>> list(MessageListRequestDTO requestDTO) {
         log.info("Message List" + requestDTO);
         Authentication user = SecurityContextHolder.getContext().getAuthentication();
-        Page<MessageListResponseDTO> list = messageService.list(requestDTO, user.getName());
+        Page<MessageListResponseDTO> list = messageServiceImpl.list(requestDTO, user.getName());
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
@@ -46,14 +51,7 @@ public class MessageController {
     @PreAuthorize("isAuthenticated()")
     public void remove(@PathVariable Long messageId) {
         log.info("remove Message" + messageId);
-        messageService.remove(messageId);
+        messageServiceImpl.remove(messageId);
     }
 
-    @GetMapping("/uncheck")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Long> uncheckCount() {
-        Authentication user = SecurityContextHolder.getContext().getAuthentication();
-        Long count = messageService.uncheckCount(user.getName());
-        return new ResponseEntity<>(count, HttpStatus.OK);
-    }
 }

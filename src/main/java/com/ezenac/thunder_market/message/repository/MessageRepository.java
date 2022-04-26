@@ -1,6 +1,7 @@
-package com.ezenac.thunder_market.message;
+package com.ezenac.thunder_market.message.repository;
 
 import com.ezenac.thunder_market.member.entity.Member;
+import com.ezenac.thunder_market.message.entity.Message;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
