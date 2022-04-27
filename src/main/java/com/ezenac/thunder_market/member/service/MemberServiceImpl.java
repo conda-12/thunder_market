@@ -6,7 +6,7 @@ import com.ezenac.thunder_market.member.entity.Token;
 import com.ezenac.thunder_market.member.entity.Member;
 import com.ezenac.thunder_market.member.repository.MemberRepository;
 import com.ezenac.thunder_market.member.repository.TokenRedisRepository;
-import com.ezenac.thunder_market.product.dto.ProductListDTO;
+import com.ezenac.thunder_market.product.entity.ProductState;
 import com.ezenac.thunder_market.product.repository.ProductRepository;
 import com.ezenac.thunder_market.security.Role;
 import com.ezenac.thunder_market.product.entity.Product;
@@ -21,10 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -112,15 +109,20 @@ public class MemberServiceImpl implements MemberService {
     }
     @Transactional(readOnly = true)
     @Override
-    public List<MyProductDTO> getMyProductList(String memberId, Pageable pageable) throws Exception {
+    public Map<String, Object> getMyProductList(String memberId, Pageable pageable) throws Exception {
 
         Optional<Member> member = memberRepository.findById(memberId);
 
         if (member.isPresent()) {
 
-            Page<Product> products = productRepository.findProductsByMemberOrderByRegDateDesc(member.get(), pageable);
+            Page<Product> products = productRepository.findAllByMemberOrderByRegDateDesc(member.get(), pageable);
+            int totalPages = products.getTotalPages();
 
-            return products.stream().map(MyProductDTO::new).collect(Collectors.toList());
+            Map<String, Object> paging = new HashMap<>();
+            paging.put("products", products.stream().map(MyProductDTO::new).collect(Collectors.toList()));
+            paging.put("totalPages", totalPages);
+
+            return paging;
 
         } else {
             System.out.println("not found Member");
@@ -128,4 +130,21 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    @Transactional
+    @Override
+    public boolean changeMyProductState(ProductState state, Long productId, String memberId) throws Exception {
+
+        Optional<Product> product = productRepository.findById(productId);
+
+        if (product.isPresent() && memberId.equals(product.get().getMember().getMemberId())) {
+            Product changeProduct = product.get();
+            changeProduct.setState(state);
+
+            productRepository.save(changeProduct);
+
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

@@ -4,8 +4,8 @@ import com.ezenac.thunder_market.member.dto.MemberDTO;
 import com.ezenac.thunder_market.member.dto.MyProductDTO;
 import com.ezenac.thunder_market.member.entity.Token;
 import com.ezenac.thunder_market.member.service.MemberService;
-import com.ezenac.thunder_market.product.dto.ProductListDTO;
-import com.ezenac.thunder_market.product.entity.Product;
+import com.ezenac.thunder_market.product.entity.ProductState;
+import com.ezenac.thunder_market.product.service.ProductService;
 import com.ezenac.thunder_market.utils.GenerateRandomNumber;
 import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.NurigoApp;
@@ -14,10 +14,10 @@ import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Controller
 @Slf4j
@@ -35,10 +36,11 @@ import java.util.Map;
 public class MemberController {
     private final DefaultMessageService messageService;
     private final MemberService memberService;
-
+    private final ProductService productService;
     public MemberController(MemberService memberService
             , @Value("${coolSMS.apiKey}") String apiKey, @Value("${coolSMS.apiSecretKey}") String apiSecretKey
-            , @Value("${coolSMS.domain}") String domain) {
+            , @Value("${coolSMS.domain}") String domain, ProductService productService) {
+        this.productService = productService;
         this.messageService = NurigoApp.INSTANCE.initialize(apiKey, apiSecretKey, domain);
         this.memberService = memberService;
     }
@@ -126,12 +128,65 @@ public class MemberController {
 
         Authentication member = SecurityContextHolder.getContext().getAuthentication();
 
-        List<MyProductDTO> products = memberService.getMyProductList(member.getName(), pageable);
+        Map<String, Object> paging = memberService.getMyProductList(member.getName(), pageable);
+
+        List<MyProductDTO> products = (List<MyProductDTO>) paging.get("products");
+        int totalPages = (int) paging.get("totalPages");
 
         model.addAttribute("products", products);
-        model.addAttribute("pageLength", products.size());
+        model.addAttribute("pageSize", totalPages);
 
         return "/member/my-page/products";
+    }
+
+    @ResponseBody
+    @PostMapping("/products/")
+    public ResponseEntity<Long> changeProductState(@RequestBody Map<String, String> changes) throws Exception {
+
+        Authentication member = SecurityContextHolder.getContext().getAuthentication();
+
+        for (GrantedAuthority i : member.getAuthorities()) {
+            if (i.toString().equals("ROLE_ANONYMOUS")) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        }
+
+        String state = changes.get("state");
+        Long productId = Long.valueOf(changes.get("productID"));
+
+        System.out.println("상태 ===> " + state);
+        System.out.println("상품 아이디 ===> " + productId);
+
+        switch (state) {
+            case "판매 중":
+                if (memberService.changeMyProductState(ProductState.SELLING, productId, member.getName())) {
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+                break;
+            case "예약 중":
+                if (memberService.changeMyProductState(ProductState.RESERVED, productId, member.getName())) {
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+                break;
+            case "판매완료":
+                if (memberService.changeMyProductState(ProductState.SOLD_OUT, productId, member.getName())) {
+                        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+                break;
+            case "삭제":
+                if (Objects.equals(productService.read(productId).getMemberId(), member.getName())) {
+                    productService.remove(productId);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+                break;
+            default:
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+
+        return new ResponseEntity<>(productId, HttpStatus.OK);
+
     }
 
     // 마이 페이지

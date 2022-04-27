@@ -30,5 +30,5 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
             " WHERE p.productId = :productId")
     void updateHit(@Param("productId") Long productId);
 
-    Page<Product> findProductsByMemberOrderByRegDateDesc(Member member, Pageable pageable);
+    Page<Product> findAllByMemberOrderByRegDateDesc(Member member, Pageable pageable);
 }
