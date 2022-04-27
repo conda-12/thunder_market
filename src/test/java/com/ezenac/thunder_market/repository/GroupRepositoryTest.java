@@ -22,7 +22,6 @@ public class GroupRepositoryTest {
     @Autowired
     private SmallGroupRepository smallGroupRepository;
 
-    @Transactional
     @Test
     public void saveBigGroup() {
         BigGroup bigGroup = BigGroup.builder()
@@ -41,6 +40,7 @@ public class GroupRepositoryTest {
     }
     @Commit
     @Transactional
+    @Commit
     @Test
     public void saveSmallGroup() {
         BigGroup bigGroup = BigGroup.builder()
@@ -48,14 +48,14 @@ public class GroupRepositoryTest {
                 .build();
 
         SmallGroup smallGroup = SmallGroup.builder()
-                .sgNum("003")
+                .sgNum("002")
                 .sgCate("테스트 소분류")
                 .bigGroup(bigGroup)
                 .build();
 
         smallGroupRepository.save(smallGroup);
 
-        Optional<SmallGroup> result = smallGroupRepository.findById("003");
+        Optional<SmallGroup> result = smallGroupRepository.findById("002");
 
         if (result.isPresent()) {
             System.out.println("SmallGroup is ==> " + result);

@@ -1,6 +1,7 @@
 package com.ezenac.thunder_market.product.dto;
 
 import com.ezenac.thunder_market.product.entity.Product;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
