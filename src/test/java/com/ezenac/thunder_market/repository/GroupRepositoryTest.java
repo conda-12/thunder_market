@@ -40,7 +40,6 @@ public class GroupRepositoryTest {
     }
     @Commit
     @Transactional
-    @Commit
     @Test
     public void saveSmallGroup() {
         BigGroup bigGroup = BigGroup.builder()
