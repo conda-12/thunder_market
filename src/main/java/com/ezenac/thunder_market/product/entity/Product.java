@@ -4,7 +4,6 @@ import com.ezenac.thunder_market.common.BaseTime;
 import com.ezenac.thunder_market.member.entity.Member;
 import com.ezenac.thunder_market.group.entity.SmallGroup;
 import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,7 +14,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@DynamicUpdate
 @Entity
 public class Product extends BaseTime {
 
@@ -35,7 +33,6 @@ public class Product extends BaseTime {
     @Column(columnDefinition = "text", nullable = false)
     private String content;
 
-    @Column(nullable = false)
     private int hit;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -69,8 +66,8 @@ public class Product extends BaseTime {
         this.images.add(productImage);
     }
 
-    public void setState(ProductState state) {
-        this.state = state;
+    public void read() {
+        this.hit += 1;
     }
 
     public void update(String title, String address, int price, String content, SmallGroup smallGroup) {
