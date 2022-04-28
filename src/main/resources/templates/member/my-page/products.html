@@ -6,7 +6,7 @@
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-2">
                 <div class="col mb-2" th:id="${'product-'+ product.getProductId()}" th:each="product : ${products}">
                     <div class="card border">
-                        <a style="text-decoration: none; color: black" th:href="@{/products/{id}(id=${product.getProductId()})}">
+                        <a style="text-decoration: none; color: black" th:href="@{/products/modify/{id}(id=${product.getProductId()})}">
                             <div class="product-image mb-3 border">
                                 <img class="bd-placeholder-img card-img-top" th:src="@{/api/images(imageURL=${product.getImageURL()})}" alt="상품이미지" style="width: 100%; height: 100%" src="#">
                             </div>

@@ -31,7 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final PrincipalOauth2MemberService principalOauth2MemberService;
     private final PrincipalDetailsService principalDetailsService;
     private final SecurityResourceService securityResourceService;
-    private final String[] permitAll = {"/"};
+    private final String[] permitAll = {"/", "/member/auth/**"};
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
