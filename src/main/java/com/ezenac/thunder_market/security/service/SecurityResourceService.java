@@ -1,7 +1,7 @@
 package com.ezenac.thunder_market.security.service;
 
-import com.ezenac.thunder_market.security.Resource;
-import com.ezenac.thunder_market.security.ResourceRepository;
+import com.ezenac.thunder_market.security.entity.Resource;
+import com.ezenac.thunder_market.security.repository.ResourceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;

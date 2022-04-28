@@ -1,7 +1,7 @@
 package com.ezenac.thunder_market.member.entity;
 
 import com.ezenac.thunder_market.common.BaseTime;
-import com.ezenac.thunder_market.security.Role;
+import com.ezenac.thunder_market.security.entity.Role;
 import com.ezenac.thunder_market.favorite.entity.Favorite;
 import com.ezenac.thunder_market.product.entity.Product;
 import lombok.*;

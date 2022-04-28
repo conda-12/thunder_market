@@ -1,5 +1,7 @@
-package com.ezenac.thunder_market.security;
+package com.ezenac.thunder_market.security.service;
 
+import com.ezenac.thunder_market.security.entity.Role;
+import com.ezenac.thunder_market.security.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

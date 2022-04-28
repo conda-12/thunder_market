@@ -1,4 +1,6 @@
-package com.ezenac.thunder_market.security;
+package com.ezenac.thunder_market.security.service;
+
+import com.ezenac.thunder_market.security.entity.Role;
 
 import java.util.List;
 

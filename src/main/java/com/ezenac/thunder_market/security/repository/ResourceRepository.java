@@ -1,5 +1,6 @@
-package com.ezenac.thunder_market.security;
+package com.ezenac.thunder_market.security.repository;
 
+import com.ezenac.thunder_market.security.entity.Resource;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

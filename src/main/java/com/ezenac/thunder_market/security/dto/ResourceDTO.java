@@ -1,6 +1,6 @@
-package com.ezenac.thunder_market.security;
+package com.ezenac.thunder_market.security.dto;
 
-import com.ezenac.thunder_market.security.Role;
+import com.ezenac.thunder_market.security.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

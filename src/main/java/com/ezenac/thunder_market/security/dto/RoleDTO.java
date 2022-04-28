@@ -1,4 +1,4 @@
-package com.ezenac.thunder_market.security;
+package com.ezenac.thunder_market.security.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

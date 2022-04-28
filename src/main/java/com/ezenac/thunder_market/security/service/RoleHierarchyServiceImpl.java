@@ -1,5 +1,7 @@
-package com.ezenac.thunder_market.security;
+package com.ezenac.thunder_market.security.service;
 
+import com.ezenac.thunder_market.security.entity.RoleHierarchy;
+import com.ezenac.thunder_market.security.repository.RoleHierarchyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

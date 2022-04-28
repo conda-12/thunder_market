@@ -1,7 +1,7 @@
 package com.ezenac.thunder_market.security.oauth;
 
-import com.ezenac.thunder_market.security.Role;
-import com.ezenac.thunder_market.security.RoleRepository;
+import com.ezenac.thunder_market.security.entity.Role;
+import com.ezenac.thunder_market.security.repository.RoleRepository;
 import com.ezenac.thunder_market.security.auth.PrincipalDetails;
 import com.ezenac.thunder_market.security.oauth.provider.*;
 import com.ezenac.thunder_market.member.entity.Member;
@@ -13,7 +13,6 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Optional;

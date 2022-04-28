@@ -1,5 +1,7 @@
-package com.ezenac.thunder_market.security;
+package com.ezenac.thunder_market.security.service;
 
+import com.ezenac.thunder_market.security.entity.Resource;
+import com.ezenac.thunder_market.security.repository.ResourceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;

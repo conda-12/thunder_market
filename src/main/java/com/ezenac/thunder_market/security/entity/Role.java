@@ -1,4 +1,4 @@
-package com.ezenac.thunder_market.security;
+package com.ezenac.thunder_market.security.entity;
 
 import com.ezenac.thunder_market.member.entity.Member;
 import lombok.*;

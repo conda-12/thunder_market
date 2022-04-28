@@ -1,7 +1,7 @@
 package com.ezenac.thunder_market.repository;
 
-import com.ezenac.thunder_market.security.RoleHierarchy;
-import com.ezenac.thunder_market.security.RoleHierarchyRepository;
+import com.ezenac.thunder_market.security.entity.RoleHierarchy;
+import com.ezenac.thunder_market.security.repository.RoleHierarchyRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

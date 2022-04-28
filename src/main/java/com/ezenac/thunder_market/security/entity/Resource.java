@@ -1,4 +1,4 @@
-package com.ezenac.thunder_market.security;
+package com.ezenac.thunder_market.security.entity;
 
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
