@@ -21,7 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
     @Query("SELECT p, COUNT (f)" +
             " FROM Product p" +
             " LEFT JOIN Favorite f ON f.product = p" +
-            " WHERE p.state = 'SELLING' AND p.productId = :productId")
+            " WHERE p.productId = :productId")
     Optional<Object> readWithFavorite(@Param("productId")Long productId);
 
     Page<Product> findAllByMemberOrderByRegDateDesc(Member member, Pageable pageable);
