@@ -7,6 +7,7 @@ import com.ezenac.thunder_market.product.dto.ProductReadDTO;
 import com.ezenac.thunder_market.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ProductsController {
     private final ProductService productService;
     private final FavoriteService favoriteService;
+    @Value("${kakao.apiKey}")
+    private String kakaoApiKey;
 
     // 상품 상세 조회
     @GetMapping("/{productId}")
@@ -47,7 +50,8 @@ public class ProductsController {
     // 상품 등록 페이지
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/new")
-    public String registerPage() {
+    public String registerPage(Model model) {
+        model.addAttribute("kakaoApiKey", kakaoApiKey);
         return "/products/new";
     }
 
@@ -75,9 +79,6 @@ public class ProductsController {
         model.addAttribute("dto", ProductModifyDTO);
         return "/products/modify";
     }
-
-
-
 
 
 }

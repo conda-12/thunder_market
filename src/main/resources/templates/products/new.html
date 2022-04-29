@@ -58,7 +58,6 @@
                                     <button id="current-btn" type="button" class="btn btn-outline-secondary"
                                             onclick="getPos()">현재 위치
                                     </button>
-                                    <button type="button" class="btn btn-outline-secondary" onclick="">최근 지역</button>
                                     <button type="button" class="btn btn-outline-secondary" onclick="searchAddress()">주소
                                         검색
                                     </button>
@@ -245,10 +244,12 @@
                 navigator.geolocation.getCurrentPosition((position) => {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
+                    let kakaoApiKey = [[${kakaoApiKey}]];
+
                     // 카카오에 주소 검색하기
                     $.ajax({
                         url: 'https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=' + lon + '&y=' + lat + '&input_coord=WGS84',
-                        headers: {'Authorization': 'KakaoAK bc804fee1d835076d928997820230f28'},
+                        headers: {'Authorization': kakaoApiKey},
                         type: 'get',
                         success: function (data) {
                             let address = data.documents[1].address_name;
