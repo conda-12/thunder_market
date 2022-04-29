@@ -1,1 +1,1 @@
-# thunder_market 프로젝트
+# 천둥장터 프로젝트
